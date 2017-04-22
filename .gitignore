@@ -1,6 +1,8 @@
 .gradle
 /build/
 !webapp/gradle/wrapper/gradle-wrapper.jar
+webapp/src/main/resources/static/node_modules
+webapp/src/main/resources/static/bundle.js
 
 ### STS ###
 .apt_generated
