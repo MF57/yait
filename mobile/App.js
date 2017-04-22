@@ -38,30 +38,38 @@ class DefaultContainer extends React.Component {
 }
 
 class IssueView extends React.Component {
+  static navigationOptions = ({navigation}) => ({
+      title: `${navigation.state.params.title}`,
+  });
+
   render() {
     const { params } = this.props.navigation.state;
 
     return (
-      <DefaultContainer>
+      <View style={{padding: 10}}>
         <Text>Test - {params.title}</Text>
-      </DefaultContainer>
+      </View>
     );
   }
 }
 
 class IssuesList extends React.Component {
-   constructor() {
+  static navigationOptions = {
+    title: 'Issues'
+  };
+
+  constructor() {
     super();
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       dataSource: ds.cloneWithRows([
         {
           title: 'Nie ma ciepłej wody na III piętrze',
-          votes: 123
+          votes: 321
         },
         {
           title: 'Teścik',
-          votes: 321
+          votes: 123
         }
       ]),
     };
@@ -69,7 +77,6 @@ class IssuesList extends React.Component {
 
   render() {
     return (
-      <DefaultContainer>
         <ListView
           dataSource={this.state.dataSource}
           renderRow={(rowData) => <TouchableHighlight onPress={() => this.props.navigation.navigate('Single', rowData)}>
@@ -82,7 +89,6 @@ class IssuesList extends React.Component {
           </TouchableHighlight>}
           renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />}
         />
-      </DefaultContainer>
     );
   }
 }
@@ -90,11 +96,9 @@ class IssuesList extends React.Component {
 const IssuesTab = StackNavigator({
   List: {
     screen: IssuesList,
-    navigationOptions: {headerVisible: false}
   },
   Single: { 
-    screen: IssueView,
-    headerVisible: true
+    screen: IssueView
   }
 }, {
   navigationOptions: {
