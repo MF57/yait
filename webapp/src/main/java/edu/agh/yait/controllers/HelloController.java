@@ -1,4 +1,4 @@
-package edu.agh.yait;
+package edu.agh.yait.controllers;
 
 import edu.agh.yait.persistence.model.ExampleEntity;
 import edu.agh.yait.persistence.repositories.ExampleRepository;
