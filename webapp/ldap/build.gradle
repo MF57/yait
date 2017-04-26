@@ -6,10 +6,14 @@ sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
+    maven {
+        url 'https://repo.spring.io/libs-snapshot'
+    }
 }
 
 dependencies {
     compile group: 'org.springframework', name: 'spring-core', version: '4.3.7.RELEASE'
     compile group: 'org.springframework', name: 'spring-context', version: '4.3.7.RELEASE'
+    compile 'org.springframework.ldap:spring-ldap-core:2.3.2.BUILD-SNAPSHOT'
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
