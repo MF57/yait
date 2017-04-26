@@ -1,22 +1,28 @@
 package edu.agh.yait.controllers;
 
 
-import org.springframework.stereotype.Controller;
+import edu.agh.yait.persistence.model.Comment;
+import edu.agh.yait.persistence.repositories.CommentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequestMapping("/api/issue/{issueId}/comment")
 public class CommentsController {
+    @Autowired
+    private CommentRepository repository;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Object getComments(){
-        return "list of comments";
+        return repository.findAll();
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public Object addComment(){
+    public Object addComment(Comment comment){
+        repository.save(comment);
         return "commented";
     }
 

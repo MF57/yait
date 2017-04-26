@@ -3,6 +3,7 @@ package edu.agh.yait.persistence.model;
 import javax.persistence.*;
 import java.util.Date;
 
+@Entity
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

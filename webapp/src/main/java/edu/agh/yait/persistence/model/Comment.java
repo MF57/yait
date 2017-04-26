@@ -3,6 +3,7 @@ package edu.agh.yait.persistence.model;
 import javax.persistence.*;
 import java.util.Date;
 
+@Entity
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -11,8 +12,8 @@ public class Comment {
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
 
-    @Column
-    private User user;
+//    @Column
+//    private User user;
 
     @Column
     private String comment;
