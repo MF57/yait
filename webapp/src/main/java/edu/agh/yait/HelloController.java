@@ -13,11 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloController {
 
     @Autowired
-    LdapHandler handler;
+    LdapHandler ldapHandler;
 
     @RequestMapping(value = "/hello", method = RequestMethod.GET)
     public String hello() {
         return "Hello World";
+    }
+
+    @RequestMapping(value = "/ldap", method = RequestMethod.GET)
+    public String ldap() {
+        return ldapHandler.getGroups().toString();
     }
 
 }
