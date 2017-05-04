@@ -22,8 +22,12 @@ public class LdapHandler {
     private LdapTemplate ldapTemplate;
 
 
-    public Optional<User> getUser(String login, String password) {
-        return Optional.empty();
+    //Will throw exception if auth failed, won't retriece any data about user
+    public void auth(String login, String password) {
+        ldapTemplate.authenticate(
+                query().where("objectClass").is("posixAccount")
+                        .and(query().where("uid").is(login)),
+                password);
     }
     public Map<UserId, Optional<User>> getUsers(List<UserId> ids) {
         return new HashMap<>();
@@ -34,9 +38,9 @@ public class LdapHandler {
     }
 
     public List<String> getGroups() {
-        return ldapTemplate.search(
-                query().where("objectclass").is("person"),
-                (AttributesMapper<String>) attrs -> attrs.get("cn").get().toString());
+
+        return new ArrayList<>();
+
     }
 
 

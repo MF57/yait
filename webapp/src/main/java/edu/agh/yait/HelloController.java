@@ -22,7 +22,8 @@ public class HelloController {
 
     @RequestMapping(value = "/ldap", method = RequestMethod.GET)
     public String ldap() {
-        return ldapHandler.getGroups().toString();
+        ldapHandler.auth("studen1", "Haslo1234!");
+        return "SUCCESS AUTH";
     }
 
 }
