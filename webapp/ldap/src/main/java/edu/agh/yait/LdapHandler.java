@@ -1,13 +1,11 @@
 package edu.agh.yait;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ldap.NamingException;
-import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.stereotype.Component;
 
-
-import javax.naming.directory.Attributes;
 import java.util.*;
 
 import static org.springframework.ldap.query.LdapQueryBuilder.query;
@@ -18,40 +16,43 @@ import static org.springframework.ldap.query.LdapQueryBuilder.query;
 @Component
 public class LdapHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(LdapHandler.class);
+
+    private final LdapTemplate ldapTemplate;
+
+
     @Autowired
-    private LdapTemplate ldapTemplate;
-
-
-    //Will throw exception if auth failed, won't retriece any data about user
-    public void auth(String login, String password) {
-        ldapTemplate.authenticate(
-                query().where("objectClass").is("posixAccount")
-                        .and(query().where("uid").is(login)),
-                password);
-    }
-    public Map<UserId, Optional<User>> getUsers(List<UserId> ids) {
-        return new HashMap<>();
-    }
-
-    public List<User> getUserByGroup(GroupId groups) {
-        return new ArrayList<>();
-    }
-
-    public List<String> getGroups() {
-
-        return new ArrayList<>();
-
+    public LdapHandler(LdapTemplate ldapTemplate) {
+        this.ldapTemplate = ldapTemplate;
     }
 
 
-    class User {
-
+    public boolean auth(String login, String password) {
+        try {
+            ldapTemplate.authenticate(query()
+                            .where("objectClass").is("posixAccount")
+                            .and(query().where("uid").is(login)),
+                    password);
+            return true;
+        } catch (Exception e) {
+            logger.error("Could not auth user with login: " + login + " and password: " + password + " - reason: ", e);
+            return false;
+        }
     }
-    class UserId {
 
-    }
-    class GroupId {
+//    public Map<UserId, Optional<User>> getUsers(List<UserId> ids) {
+//        return new HashMap<>();
+//    }
+//
+//    public List<User> getUserByGroup(GroupId groups) {
+//        return new ArrayList<>();
+//    }
+//
+//    public List<String> getGroups() {
+//        return new ArrayList<>();
+//
+//    }
 
-    }
+
 
 }

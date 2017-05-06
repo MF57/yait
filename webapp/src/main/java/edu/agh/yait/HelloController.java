@@ -3,6 +3,7 @@ package edu.agh.yait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -12,8 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class HelloController {
 
+    private final LdapHandler ldapHandler;
+
     @Autowired
-    LdapHandler ldapHandler;
+    public HelloController(LdapHandler ldapHandler) {
+        this.ldapHandler = ldapHandler;
+    }
 
     @RequestMapping(value = "/hello", method = RequestMethod.GET)
     public String hello() {
@@ -21,9 +26,12 @@ public class HelloController {
     }
 
     @RequestMapping(value = "/ldap", method = RequestMethod.GET)
-    public String ldap() {
-        ldapHandler.auth("studen1", "Haslo1234!");
-        return "SUCCESS AUTH";
+    public String ldap(@RequestParam String login, @RequestParam String password) {
+        if (ldapHandler.auth(login, password)) {
+            return "OK";
+        } else {
+            return "Not Authorized";
+        }
     }
 
 }

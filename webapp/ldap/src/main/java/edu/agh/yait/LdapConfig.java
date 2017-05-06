@@ -6,6 +6,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
+import com.sun.jndi.ldap.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by mf57 on 12.04.2017.
@@ -30,6 +34,9 @@ public class LdapConfig {
     @Value("${ldap.password}")
     private String ldapPassword;
 
+    @Value("${ldap.timeout}")
+    private String ldapTimeout;
+
 
 
 
@@ -40,7 +47,15 @@ public class LdapConfig {
         contextSource.setBase(ldapBase);
         contextSource.setUserDn(ldapUser);
         contextSource.setPassword(ldapPassword);
+        contextSource.setBaseEnvironmentProperties(baseEnvironmentProperties());
         return contextSource;
+    }
+
+    @Bean
+    public Map<String, Object> baseEnvironmentProperties() {
+        Map<String, Object> baseEnvironmentProperties = new HashMap<>();
+        baseEnvironmentProperties.put("com.sun.jndi.ldap.connect.timeout", ldapTimeout);
+        return baseEnvironmentProperties;
     }
 
     @Bean
