@@ -1,5 +1,6 @@
 import React,{Component} from 'react';
 import Topic from './Topic';
+import {connect} from "react-redux";
 
 class List extends Component {
 
@@ -8,16 +9,20 @@ class List extends Component {
     }
 
     renderTopics() {
+        let topicList = this.topicList();
         return (
             <div className="container">
             <div className="row text-center">
-                <Topic name="TOPIC1" status="DONE"/>
-                <Topic name="TOPIC2" status="DONE"/>
-                <Topic name="TOPIC3" status="DONE"/>
-                <Topic name="TOPIC4" status="DONE"/>
+                {topicList}
             </div>
             </div>
 
+        )
+    }
+
+    topicList() {
+        return this.props.topics.map((el,i)=>
+            <Topic name={el.name} status={el.status} id={el.id} score={el.score} key={i}/>
         )
     }
 
@@ -26,4 +31,4 @@ class List extends Component {
     }
 }
 
-export default List;
+export default connect()(List);

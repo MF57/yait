@@ -1,6 +1,7 @@
 import React from 'react';
 import List from './List';
 import NavBar from './NavBar'
+import {connect} from "react-redux";
 
 class App extends React.Component {
 
@@ -12,10 +13,14 @@ class App extends React.Component {
         return (
             <div>
                 <NavBar/>
-                <List/>
+                <List topics={this.props.topics}/>
             </div>
         )
     }
 };
 
-export default App;
+function mapStateToProps(state) {
+    return {topics: state.topics}
+};
+
+export default connect(mapStateToProps)(App);
