@@ -24,6 +24,21 @@ repositories {
 
 dependencies {
 	//compile('org.springframework.boot:spring-boot-starter-security')
+	compile('com.sun.mail:javax.mail:1.5.6')
+	compile('jaf:activation:1.0.2')
+	compile('javax.mail:javax.mail-api:1.5.6')
 	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('org.springframework.boot:spring-boot-starter-data-jpa')
+	compile('org.springframework:spring-context-support')
+	compile('org.springframework.boot:spring-boot-starter-mail')
+	compile('org.hsqldb:hsqldb')
+	compile('org.apache.velocity:velocity:1.7')
+	compile('org.apache.velocity:velocity-tools:2.0')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+task listJars {
+	doLast {
+		configurations.compile.each { File file -> println file.name }
+	}
 }
