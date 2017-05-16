@@ -31,4 +31,13 @@ public class YaitMailerTests {
 
     }
 
+    @Test
+    public void testCreatingToken() {
+        TicketManager ticketManager = new TicketManager();
+        String value = ticketManager.generateToken(new Ticket());
+        assertEquals("eyJhbGciOiJIUzI1NiJ9.eyJ0aWNrZXQiOiIxMjM0NTY3ODkwIn0.vC1pOy4ppImfZm0AzmsQaanmOwLlgeCFY2H3nOZhTeU", value);
+    }
+
+
+
 }
