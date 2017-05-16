@@ -24,6 +24,7 @@ repositories {
 
 dependencies {
 	//compile('org.springframework.boot:spring-boot-starter-security')
+	compile('org.freemarker:freemarker:2.3.23')
 	compile('com.sun.mail:javax.mail:1.5.6')
 	compile('jaf:activation:1.0.2')
 	compile('javax.mail:javax.mail-api:1.5.6')
@@ -35,6 +36,7 @@ dependencies {
 	compile('org.apache.velocity:velocity:1.7')
 	compile('org.apache.velocity:velocity-tools:2.0')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+
 }
 
 task listJars {

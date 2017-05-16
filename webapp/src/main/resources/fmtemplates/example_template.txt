@@ -1,0 +1,11 @@
+<html>
+
+    <body>
+        <h3>Dear ${emailType.recipientInfo.contactName}, I am writing to announce that we can send mails via gmail smtp server and say: .</h3>
+
+        <div>
+            Hello!
+        </div>
+        <span>Sent using FreeMarker Template</span>
+    </body>
+</html>
