@@ -1,11 +1,16 @@
 package edu.agh.yait;
 
+import edu.agh.yait.userData.UserData;
+import edu.agh.yait.userData.UserDataAttributesMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ldap.NamingException;
+import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.stereotype.Component;
 
+import javax.naming.directory.Attributes;
 import java.util.*;
 
 import static org.springframework.ldap.query.LdapQueryBuilder.query;
@@ -40,18 +45,25 @@ public class LdapHandler {
         }
     }
 
-//    public Map<UserId, Optional<User>> getUsers(List<UserId> ids) {
-//        return new HashMap<>();
-//    }
-//
-//    public List<User> getUserByGroup(GroupId groups) {
-//        return new ArrayList<>();
-//    }
-//
-//    public List<String> getGroups() {
-//        return new ArrayList<>();
-//
-//    }
+    public Optional<UserData> getUserData(String userId) {
+        return getUserData(Collections.singletonList(userId)).get(0);
+    }
+
+    public List<Optional<UserData>> getUserData(List<String> usersIds) {
+        List<UserData> search = ldapTemplate.search("", "(objectclass=person)",   new UserDataAttributesMapper());
+
+        return new ArrayList<>();
+    }
+
+    public List<UserData> getUserDataByGroupName(String groupName) {
+        return new ArrayList<>();
+    }
+
+
+    public List<String> getGroups() {
+        return new ArrayList<>();
+
+    }
 
 
 

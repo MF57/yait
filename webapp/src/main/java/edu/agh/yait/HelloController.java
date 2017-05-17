@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+
 /**
  * Created by mf57 on 05.04.2017.
  */
@@ -25,13 +27,19 @@ public class HelloController {
         return "Hello World";
     }
 
-    @RequestMapping(value = "/ldap", method = RequestMethod.GET)
-    public String ldap(@RequestParam String login, @RequestParam String password) {
+    @RequestMapping(value = "/ldapAuth", method = RequestMethod.GET)
+    public String ldapAuth(@RequestParam String login, @RequestParam String password) {
         if (ldapHandler.auth(login, password)) {
             return "OK";
         } else {
             return "Not Authorized";
         }
+    }
+
+    @RequestMapping(value = "/ldap", method = RequestMethod.GET)
+    public String ldap() {
+        ldapHandler.getUserData(new ArrayList<>());
+        return "ok";
     }
 
 }
