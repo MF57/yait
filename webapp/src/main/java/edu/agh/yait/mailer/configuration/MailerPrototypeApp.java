@@ -27,7 +27,7 @@ public class MailerPrototypeApp {
     }
 
     public static EmailType getTestEmailToPeterAndMartin(){
-        String[] emailList = {"piotr.roksela@gmail.com", "marcin.sendera@gmail.com"};
+        String[] emailList = {"piotr@roksela.pl", "marcin.sendera@gmail.com"};
         RecipientInfo recipientInfo = new RecipientInfo("Piotr i Marcin", emailList);
         EmailType emailType = new EmailType("333", "onlyTestEmail", recipientInfo);
         return emailType;
