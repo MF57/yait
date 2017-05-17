@@ -7,6 +7,10 @@ import { StackNavigator, TabNavigator } from 'react-navigation';
 import store from 'react-native-simple-store';
 import axios from 'axios';
 
+import IssuesList from './components/IssuesList';
+import IssueView from './components/IssueView';
+
+
 const iconSize = 24;
 axios.defaults.baseURL = 'http://yait.lagiewka.pl';
 
@@ -16,21 +20,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 20,
   },
-  row: {
-    flex: 1,
-    padding: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  separator: {
-     flex: 1,
-     height: StyleSheet.hairlineWidth,
-     backgroundColor: '#8E8E8E',
-  },
-  votes: {
-    flex: 1,
-    alignSelf: 'flex-end'
-  }
 });
 
 class DefaultContainer extends React.Component {
@@ -39,87 +28,6 @@ class DefaultContainer extends React.Component {
       <KeyboardAwareScrollView style={styles.container} extraScrollHeight={50}>
         {this.props.children}
       </KeyboardAwareScrollView>
-    );
-  }
-}
-
-class IssueView extends React.Component {
-  static navigationOptions = ({navigation}) => ({
-      title: `${navigation.state.params.title}`,
-  });
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      loaded: false,
-      data: {}
-    };
-  }
-
-  componentDidMount() {
-    const { params } = this.props.navigation.state;
-    axios.get('/issues/' + params.issueId)
-    .then((response) => {
-      this.setState({
-        data: response.data
-      })
-    })
-    .catch((error) => {
-      console.log("error")
-      console.log(error)
-    });
-  }
-
-  render() {
-    return (
-      <View style={{padding: 10}}>
-        <Text>Test - {this.state.data.description} </Text>
-      </View>
-    );
-  }
-}
-
-class IssuesList extends React.Component {
-  static navigationOptions = {
-    title: 'Issues'
-  };
-
-  constructor(props) {
-    super(props);
-    this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    this.state = {
-      dataSource: this.ds.cloneWithRows([]),
-      loading: true
-    };
-  }
-
-  componentDidMount() {
-    axios.get('/issues')
-    .then((response) => {
-      this.setState({
-        dataSource: this.ds.cloneWithRows(response.data)
-      })
-    })
-    .catch((error) => {
-      console.log("error")
-      console.log(error)
-    });
-  }
-
-  render() {
-    return (
-        <ListView
-          dataSource={this.state.dataSource}
-          renderRow={(rowData) => <TouchableHighlight onPress={() => this.props.navigation.navigate('Single', {issueId: rowData.id, title: rowData.title})}>
-            <View style={styles.row}>
-              <View style={{flex:5}}><Text>{rowData.title}</Text></View>
-              <View style={styles.votes}>
-                <Text style={{textAlign: 'right'}}>{rowData.score}</Text>
-              </View>
-            </View>
-          </TouchableHighlight>}
-          renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />}
-        />
     );
   }
 }

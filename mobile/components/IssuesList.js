@@ -1,0 +1,66 @@
+import React from 'react';
+import axios from 'axios';
+import { StyleSheet, Text, View, ListView, TouchableHighlight } from 'react-native';
+
+export default class IssuesList extends React.Component {
+  static navigationOptions = {
+    title: 'Issues'
+  };
+
+  constructor(props) {
+    super(props);
+    this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    this.state = {
+      dataSource: this.ds.cloneWithRows([]),
+      loading: true
+    };
+  }
+
+  componentDidMount() {
+    axios.get('/issues')
+    .then((response) => {
+      this.setState({
+        dataSource: this.ds.cloneWithRows(response.data)
+      })
+    })
+    .catch((error) => {
+      console.log("error")
+      console.log(error)
+    });
+  }
+
+  render() {
+    return (
+        <ListView
+          dataSource={this.state.dataSource}
+          renderRow={(rowData) => <TouchableHighlight onPress={() => this.props.navigation.navigate('Single', {issueId: rowData.id, title: rowData.title})}>
+            <View style={styles.row}>
+              <View style={{flex:5}}><Text>{rowData.title}</Text></View>
+              <View style={styles.votes}>
+                <Text style={{textAlign: 'right'}}>{rowData.score}</Text>
+              </View>
+            </View>
+          </TouchableHighlight>}
+          renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />}
+        />
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  row: {
+    flex: 1,
+    padding: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  separator: {
+     flex: 1,
+     height: StyleSheet.hairlineWidth,
+     backgroundColor: '#8E8E8E',
+  },
+  votes: {
+    flex: 1,
+    alignSelf: 'flex-end'
+  }
+});
