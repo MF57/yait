@@ -6,7 +6,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
-import com.sun.jndi.ldap.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,10 +37,8 @@ public class LdapConfig {
     private String ldapTimeout;
 
 
-
-
     @Bean
-    public LdapContextSource contextSource () {
+    public LdapContextSource contextSource() {
         LdapContextSource contextSource = new LdapContextSource();
         contextSource.setUrl(ldapUrl);
         contextSource.setBase(ldapBase);

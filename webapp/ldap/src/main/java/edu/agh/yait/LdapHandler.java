@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.filter.AndFilter;
 import org.springframework.ldap.filter.EqualsFilter;
+import org.springframework.ldap.filter.LikeFilter;
 import org.springframework.ldap.filter.OrFilter;
 import org.springframework.stereotype.Component;
 
@@ -54,7 +55,7 @@ public class LdapHandler {
     /**
      *
      * @param userId - user unique ldap identifier (not login)
-     * @return empty optional if user of given doesnt exist, UserData of given userId otherwise
+     * @return empty optional if user of given id  doesnt exist, UserData of given userId otherwise
      */
     public Optional<UserData> getUserDataById(String userId) {
         List<UserData> result = getUserDataByIds(Collections.singletonList(userId));
@@ -76,7 +77,7 @@ public class LdapHandler {
         OrFilter alternateFilter = new OrFilter();
         usersIds.forEach(id -> alternateFilter.or(new EqualsFilter("ipaUniqueID", id)));
         baseFilter.and(new EqualsFilter("objectclass", "posixAccount"));
-     //   baseFilter.and(alternateFilter);
+        baseFilter.and(alternateFilter);
 
         return ldapTemplate.search("", baseFilter.encode(), new UserDataAttributesMapper());
     }
@@ -84,8 +85,8 @@ public class LdapHandler {
 
     /**
      *
-     * @param login
-     * @return
+     * @param login - login of the user
+     * @return empty optional if user of given login  doesnt exist, UserData of given login otherwise
      */
     public Optional<UserData> getUserDataByLogin(String login) {
         List<UserData> result = getUserDataByLogins(Collections.singletonList(login));
@@ -113,7 +114,11 @@ public class LdapHandler {
 
 
     public List<UserData> getUserDataByGroupName(String groupName) {
-        return new ArrayList<>();
+        AndFilter baseFilter = new AndFilter();
+        baseFilter.and(new EqualsFilter("objectclass", "posixAccount"));
+        baseFilter.and(new LikeFilter("memberof", "*" + groupName + "*"));
+
+        return ldapTemplate.search("", baseFilter.encode(), new UserDataAttributesMapper());
     }
 
 
