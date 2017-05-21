@@ -5,12 +5,12 @@ import edu.agh.yait.userData.UserDataAttributesMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ldap.NamingException;
-import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapTemplate;
+import org.springframework.ldap.filter.AndFilter;
+import org.springframework.ldap.filter.EqualsFilter;
+import org.springframework.ldap.filter.OrFilter;
 import org.springframework.stereotype.Component;
 
-import javax.naming.directory.Attributes;
 import java.util.*;
 
 import static org.springframework.ldap.query.LdapQueryBuilder.query;
@@ -32,6 +32,12 @@ public class LdapHandler {
     }
 
 
+    /**
+     *
+     * @param login - login of the user which should be tried to auth
+     * @param password - password of the user which should be tried to auth
+     * @return true if ldap auth succeded, false otherwise (+ reason of failure logging)
+     */
     public boolean auth(String login, String password) {
         try {
             ldapTemplate.authenticate(query()
@@ -45,15 +51,66 @@ public class LdapHandler {
         }
     }
 
-    public Optional<UserData> getUserData(String userId) {
-        return getUserData(Collections.singletonList(userId)).get(0);
+    /**
+     *
+     * @param userId - user unique ldap identifier (not login)
+     * @return empty optional if user of given doesnt exist, UserData of given userId otherwise
+     */
+    public Optional<UserData> getUserDataById(String userId) {
+        List<UserData> result = getUserDataByIds(Collections.singletonList(userId));
+        if (result.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.ofNullable(result.get(0));
+        }
     }
 
-    public List<Optional<UserData>> getUserData(List<String> usersIds) {
-        List<UserData> search = ldapTemplate.search("", "(objectclass=person)",   new UserDataAttributesMapper());
 
-        return new ArrayList<>();
+    /**
+     *
+     * @param usersIds
+     * @return
+     */
+    public List<UserData> getUserDataByIds(List<String> usersIds) {
+        AndFilter baseFilter = new AndFilter();
+        OrFilter alternateFilter = new OrFilter();
+        usersIds.forEach(id -> alternateFilter.or(new EqualsFilter("ipaUniqueID", id)));
+        baseFilter.and(new EqualsFilter("objectclass", "posixAccount"));
+     //   baseFilter.and(alternateFilter);
+
+        return ldapTemplate.search("", baseFilter.encode(), new UserDataAttributesMapper());
     }
+
+
+    /**
+     *
+     * @param login
+     * @return
+     */
+    public Optional<UserData> getUserDataByLogin(String login) {
+        List<UserData> result = getUserDataByLogins(Collections.singletonList(login));
+        if (result.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.ofNullable(result.get(0));
+        }
+    }
+
+    /**
+     *
+     * @param logins
+     * @return
+     */
+    public List<UserData> getUserDataByLogins(List<String> logins) {
+        AndFilter baseFilter = new AndFilter();
+        OrFilter alternateFilter = new OrFilter();
+        logins.forEach(login -> alternateFilter.or(new EqualsFilter("uid", login)));
+        baseFilter.and(new EqualsFilter("objectclass", "posixAccount"));
+        baseFilter.and(alternateFilter);
+
+        return ldapTemplate.search("", baseFilter.encode(), new UserDataAttributesMapper());
+    }
+
 
     public List<UserData> getUserDataByGroupName(String groupName) {
         return new ArrayList<>();

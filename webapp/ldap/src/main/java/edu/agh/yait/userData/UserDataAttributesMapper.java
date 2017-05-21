@@ -15,11 +15,13 @@ public class UserDataAttributesMapper implements AttributesMapper<UserData> {
     public UserData mapFromAttributes(Attributes attributes) throws NamingException {
 
         Attribute ipaUniqueID = attributes.get("ipaUniqueID");
+        Attribute login = attributes.get("uid");
         Optional<Attribute> givenName = Optional.ofNullable(attributes.get("givenName"));
         Optional<Attribute> sn = Optional.ofNullable(attributes.get("sn"));
         Optional<Attribute> mail = Optional.ofNullable(attributes.get("mail"));
         return new UserData(
                 (String) ipaUniqueID.get(),
+                (String) login.get(),
                 givenName.map(name -> {
                     try {
                         return (String) name.get();
