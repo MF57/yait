@@ -1,16 +1,22 @@
 package edu.agh.yait.persistence.model;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
 @Entity
 public class Issue {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @Column
+
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
 
 //    @Column
@@ -28,11 +34,13 @@ public class Issue {
     @Column
     private IssueStatus status;
 
+    @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     private Date statusChangeDate;
 
     @OneToMany
-    List<Comment> comments;
+    @JoinColumn(name = "issueId")
+    private List<Comment> comments;
 
     public Integer getId() {
         return id;
@@ -49,14 +57,6 @@ public class Issue {
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }
-
-//    public User getCreator() {
-//        return creator;
-//    }
-//
-//    public void setCreator(User creator) {
-//        this.creator = creator;
-//    }
 
     public Integer getPoints() {
         return points;

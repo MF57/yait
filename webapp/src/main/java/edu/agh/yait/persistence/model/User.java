@@ -2,6 +2,7 @@ package edu.agh.yait.persistence.model;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class User {
@@ -20,6 +21,9 @@ public class User {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date firstLogin;
+
+//    @OneToMany(mappedBy = "user")
+//    private List<Comment> comments;
 
     public Integer getId() {
         return id;

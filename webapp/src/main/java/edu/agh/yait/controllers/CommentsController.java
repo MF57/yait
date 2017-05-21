@@ -1,34 +1,61 @@
 package edu.agh.yait.controllers;
 
 
+import edu.agh.yait.dto.CommentDTO;
 import edu.agh.yait.persistence.model.Comment;
+import edu.agh.yait.persistence.model.Issue;
 import edu.agh.yait.persistence.repositories.CommentRepository;
+import edu.agh.yait.persistence.repositories.IssueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/issue/{issueId}/comment")
 public class CommentsController {
+
     @Autowired
-    private CommentRepository repository;
+    private CommentRepository commentRepository;
+
+    @Autowired
+    private IssueRepository issueRepository;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Object getComments(){
-        return repository.findAll();
+        return commentRepository.findAll();
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public Object addComment(Comment comment){
-        repository.save(comment);
-        return "commented";
+    public Object addComment(@Valid @RequestBody CommentDTO commentDto,
+                             Errors result,
+                             @PathVariable("issueId") String issueId){
+
+        if(result.hasErrors()){
+            return ResponseEntity.badRequest().body(result.getAllErrors());
+        }
+
+        Issue issue = issueRepository.findOne(Integer.parseInt(issueId));
+        if(issue == null) {
+            return ResponseEntity.badRequest().body("no issue error");
+        }
+
+        Comment comment = new Comment();
+        comment.setComment(commentDto.getText());
+        comment.setIssueId(Integer.parseInt(issueId));
+
+        return commentRepository.save(comment);
     }
 
     @RequestMapping(value = "/{commentId}", method = RequestMethod.GET)
     public Object getCommentById(@PathVariable("issueId") String issueId,
                                @PathVariable("commentId") String commentId){
-        return "issue: " + issueId + ", comment: " + commentId;
+
+        //List<Comment> comments = commentRepository.findOne(Integer.parseInt(commentId));
+        return commentRepository.findOne(Integer.parseInt(commentId));
     }
 }
