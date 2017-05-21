@@ -1,5 +1,5 @@
-import React,{Component} from 'react';
-import Topic from './Topic';
+import React, {Component} from "react";
+import Topic from "./Topic";
 import {connect} from "react-redux";
 
 class List extends Component {
@@ -11,12 +11,9 @@ class List extends Component {
     renderTopics() {
         let topicList = this.topicList();
         return (
-            <div className="container">
             <div className="row text-center">
                 {topicList}
             </div>
-            </div>
-
         )
     }
 

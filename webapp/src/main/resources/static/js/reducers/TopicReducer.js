@@ -1,10 +1,15 @@
-import {UPVOTE_TOPIC} from "../actions/TopicActionTypes";
+import {UPVOTE_TOPIC} from "../actions/types/TopicActionTypes";
+import {preloadState} from "../index";
+
+
 export function topicReducer(state, action) {
+    if (state === undefined) {
+        return preloadState
+    }
+
     switch (action.type){
         case UPVOTE_TOPIC: {
-            let newTopics = upvoteTopic(action.id, state.topics);
-            let st = Object.assign({}, state, {topics: newTopics});
-            return st;
+            return upvoteTopic(action.id, state);
         }
     }
     return state;

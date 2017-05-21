@@ -1,21 +1,35 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
 import {topicReducer} from "./reducers/TopicReducer";
-import {createStore} from "redux";
+import {combineReducers, createStore} from "redux";
+import {Route} from "react-router";
+import {HashRouter} from "react-router-dom";
+import {tokenReducer} from "./reducers/TokenReducer";
 import {Provider} from "react-redux";
 
-const preloadState = {
+export const preloadState = {
     topics: [
         {name: "TOPIC1", status: "DONE", id: 1, score: 0},
         {name: "TOPIC2", status: "DONE", id: 2, score: 0}
-    ]
+    ],
+    token: {
+        number: "TOKEN_TEST",
+        tokenPoints: 10
+    },
 };
 
-const store = createStore(topicReducer, preloadState);
+const rootReducer = combineReducers({
+    topics: topicReducer,
+    token: tokenReducer
+});
+const store = createStore(rootReducer, preloadState);
 
 ReactDOM.render(
     <Provider store={store}>
-    <App/></Provider>,
+        <HashRouter>
+            <Route path="/:token?" component={App}/>
+        </HashRouter>
+    </Provider>,
     document.getElementById('root')
 );

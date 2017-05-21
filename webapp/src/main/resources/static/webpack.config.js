@@ -18,7 +18,12 @@ let config = {
                 loaders: ["react-hot-loader", "babel-loader"]
             }
         ],
-    }
+    },
+    devServer: {
+        publicPath: "/",
+        contentBase: ".",
+        hot: true,
+        historyApiFallback: true
+    },
 };
-
 module.exports = config;
