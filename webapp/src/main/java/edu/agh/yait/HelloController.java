@@ -40,11 +40,26 @@ public class HelloController {
         }
     }
 
-    @RequestMapping(value = "/ldap", method = RequestMethod.GET)
-    public String ldap() {
-        List<UserData> result = ldapHandler.getUserDataByIds(Arrays.asList("5f316776-fc6b-11e6-a549-001a4a16016d",
+    @RequestMapping(value = "/ldapid", method = RequestMethod.GET)
+    public List<UserData> ldapId() {
+        return ldapHandler.getUserDataByIds(Arrays.asList("5f316776-fc6b-11e6-a549-001a4a16016d",
                 "sadasdasd", "690528c8-fc6b-11e6-abc5-001a4a16016d", "6e8b3de6-fc6b-11e6-abc5-001a4a16016d"));
-        return "ok";
+    }
+
+    @RequestMapping(value = "/ldapLogin", method = RequestMethod.GET)
+    public List<UserData> ldapLogin() {
+        return ldapHandler.getUserDataByLogins(Arrays.asList("kaczmare",
+                "sadasdasd", "zawadzka"));
+    }
+
+    @RequestMapping(value = "/ldapGroup", method = RequestMethod.GET)
+    public List<UserData> ldapGroups() {
+        return ldapHandler.getUserDataByGroupName("students");
+    }
+
+    @RequestMapping(value = "/ldapGroupNames", method = RequestMethod.GET)
+    public List<String> ldapGroupsNames() {
+        return ldapHandler.getGroups();
     }
 
 }

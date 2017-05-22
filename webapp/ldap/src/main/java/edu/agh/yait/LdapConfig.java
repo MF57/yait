@@ -1,5 +1,6 @@
 package edu.agh.yait;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -22,9 +23,11 @@ public class LdapConfig {
     private String ldapUrl;
 
 
-    @Value("${ldap.base}")
-    private String ldapBase;
+    @Value("${ldap.usersDn}")
+    private String usersDn;
 
+    @Value("${ldap.groupsDn}")
+    private String groupsDn;
 
     @Value("${ldap.user}")
     private String ldapUser;
@@ -38,14 +41,15 @@ public class LdapConfig {
 
 
     @Bean
-    public LdapContextSource contextSource() {
-        LdapContextSource contextSource = new LdapContextSource();
-        contextSource.setUrl(ldapUrl);
-        contextSource.setBase(ldapBase);
-        contextSource.setUserDn(ldapUser);
-        contextSource.setPassword(ldapPassword);
-        contextSource.setBaseEnvironmentProperties(baseEnvironmentProperties());
-        return contextSource;
+    @Qualifier("usersContext")
+    public LdapContextSource usersContextSource() {
+       return getContextSourceWithBase(usersDn);
+    }
+
+    @Bean
+    @Qualifier("groupsContext")
+    public LdapContextSource groupsContextSource() {
+        return getContextSourceWithBase(groupsDn);
     }
 
     @Bean
@@ -57,7 +61,17 @@ public class LdapConfig {
 
     @Bean
     public LdapTemplate ldapTemplate() {
-        return new LdapTemplate(contextSource());
+        return new LdapTemplate(usersContextSource());
+    }
+
+    private LdapContextSource getContextSourceWithBase(String base) {
+        LdapContextSource contextSource = new LdapContextSource();
+        contextSource.setUrl(ldapUrl);
+        contextSource.setBase(base);
+        contextSource.setUserDn(ldapUser);
+        contextSource.setPassword(ldapPassword);
+        contextSource.setBaseEnvironmentProperties(baseEnvironmentProperties());
+        return contextSource;
     }
 
 
