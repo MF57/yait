@@ -49,24 +49,7 @@ const IssuesTab = StackNavigator({
   }
 });
 
-const TicketsTab = StackNavigator({
-    Listz: {
-      screen: Tickets,
-    },
-    Singlez: {
-      screen: Ticket
-    }
-}, {
-    navigationOptions: {
-        headerStyle: {marginTop: Expo.Constants.statusBarHeight},
-        tabBarLabel: 'Tickets',
-        tabBarIcon: ({ tintColor }) => (
-            <FontAwesome name="th-list" size={iconSize} color={tintColor} />
-        ),
-    }
-});
-
-export class Ticket extends React.Component {
+class Ticket extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -76,7 +59,7 @@ export class Ticket extends React.Component {
   }
 }
 
-export class Tickets extends React.Component {
+class Tickets extends React.Component {
 
   constructor(props) {
     super(props)
@@ -117,6 +100,25 @@ export class Tickets extends React.Component {
     );
   }
 }
+
+const TicketsTab = StackNavigator({
+    Listz: {
+      screen: Tickets,
+    },
+    Singlez: {
+      screen: Ticket
+    }
+}, {
+    navigationOptions: {
+        headerStyle: {marginTop: Expo.Constants.statusBarHeight},
+        tabBarLabel: 'Tickets',
+        tabBarIcon: ({ tintColor }) => (
+            <FontAwesome name="th-list" size={iconSize} color={tintColor} />
+        ),
+    }
+});
+
+
 
 class Settings extends React.Component {
   static navigationOptions = {
