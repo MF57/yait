@@ -76,18 +76,12 @@ public class LdapHandler {
 
 
     /**
-     * @param usersIds
-     * @return
+     * @param usersIds - list of ids which UserData should be retrieved from ldap
+     * @return list of user data with given ids
+     * Note that if one or more of users of given id doesnt exist, the result list will be shorter
      */
     public List<UserData> getUserDataByIds(List<String> usersIds) {
-        ldapTemplate.setContextSource(usersContext);
-        AndFilter baseFilter = new AndFilter();
-        OrFilter alternateFilter = new OrFilter();
-        usersIds.forEach(id -> alternateFilter.or(new EqualsFilter("ipaUniqueID", id)));
-        baseFilter.and(new EqualsFilter("objectclass", "posixAccount"));
-        baseFilter.and(alternateFilter);
-
-        return ldapTemplate.search("", baseFilter.encode(), SearchControls.ONELEVEL_SCOPE, new UserDataAttributesMapper());
+        return getUserData(usersIds, "ipaUniqueID");
     }
 
 
@@ -105,18 +99,12 @@ public class LdapHandler {
     }
 
     /**
-     * @param logins
-     * @return
+     * @param logins - list of logins which UserData should be retrieved from ldap
+     * @return list of UserData with given logins
+     *  Note that if one or more of users of given login doesnt exist, the result list will be shorter
      */
     public List<UserData> getUserDataByLogins(List<String> logins) {
-        ldapTemplate.setContextSource(usersContext);
-        AndFilter baseFilter = new AndFilter();
-        OrFilter alternateFilter = new OrFilter();
-        logins.forEach(login -> alternateFilter.or(new EqualsFilter("uid", login)));
-        baseFilter.and(new EqualsFilter("objectclass", "posixAccount"));
-        baseFilter.and(alternateFilter);
-
-        return ldapTemplate.search("", baseFilter.encode(), SearchControls.ONELEVEL_SCOPE, new UserDataAttributesMapper());
+        return getUserData(logins, "uid");
     }
 
 
@@ -130,7 +118,8 @@ public class LdapHandler {
         baseFilter.and(new EqualsFilter("objectclass", "posixAccount"));
         baseFilter.and(new LikeFilter("memberof", "*" + groupName + "*"));
 
-        return ldapTemplate.search("", baseFilter.encode(), SearchControls.ONELEVEL_SCOPE, new UserDataAttributesMapper());
+        return ldapTemplate.search("", baseFilter.encode(),
+                SearchControls.ONELEVEL_SCOPE, new UserDataAttributesMapper());
     }
 
 
@@ -143,7 +132,19 @@ public class LdapHandler {
         return ldapTemplate.search("", baseFilter.encode(),
                 (AttributesMapper<String>) attributes -> (String) attributes.get("cn").get());
 
+    }
 
+
+    private List<UserData> getUserData(List<String> ids, String columneName) {
+        ldapTemplate.setContextSource(usersContext);
+        AndFilter baseFilter = new AndFilter();
+        OrFilter alternateFilter = new OrFilter();
+        ids.forEach(id -> alternateFilter.or(new EqualsFilter(columneName, id)));
+        baseFilter.and(new EqualsFilter("objectclass", "posixAccount"));
+        baseFilter.and(alternateFilter);
+
+        return ldapTemplate.search("", baseFilter.encode(),
+                SearchControls.ONELEVEL_SCOPE, new UserDataAttributesMapper());
     }
 
 

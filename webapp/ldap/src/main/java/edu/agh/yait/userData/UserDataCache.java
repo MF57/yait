@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -42,13 +43,35 @@ public class UserDataCache {
 
     }
 
+    /**
+     * This method retrieves userdata from cache and if it doesnt exist, it queries ldap
+     * Note: If you have multiple ids, please use ldapHandler.getUserDataByIds instead of calling this method in the loop
+     * because it can potentially make multiple requests to the ldap at once.
+     * @param id - id of user data to be retrieved from cache
+     * @return - user data of given id
+     * @throws ExecutionException - when something went wrong during operation on cache
+     */
     public UserData getUserData(String id) throws ExecutionException {
         return cache.get(id);
     }
 
+    /**
+     * Puts all of the passed user data to the cache
+     * @param userData - user data to placed in cache
+     */
+    public void putAll(List<UserData> userData) {
+        cache.putAll(userData.stream().collect(Collectors.toMap(UserData::getId, Function.identity())));
+    }
+
+    /**
+     * Refresh all of the cache
+     */
     public void refresh() {
         Set<String> userIds = cache.asMap().keySet();
         cache.invalidateAll();
+        if (userIds.isEmpty()) {
+            return;
+        }
         Map<String, UserData> upToDateUsers = ldapHandler.getUserDataByIds(new ArrayList<>(userIds)).stream()
                 .collect(Collectors.toMap(UserData::getId, Function.identity()));
         cache.putAll(upToDateUsers);
