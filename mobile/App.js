@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Image, ListView, StatusBar, TouchableHighlight, TextInput, KeyboardAvoidingView, ScrollView } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View, Button, Image, ListView, StatusBar, TouchableHighlight, TextInput, KeyboardAvoidingView, ScrollView } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Expo from 'expo';
 import { FontAwesome } from '@expo/vector-icons';
@@ -52,10 +52,41 @@ const IssuesTab = StackNavigator({
 class Ticket extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+        data: {},
+        loading: true
+    };
+  }
+
+  componentDidMount() {
+    const { params } = this.props.navigation.state;
+    axios.get('/token/', {
+        headers: {'Authorization': this.props.navigation.state},
+    })
+      .then((response) => {
+          console.log(response);
+          console.log(params.token);
+          this.setState({
+              data: response.data,
+              loading: false
+          })
+      })
+      .catch((error) => {
+          console.log("error")
+          console.log(error)
+      });
   }
 
   render () {
-    return <ActivityIndicator />;
+    if(this.state.loading) {
+        return <ActivityIndicator />;
+    }
+
+    return (
+        <View style={styles.container}>
+          <Text>Votes available: {this.state.data.points} </Text>
+        </View>
+    );
   }
 }
 
@@ -90,7 +121,7 @@ class Tickets extends React.Component {
     return (
         <ListView
             dataSource={this.state.dataSource}
-            renderRow={(rowData) => <TouchableHighlight onPress={() => this.props.navigation.navigate('Single', {issueId: rowData.id, title: rowData.title})}>
+            renderRow={(rowData) => <TouchableHighlight onPress={() => this.props.navigation.navigate('Single', {token: rowData.token})}>
               <View style={styles.row}>
                 <View style={{flex:5}}><Text>{rowData.token}</Text></View>
               </View>
@@ -102,10 +133,10 @@ class Tickets extends React.Component {
 }
 
 const TicketsTab = StackNavigator({
-    Listz: {
+    List: {
       screen: Tickets,
     },
-    Singlez: {
+    Single: {
       screen: Ticket
     }
 }, {
