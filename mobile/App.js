@@ -49,7 +49,44 @@ const IssuesTab = StackNavigator({
   }
 });
 
-class Tickets extends React.Component {
+const TicketsTab = StackNavigator({
+    Listz: {
+      screen: Tickets,
+    },
+    Singlez: {
+      screen: Ticket
+    }
+}, {
+    navigationOptions: {
+        headerStyle: {marginTop: Expo.Constants.statusBarHeight},
+        tabBarLabel: 'Tickets',
+        tabBarIcon: ({ tintColor }) => (
+            <FontAwesome name="th-list" size={iconSize} color={tintColor} />
+        ),
+    }
+});
+
+export class Ticket extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render () {
+    return <ActivityIndicator />;
+  }
+}
+
+export class Tickets extends React.Component {
+
+  constructor(props) {
+    super(props)
+    this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    this.state = {
+        dataSource: this.ds.cloneWithRows([]),
+        loading: true
+    };
+  }
+
   static navigationOptions = {
     tabBarLabel: 'Tickets',
     tabBarIcon: ({ tintColor }) => (
@@ -57,18 +94,26 @@ class Tickets extends React.Component {
     ),
   };
 
+  componentDidMount() {
+      let tokens = [
+          {'token': 'sampleVotingToken'}
+      ];
+      this.setState({
+          dataSource: this.ds.cloneWithRows(tokens)
+      });
+  }
+
   render() {
     return (
-      <DefaultContainer>
-        <View style={{alignItems: 'center', padding: 12}}>
-          <View style={{paddingTop: 50, paddingBottom: 30}}>
-            <FontAwesome name="ticket" size={200} color="#999" />
-          </View>
-          <View>
-            <Text style={{fontSize: 18, textAlign: 'center'}}>No active voting ticket. Please click on the voting link on this device.</Text>
-          </View>
-        </View>
-      </DefaultContainer>
+        <ListView
+            dataSource={this.state.dataSource}
+            renderRow={(rowData) => <TouchableHighlight onPress={() => this.props.navigation.navigate('Single', {issueId: rowData.id, title: rowData.title})}>
+              <View style={styles.row}>
+                <View style={{flex:5}}><Text>{rowData.token}</Text></View>
+              </View>
+            </TouchableHighlight>}
+            renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />}
+        />
     );
   }
 }
@@ -156,7 +201,7 @@ const LoggedinNav = TabNavigator({
     screen: IssuesTab,
   },
   Notifications: {
-    screen: Tickets,
+    screen: TicketsTab,
   },
   Settings: {
     screen: Settings

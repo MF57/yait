@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { StyleSheet, Text, View } from 'react-native';
+import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
 
 export default class IssueView extends React.Component {
   static navigationOptions = ({navigation}) => ({
@@ -10,8 +10,8 @@ export default class IssueView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loaded: false,
-      data: {}
+      data: {},
+      loading: true
     };
   }
 
@@ -19,8 +19,11 @@ export default class IssueView extends React.Component {
     const { params } = this.props.navigation.state;
     axios.get('/issues/' + params.issueId)
     .then((response) => {
+      console.log(response);
+      console.log(params.issueId);
       this.setState({
-        data: response.data
+        data: response.data,
+          loading: false
       })
     })
     .catch((error) => {
@@ -30,9 +33,15 @@ export default class IssueView extends React.Component {
   }
 
   render() {
+    if(this.state.loading) {
+      return <ActivityIndicator />;
+    }
     return (
       <View style={styles.container}>
-        <Text>Test - {this.state.data.description} </Text>
+        <Text>Description: {this.state.data.description} </Text>
+        <Text>Status: {this.state.data.status}</Text>
+        <Text>Score: {this.state.data.score}</Text>
+        <Text>Submitted by: {this.state.data.author.first_name} {this.state.data.author.last_name}</Text>
       </View>
     );
   }
