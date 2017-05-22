@@ -27,7 +27,6 @@ import java.util.Optional;
 public class LdapHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(LdapHandler.class);
-    private static final String BASE_GROUPS_DN = "cn=groups,cn=accounts,dc=global,dc=test";
 
     private final LdapTemplate ldapTemplate;
     private final LdapContextSource usersContext;
