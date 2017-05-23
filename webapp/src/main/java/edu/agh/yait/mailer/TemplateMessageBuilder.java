@@ -1,6 +1,16 @@
 package edu.agh.yait.mailer;
 
+import freemarker.template.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+
+import javax.mail.internet.MimeMessage;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,8 +18,35 @@ public class TemplateMessageBuilder {
 
     private String templateDirectoryPath;
 
+    @Autowired
+    @Qualifier("freemarkerMailerConfig")
+    Configuration freemarkerConfiguration;
+
+
     public TemplateMessageBuilder(String templateDirectoryPath) {
         this.templateDirectoryPath = templateDirectoryPath;
+    }
+
+
+    public MimeMessagePreparator constructMessagePreparator(String[] mailAddresses, String templateName, String subject, String senderMail, Map<String, String> dictionary){
+
+        MimeMessagePreparator preparator = new MimeMessagePreparator() {
+            public void prepare(MimeMessage mimeMessage) throws Exception {
+                MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+                helper.setSubject(subject);
+                helper.setFrom(senderMail);
+                helper.setTo(mailAddresses);
+                Map<String, Object> dictionary = new HashMap<String, Object>();
+                dictionary.put("mailType", (Object)(new String("subject: "+subject+", senderMail: "+senderMail+", mailAddresses: "+mailAddresses[0])));
+                //TODO Think about Object put into dictionary!
+
+                String text = getFreeMarkerTemplateContent(dictionary, templateName);//Use Freemarker or Velocity
+                System.out.println("Template content : "+text);
+                helper.setText(text, true);
+            }
+        };
+
+    return preparator;
     }
 
     /**
@@ -28,8 +65,22 @@ public class TemplateMessageBuilder {
         }
     }
 
+
     private String getTemplatePath(String templateName) {
         return this.templateDirectoryPath + "/" + templateName; // TODO: actual file path separator here
+    }
+
+
+    public String getFreeMarkerTemplateContent(Map<String, Object> model, String templateName){
+        StringBuffer content = new StringBuffer();
+        try{
+            content.append(FreeMarkerTemplateUtils.processTemplateIntoString(
+                    freemarkerConfiguration.getTemplate(templateName),model));
+            return content.toString();
+        }catch(Exception e){
+            System.out.println("Exception occured while processing fmtemplate:"+e.getMessage());
+        }
+        return "";
     }
 
 }
