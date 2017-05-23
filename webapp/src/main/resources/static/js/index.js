@@ -3,8 +3,7 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import {topicReducer} from "./reducers/TopicReducer";
 import {combineReducers, createStore} from "redux";
-import {Route} from "react-router";
-import {HashRouter} from "react-router-dom";
+import {HashRouter, Route} from "react-router-dom";
 import {tokenReducer} from "./reducers/TokenReducer";
 import {Provider} from "react-redux";
 
