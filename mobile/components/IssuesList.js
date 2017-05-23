@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
-import { StyleSheet, Text, View, ListView, TouchableHighlight } from 'react-native';
+import { StyleSheet, Text, View, ListView, TouchableHighlight, Button } from 'react-native';
+import {DefaultContainer} from "../App";
 
 export default class IssuesList extends React.Component {
   static navigationOptions = {
@@ -31,19 +32,22 @@ export default class IssuesList extends React.Component {
 
   render() {
     return (
+      <DefaultContainer>
         <ListView
-          dataSource={this.state.dataSource}
-          renderRow={(rowData) => <TouchableHighlight onPress={() => this.props.navigation.navigate('Single', {issueId: rowData.id, title: rowData.title})}>
-            <View style={styles.row}>
-              <View style={{flex:5}}><Text>{rowData.title}</Text></View>
-              <View style={styles.votes}>
-                <Text style={{textAlign: 'right'}}>{rowData.score}</Text>
+            dataSource={this.state.dataSource}
+            renderRow={(rowData) => <TouchableHighlight onPress={() => this.props.navigation.navigate('Single', {issueId: rowData.id, title: rowData.title})}>
+              <View style={styles.row}>
+                <View style={{flex:5}}><Text>{rowData.title}</Text></View>
+                <View style={styles.votes}>
+                  <Text style={{textAlign: 'right'}}>{rowData.score}</Text>
+                </View>
               </View>
-            </View>
-          </TouchableHighlight>}
-          renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />}
+            </TouchableHighlight>}
+            renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />}
         />
-    );
+        <Button title="Add issue" onPress={() => this.props.navigation.navigate('Submit')}/>
+      </DefaultContainer>
+  );
   }
 }
 

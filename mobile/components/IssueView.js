@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
-import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
+import {ActivityIndicator, StyleSheet, Text, View, Button} from 'react-native';
+import store from 'react-native-simple-store';
 
 export default class IssueView extends React.Component {
   static navigationOptions = ({navigation}) => ({
@@ -32,6 +33,19 @@ export default class IssueView extends React.Component {
     });
   }
 
+  vote = () => {
+    axios.post('/issues/' + this.state.data.id + '/vote', {
+        points: 1,
+    }, {
+      headers: {'Authorization': store.get('voting_token')}
+    })
+    .then((response) => {
+      console.log(response);
+    }).catch((error) => {
+      console.log(error);
+    })
+  };
+
   render() {
     if(this.state.loading) {
       return <ActivityIndicator />;
@@ -42,6 +56,7 @@ export default class IssueView extends React.Component {
         <Text>Status: {this.state.data.status}</Text>
         <Text>Score: {this.state.data.score}</Text>
         <Text>Submitted by: {this.state.data.author.first_name} {this.state.data.author.last_name}</Text>
+        <Button title="Vote!" onPress={this.vote}/>
       </View>
     );
   }
