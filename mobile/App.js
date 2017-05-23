@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   },
 });
 
-class DefaultContainer extends React.Component {
+export class DefaultContainer extends React.Component {
   render() {
     return (
       <KeyboardAwareScrollView style={styles.container} extraScrollHeight={50}>
@@ -33,8 +33,55 @@ class DefaultContainer extends React.Component {
   }
 }
 
+class IssueSubmit extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
+
+    submit = () => {
+        axios.post('/issues', {
+            title: this.state.title,
+            description: this.state.description
+        })
+        .then((response) => {
+           console.log(response);
+           this.props.navigation.navigate('Single', {issueId:response.data.id, title: response.data.title})
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+        ;
+    };
+
+    render() {
+        return (
+            <DefaultContainer>
+                 <TextInput
+                     ref="1"
+                     style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+                     onChangeText={(title) => this.setState({title})}
+                     value={this.state.title}
+                     returnKeyType="next"
+                     onSubmitEditing={() => this.focusNextField('2')}
+                     keyboardType="default"
+                 />
+                 <TextInput
+                     ref="2"
+                     style={{height: 250, borderColor: 'gray', borderWidth: 1}}
+                     onChangeText={(description) => this.setState({description})}
+                     value={this.state.description}
+                     returnKeyType="default"
+                     keyboardType="default"
+                 />
+                 <Button title="Submit" onPress={this.submit} />
+             </DefaultContainer>
+        );
+    }
+}
+
 const IssuesTab = StackNavigator({
-  List: {
+    List: {
     screen: IssuesList,
   },
   Single: { 
@@ -42,14 +89,17 @@ const IssuesTab = StackNavigator({
   },
   AddComment: {
     screen: AddComment
+  },
+  Submit: {
+  screen: IssueSubmit
   }
 }, {
-  navigationOptions: {
-    headerStyle: {marginTop: Expo.Constants.statusBarHeight},
-    tabBarLabel: 'Issues',
-    tabBarIcon: ({ tintColor }) => (
+    navigationOptions: {
+      headerStyle: {marginTop: Expo.Constants.statusBarHeight},
+      tabBarLabel: 'Issues',
+      tabBarIcon: ({ tintColor }) => (
       <FontAwesome name="th-list" size={iconSize} color={tintColor} />
-    ),
+    )
   }
 });
 
@@ -64,12 +114,10 @@ class Ticket extends React.Component {
 
   componentDidMount() {
     const { params } = this.props.navigation.state;
-    axios.get('/token/', {
-        headers: {'Authorization': this.props.navigation.state},
+    axios.get('/token', {
+        headers: {'Authorization': params.token},
     })
       .then((response) => {
-          console.log(response);
-          console.log(params.token);
           this.setState({
               data: response.data,
               loading: false
