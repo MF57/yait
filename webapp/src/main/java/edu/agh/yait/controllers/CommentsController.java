@@ -27,8 +27,9 @@ public class CommentsController {
     private IssueRepository issueRepository;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public Object getComments(){
-        return commentRepository.findAll();
+    public Object getComments(@PathVariable("issueId") String issueId)
+    {
+        return commentRepository.findAllByIssueId(Integer.parseInt(issueId));
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
