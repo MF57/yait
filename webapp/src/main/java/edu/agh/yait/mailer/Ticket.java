@@ -5,14 +5,14 @@ import java.util.Date;
 public class Ticket {
     // TODO: use persistence model
 
-    private int id;
+    private String identifier = "1234567890";
     private Date expirationDate;
     private Integer points;
     private String hash;
 
 
-    public int getId() {
-        return id;
+    public int getIdentifier() {
+        return identifier;
     }
 
     public Date getExpirationDate() {
