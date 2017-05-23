@@ -42,6 +42,13 @@ public class Issue {
     @JoinColumn(name = "issueId")
     private List<Comment> comments;
 
+    public void changeStatus() {
+        if (status == null) {
+            return;
+        }
+        status = status.getAnotherStatus();
+    }
+
     public Integer getId() {
         return id;
     }
