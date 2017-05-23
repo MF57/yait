@@ -6,6 +6,7 @@ import edu.agh.yait.persistence.model.Comment;
 import edu.agh.yait.persistence.model.Issue;
 import edu.agh.yait.persistence.repositories.CommentRepository;
 import edu.agh.yait.persistence.repositories.IssueRepository;
+import edu.agh.yait.utils.CustomErrorObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
@@ -41,7 +42,7 @@ public class CommentsController {
 
         Issue issue = issueRepository.findOne(Integer.parseInt(issueId));
         if(issue == null) {
-            return ResponseEntity.badRequest().body("no issue error");
+            return ResponseEntity.badRequest().body(new CustomErrorObject("Issue, id: " + issueId +  ", does not exists"));
         }
 
         Comment comment = new Comment();

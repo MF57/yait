@@ -21,7 +21,7 @@ public class IssueController {
 
     @RequestMapping(method = RequestMethod.GET)
     public Object getIssues(){
-        return "list of issues";
+        return issueRepository.findAll();
     }
 
     @RequestMapping(method = RequestMethod.POST)
