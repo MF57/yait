@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { StyleSheet, Text, View, ListView, TouchableHighlight } from 'react-native';
+import { StyleSheet, Text, View, ListView, TouchableHighlight, ActivityIndicator } from 'react-native';
 
 export default class IssuesList extends React.Component {
   static navigationOptions = {
@@ -11,7 +11,6 @@ export default class IssuesList extends React.Component {
     super(props);
     this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
-      dataSource: this.ds.cloneWithRows([]),
       loading: true
     };
   }
@@ -20,6 +19,7 @@ export default class IssuesList extends React.Component {
     axios.get('/issues')
     .then((response) => {
       this.setState({
+        loading: false,
         dataSource: this.ds.cloneWithRows(response.data)
       })
     })
@@ -30,6 +30,9 @@ export default class IssuesList extends React.Component {
   }
 
   render() {
+    if(this.state.loading) {
+      return <ActivityIndicator />;
+    }
     return (
         <ListView
           dataSource={this.state.dataSource}

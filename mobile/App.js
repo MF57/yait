@@ -9,6 +9,7 @@ import axios from 'axios';
 
 import IssuesList from './components/IssuesList';
 import IssueView from './components/IssueView';
+import AddComment from './components/AddComment';
 
 
 const iconSize = 24;
@@ -38,6 +39,9 @@ const IssuesTab = StackNavigator({
   },
   Single: { 
     screen: IssueView
+  },
+  AddComment: {
+    screen: AddComment
   }
 }, {
   navigationOptions: {
@@ -250,7 +254,9 @@ const LoggedinNav = TabNavigator({
 export default class NavWrapper extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      loading: true
+    };
   }
 
   componentWillMount() {
@@ -260,9 +266,9 @@ export default class NavWrapper extends React.Component {
         (loginToken) => {
           if(loginToken) {
             axios.defaults.headers.common['Authorization'] = loginToken;
-            this.setState({loggedIn: true})
+            this.setState({loggedIn: true, loading: false})
           } else {
-            this.setState({loggedIn: false})
+            this.setState({loggedIn: false, loading: false})
           }
         });
   }
@@ -278,6 +284,9 @@ export default class NavWrapper extends React.Component {
   }
 
   render() {
+    if(this.state.loading) {
+      return <DefaultContainer><ActivityIndicator /></DefaultContainer>;
+    }
     if(this.state.loggedIn) {
       return <LoggedinNav screenProps={{logout: this.logout}} />;
     } else {
