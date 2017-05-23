@@ -21,14 +21,6 @@ public class YaitMailerTests {
     @Test
     public void testGrantingPoints() {
 
-        TicketManager ticketManager = new TicketManager();
-        List<String> addresses = new ArrayList<>();
-        addresses.add("john@mail.com");
-        addresses.add("mike@example.com");
-        Date date = new Date();
-        Set<Ticket> tickets = ticketManager.grantPoints(addresses, 10, date);
-        assertEquals(2, tickets.size());
-
     }
 
 }

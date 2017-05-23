@@ -1,33 +1,30 @@
 package edu.agh.yait.mailer;
 
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class TicketManager {
+
+    private TicketMessageBuilder ticketMessageBuilder;
+
+    public TicketManager() {
+        this.ticketMessageBuilder = new TicketMessageBuilder("You've been granted ticket to vote", "/path/to/template/dir");
+    }
 
     /**
      * Constructs email messages to {@code mailAddresses} informing about assigned points, their expiration date
      * and containing URL to access the website.
-     * @param mailAddresses
-     * @param points
-     * @param expirationDate
+     * @param addressedTickets email address to Ticket mapping
      */
-    public Set<Ticket> grantPoints(List<String> mailAddresses, int points, Date expirationDate) {
-        // TODO: url base for ticket addresses ??
+    public void sendTickets(Map<String, Ticket> addressedTickets) {
         Set<Ticket> tickets = new HashSet<>();
-        for (String address : mailAddresses) {
-            // create ticket with proper values
-            // create token for ticket
-            // create message from tokens mail template
-            // send mail
-            // return ticket object
-            Ticket ticket = new Ticket();
-            tickets.add(ticket);
+        for (Map.Entry<String, Ticket> entry : addressedTickets.entrySet()) {
+            String email = entry.getKey();
+            Ticket ticket = entry.getValue();
+            // TODO: sendTicket should be creating mail message objects that can be sent by Mailer
+            this.ticketMessageBuilder.sendTicket(email, ticket.getPoints(), ticket.getExpirationDate());
+            // send mail using mailer
         }
-        return tickets;
     }
 
     /**
