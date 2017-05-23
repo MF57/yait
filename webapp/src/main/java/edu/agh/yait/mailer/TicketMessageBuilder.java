@@ -17,8 +17,9 @@ public class TicketMessageBuilder extends TemplateMessageBuilder {
         return subject;
     }
 
-    void sendTicket(String mailAddress, int points, Date expirationDate) {
+    void sendTicket(String mailAddress, String url, int points, Date expirationDate) {
         Map<String, String> dict = new HashMap<>();
+        dict.put("url", url);
         dict.put("points", String.valueOf(points));
         dict.put("expirationDate", expirationDate.toString());
         this.constructMessage(mailAddress, "ticketTemplate", this.getSubject(), dict);

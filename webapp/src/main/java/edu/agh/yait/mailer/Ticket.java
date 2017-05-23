@@ -10,8 +10,7 @@ public class Ticket {
     private Integer points;
     private String hash;
 
-
-    public int getIdentifier() {
+    public String getIdentifier() {
         return identifier;
     }
 
@@ -27,13 +26,9 @@ public class Ticket {
         return hash;
     }
 
-    public void setHash(String hash) {
-        this.hash = hash;
-    }
-
-    public String getTicketURL() {
+    public static String getTicketURL(String token) {
         // TODO: url base for ticket addresses ??
-        return "http://www.vote.iiet.pl/token/" + this.getHash() + "/";
+        return "http://www.vote.iiet.pl/token/" + token + "/";
     }
 
 

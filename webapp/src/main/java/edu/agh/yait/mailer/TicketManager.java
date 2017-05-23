@@ -20,12 +20,12 @@ public class TicketManager {
      * @param addressedTickets email address to Ticket mapping
      */
     public void sendTickets(Map<String, Ticket> addressedTickets) {
-        Set<Ticket> tickets = new HashSet<>();
         for (Map.Entry<String, Ticket> entry : addressedTickets.entrySet()) {
             String email = entry.getKey();
             Ticket ticket = entry.getValue();
             // TODO: sendTicket should be creating mail message objects that can be sent by Mailer
-            this.ticketMessageBuilder.sendTicket(email, ticket.getPoints(), ticket.getExpirationDate());
+            String token = this.generateToken(ticket);
+            this.ticketMessageBuilder.sendTicket(email, Ticket.getTicketURL(token), ticket.getPoints(), ticket.getExpirationDate());
             // send mail using mailer
         }
     }
@@ -44,7 +44,7 @@ public class TicketManager {
     }
 
     public String generateToken(Ticket ticket) {
-        String key = "secret";
+        String key = "secret";  // TODO: inject secret key
         Map<String, Object> claims = new HashMap<>();
         claims.put("ticket", ticket.getIdentifier());
         String token = null;
