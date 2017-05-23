@@ -6,7 +6,6 @@ import edu.agh.yait.persistence.model.IssueStatus;
 import edu.agh.yait.persistence.repositories.IssueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +35,7 @@ public class IssueController {
         issue.setTitle(issueDTO.getTitle());
         issue.setDescription(issueDTO.getDescription());
         issue.setPoints(0);
-        issue.setStatus(IssueStatus.Opened);
+        issue.setStatus(IssueStatus.OPEN);
 
         return issueRepository.save(issue);
     }

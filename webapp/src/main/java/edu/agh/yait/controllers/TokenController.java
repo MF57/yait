@@ -23,7 +23,7 @@ public class TokenController {
             return result.getAllErrors();
         }
 
-        Ticket ticket = ticketRepository.findByHash(hash).get(0);
+        Ticket ticket = ticketRepository.findByHash(hash);
 
         if(ticket == null){
             return ticket;
