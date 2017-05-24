@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 @Service("senderService")
 public class SenderServiceImpl implements SenderService {
 
+
     @Autowired
     JavaMailSender mailSender;
 

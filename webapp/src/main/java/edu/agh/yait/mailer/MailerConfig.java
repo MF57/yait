@@ -39,14 +39,6 @@ public class MailerConfig {
         return mailSender;
     }
 
-    /*
-     * FreeMarker configuration.
-     */
-    @Bean(name = "freemarkerMailerConfig")
-    public FreeMarkerConfigurationFactoryBean getFreeMarkerConfiguration() {
-        FreeMarkerConfigurationFactoryBean bean = new FreeMarkerConfigurationFactoryBean();
-        bean.setTemplateLoaderPath("/fmtemplates/");
-        return bean;
-    }
+
 
 }

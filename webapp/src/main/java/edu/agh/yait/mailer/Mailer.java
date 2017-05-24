@@ -6,9 +6,11 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 
+@Service("mailerService")
 public class Mailer {
 
 /*
@@ -21,7 +23,6 @@ public class Mailer {
 
 * */
 
-
     public void sendMail(RecipientInfo recipientInfo, String templateDirectoryPath, String templateName, String subject, String senderMail) {
 
         //TODO Think about getting context from webapp
@@ -33,8 +34,10 @@ public class Mailer {
         MimeMessagePreparator preparator = templateMessageBuilder
                 .constructMessagePreparator(recipientInfo.getMailAddresses(), templateName, subject, senderMail, new HashMap<String, String>());
 
+
         SenderService senderService = (SenderService) context.getBean("senderService");
         senderService.sendMail(preparator);
+
         ((AbstractApplicationContext) context).close();
     }
 

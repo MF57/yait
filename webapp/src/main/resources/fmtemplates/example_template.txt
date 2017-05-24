@@ -1,6 +1,6 @@
 <html>
     <body>
-        <h3>Dear ${emailType.recipientInfo.contactName}, I am writing to announce that we can send mails via gmail smtp server and say: .</h3>
+        <h3>Dear ${mailType.recipientInfo.contactName}, I am writing to announce that we can send mails via gmail smtp server and say: .</h3>
 
         <div>
             Hello!
