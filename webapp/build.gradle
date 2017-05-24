@@ -23,6 +23,7 @@ repositories {
 
 
 dependencies {
+	compile project(':ldap')
 	//compile('org.springframework.boot:spring-boot-starter-security')
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('com.h2database:h2')
