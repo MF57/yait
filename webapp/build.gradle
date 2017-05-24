@@ -26,5 +26,7 @@ dependencies {
 	compile project(':ldap')
 	//compile('org.springframework.boot:spring-boot-starter-security')
 	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('com.h2database:h2')
+	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
