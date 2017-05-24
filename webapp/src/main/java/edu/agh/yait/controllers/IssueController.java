@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/issue")
+@RequestMapping("/api/v1/issues")
 public class IssueController {
 
     @Autowired

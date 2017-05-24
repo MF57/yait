@@ -17,7 +17,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/issue/{issueId}/comment")
+@RequestMapping("/api/v1/issues/{issueId}/comments")
 public class CommentsController {
 
     @Autowired
