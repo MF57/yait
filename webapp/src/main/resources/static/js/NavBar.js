@@ -10,9 +10,6 @@ class NavBar extends Component {
                         <button type="button" className="navbar-toggle" data-toggle="collapse"
                                 data-target="#bs-example-navbar-collapse-1">
                             <span className="sr-only">Toggle navigation</span>
-                            <span className="icon-bar"></span>
-                            <span className="icon-bar"></span>
-                            <span className="icon-bar"></span>
                         </button>
                         <a className="navbar-brand" href="#">Yet Another Issue Tracker</a>
                     </div>
