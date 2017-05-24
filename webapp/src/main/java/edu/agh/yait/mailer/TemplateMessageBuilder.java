@@ -80,12 +80,10 @@ public class TemplateMessageBuilder {
     public String getFreeMarkerTemplateContent(Map<String, Object> model, String templateName){
         StringBuffer content = new StringBuffer();
         try{
-            System.out.println("DUPA1!!!!!!!!!!!!!!!!");
             System.out.println(freemarkerConfiguration.toString());
 
             content.append(FreeMarkerTemplateUtils.processTemplateIntoString(
                     freemarkerConfiguration.getTemplate(templateName),model));
-            System.out.println("DUPA2!!!!!!!!!!!!!!!!");
             return content.toString();
         }catch(Exception e){
             System.out.println("Exception occured while processing fmtemplate:"+e.getMessage());
