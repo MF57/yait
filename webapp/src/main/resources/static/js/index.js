@@ -3,9 +3,9 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import {topicReducer} from "./reducers/TopicReducer";
 import {combineReducers, createStore} from "redux";
-import {HashRouter, Route} from "react-router-dom";
 import {tokenReducer} from "./reducers/TokenReducer";
 import {Provider} from "react-redux";
+import {HashRouter} from "react-router-dom";
 
 export const preloadState = {
     topics: [
@@ -29,7 +29,7 @@ const store = createStore(rootReducer, preloadState);
 ReactDOM.render(
     <Provider store={store}>
         <HashRouter>
-            <Route path="/:token?" component={App}/>
+            <App />
         </HashRouter>
     </Provider>,
     document.getElementById('root')

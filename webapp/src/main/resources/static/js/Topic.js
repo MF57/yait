@@ -6,6 +6,7 @@ let createHandlers = function (dispatch) {
     let onClickUpvote = function (id, e) {
         e.preventDefault();
         e.stopPropagation();
+        
         dispatch(upvoteTopic(id));
     };
     return {

@@ -1,18 +1,12 @@
 import React from "react";
-import List from "./List";
 import NavBar from "./NavBar";
 import {connect} from "react-redux";
-import InfoPanel from "./InfoPanel";
-import {registerTokenInStore} from "./actions/TokenActions";
+import {Route, Switch} from "react-router";
+import Login from "./Login";
+import Main from "./Main";
+import {withRouter} from "react-router-dom";
 
 class App extends React.Component {
-
-    componentWillMount() {
-        let token = this.props.match.params.token;
-        if (token !== undefined) {
-            this.props.dispatch(registerTokenInStore(token))
-        }
-    }
 
     constructor(props) {
         super(props);
@@ -22,18 +16,13 @@ class App extends React.Component {
         return (
             <div>
                 <NavBar/>
-                <div className="container">
-                    <InfoPanel/>
-                    <List topics={this.props.topics}/>
-                </div>
+                <Switch>
+                    <Route path='/login' component={Login}/>
+                    <Route path='/:token?' component={Main}/>
+                </Switch>
             </div>
         )
     }
 }
-;
 
-function mapStateToProps(state) {
-    return {topics: state.topics}
-};
-
-export default connect(mapStateToProps)(App);
+export default withRouter(connect()(App));

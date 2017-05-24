@@ -7,7 +7,7 @@ export function topicReducer(state, action) {
         return preloadState
     }
 
-    switch (action.type){
+    switch (action.type) {
         case UPVOTE_TOPIC: {
             return upvoteTopic(action.id, state);
         }
@@ -15,11 +15,11 @@ export function topicReducer(state, action) {
     return state;
 };
 
-let upvoteTopic = function(id, topics) {
+let upvoteTopic = function (id, topics) {
     let newTopics = [];
-    for(let i = 0; i < topics.length; i++) {
-        if(topics[i].id == id){
-            newTopics.push(Object.assign({}, topics[i], {score: topics[i].score+1}));
+    for (let i = 0; i < topics.length; i++) {
+        if (topics[i].id === id) {
+            newTopics.push(Object.assign({}, topics[i], {score: topics[i].score + 1}));
         } else {
             newTopics.push(topics[i]);
         }
