@@ -3,3 +3,4 @@ ldap.usersDn =
 ldap.groupsDn =
 ldap.user =
 ldap.password =
+ldap.timeout =
