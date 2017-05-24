@@ -5,6 +5,7 @@ import {Route, Switch} from "react-router";
 import Login from "./Login";
 import Main from "./Main";
 import {withRouter} from "react-router-dom";
+import Admin from "./Admin";
 
 class App extends React.Component {
 
@@ -18,6 +19,7 @@ class App extends React.Component {
                 <NavBar/>
                 <Switch>
                     <Route path='/login' component={Login}/>
+                    <Route path='/admin' component={Admin}/>
                     <Route path='/:token?' component={Main}/>
                 </Switch>
             </div>
