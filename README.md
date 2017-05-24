@@ -14,3 +14,10 @@
 2. `npm run build`
 3. Simply Run 'YaitApplication' class
 4. Go to http://localhost:8080
+
+## LDAP SSL
+```
+openssl x509 -in <(openssl s_client -connect <host>:<port> -prexit 2>/dev/null) -out ~/example.crt
+sudo keytool -importcert -file ~/example.crt -alias example -keystore $(/usr/libexec/java_home)/jre/lib/security/cacerts -storepass changeit
+
+```
