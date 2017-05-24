@@ -9,8 +9,10 @@ import {Provider} from "react-redux";
 
 export const preloadState = {
     topics: [
-        {name: "TOPIC1", status: "DONE", id: 1, score: 0},
-        {name: "TOPIC2", status: "DONE", id: 2, score: 0}
+        {name: "TOPIC1", status: "DONE", id: 1, score: 0, author: "123", description: "Topic 1 description"},
+        {name: "TOPIC2", status: "DONE", id: 2, score: 0, author: "123", description: "Topic 2 description"},
+        {name: "TOPIC3", status: "DONE", id: 3, score: 0, author: "123", description: "Topic 3 description"},
+        {name: "TOPIC4", status: "DONE", id: 4, score: 0, author: "123", description: "Topic 4 description"}
     ],
     token: {
         number: "TOKEN_TEST",
