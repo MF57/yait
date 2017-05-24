@@ -1,4 +1,4 @@
-import React,{Component} from 'react';
+import React, {Component} from "react";
 
 class NavBar extends Component {
 
@@ -15,13 +15,6 @@ class NavBar extends Component {
                             <span className="icon-bar"></span>
                         </button>
                         <a className="navbar-brand" href="#">Yet Another Issue Tracker</a>
-                    </div>
-                    <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                        <ul className="nav navbar-nav">
-                            <li>
-                                <a href="#">About</a>
-                            </li>
-                        </ul>
                     </div>
                 </div>
             </nav>
