@@ -7,7 +7,6 @@ let createHandlers = function (dispatch) {
         e.preventDefault();
         e.stopPropagation();
 
-        console.log(e);
         let newIssue = {
             title: this.inputs.title,
             description: this.inputs.description
@@ -16,12 +15,10 @@ let createHandlers = function (dispatch) {
 
         axios.post('/api/v1/issues', newIssue)
             .then(function (response) {
-                console.log(response);
                 this.setState({success: true});
                 this.setState({error: false});
             })
             .catch(function (error) {
-                console.log(error);
                 this.setState({error: true});
                 this.setState({success: false});
             }.bind(this))
