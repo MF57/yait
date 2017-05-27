@@ -34,7 +34,7 @@ class Topic extends Component {
                 <div className="thumbnail">
                     <img src="http://placehold.it/800x500" alt=""/>
                     <div className="caption">
-                        <h3>{this.props.name}</h3>
+                        <h3>{this.props.title}</h3>
                         <p>{this.props.status}</p>
                         <p>{this.props.score}</p>
                         <p>

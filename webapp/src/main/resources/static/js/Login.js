@@ -31,7 +31,6 @@ class Login extends Component {
                                            placeholder="password"/>
                                 </div>
 
-
                                 <div style={{marginTop: '10px'}} className="form-group">
                                     <div className="col-sm-12 controls">
                                         <a id="btn-login" href="#" className="btn btn-success">Login </a>

@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import Topic from "./Topic";
 import {connect} from "react-redux";
-import TopicModal from "./TopicModal"
+import TopicModal from "./TopicModal";
 
 class List extends Component {
 
@@ -36,7 +36,8 @@ class List extends Component {
 
     topicList() {
         return this.props.topics.map((el,i)=>
-            <Topic name={el.name} status={el.status} id={el.id} score={el.score} author={el.author} description={el.description} key={i} onClickTopic={this.open.bind(this)}/>
+            <Topic title={el.title} name={el.name} status={el.status} id={el.id} score={el.score} author={el.author}
+                   description={el.description} key={i} onClickTopic={this.open.bind(this)}/>
         )
     }
 

@@ -1,6 +1,7 @@
 import {connect} from "react-redux";
 import React, {Component} from "react";
 import * as axios from "axios";
+import TopicCreator from "./TopicCreator";
 
 let createHandlers = function (dispatch) {
     let createTopic = function (e) {
@@ -26,7 +27,8 @@ let createHandlers = function (dispatch) {
 };
 
 
-class Admin extends Component {
+class Admin
+    extends Component {
 
 
     constructor(props) {
@@ -37,9 +39,28 @@ class Admin extends Component {
     render() {
         return (
             <div className="container">
-                ADMIN PAGE <br/>
-                <a href="#" onClick={this.handlers.createTopic.bind(this)} className="btn btn-primary">CREATE TOPIC</a>
+                <div className="row">
+                    <div className=" col-md-6">
+                        <div className="panel panel-default">
+                            <div className="panel-heading">New topic</div>
+                            <div className="panel-body">
+                                <TopicCreator />
+                            </div>
+                        </div>
+                    </div>
+                    <div className=" col-md-6">
+                        <div className="panel panel-default">
+                            <div className="panel-body">Create test topic</div>
+                            <div className="panel-footer">
+                                <a href="#" onClick={this.handlers.createTopic.bind(this)} className="btn btn-primary">CREATE
+                                    TEST
+                                    TOPIC</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
         )
     }
 }
