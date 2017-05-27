@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
-import {Modal, Button} from "react-bootstrap";
+import {Button, Modal} from "react-bootstrap";
 import Comment from "./Comment";
 import CommentForm from "./CommentForm";
 
@@ -35,7 +35,7 @@ class TopicModal extends Component {
               <h2>[{this.props.topic.status}]{this.props.topic.name}</h2>
               <h4>Topic description: {this.props.topic.description} </h4>
               <p>Score: {this.props.topic.score}</p>
-              <div class="comments-list">
+                <div className="comments-list">
                 {commentList}
               </div>
                   <CommentForm />
