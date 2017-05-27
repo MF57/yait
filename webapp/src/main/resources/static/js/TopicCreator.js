@@ -13,13 +13,18 @@ let createHandlers = function (dispatch) {
             description: this.inputs.description
         };
 
-        axios.post('/api/v1/issues', newIssue,)
+
+        axios.post('/api/v1/issues', newIssue)
             .then(function (response) {
                 console.log(response);
+                this.setState({success: true});
+                this.setState({error: false});
             })
             .catch(function (error) {
                 console.log(error);
-            });
+                this.setState({error: true});
+                this.setState({success: false});
+            }.bind(this))
 
     };
     return {
@@ -33,6 +38,7 @@ class TopicCreator extends Component {
         super(props);
         this.handlers = createHandlers(this.props.dispatch);
         this.inputs = {};
+        this.state = {};
         this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
         this.handleTitleChange = this.handleTitleChange.bind(this)
     }
@@ -48,6 +54,20 @@ class TopicCreator extends Component {
     render() {
         return (
             <div>
+                {
+                    this.state.error === true ?
+                        <div className="alert alert-danger" id="errorTopicAdd">
+                            <strong>Error!</strong> There was a problem while adding topic
+                        </div> : null
+
+                }
+                {
+                    this.state.success === true ?
+                        <div className="alert alert-success" id="successTopicAdd">
+                            <strong>Success!</strong> Topic added successfully
+                        </div> : null
+                }
+
                 <div className="row form-group">
                     <div className="col-md-10 col-md-offset-1">
                         <input type="text" onChange={this.handleTitleChange} className="form-control" placeholder="Title"
