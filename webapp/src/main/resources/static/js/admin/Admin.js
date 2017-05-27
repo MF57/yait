@@ -2,6 +2,7 @@ import {connect} from "react-redux";
 import React, {Component} from "react";
 import * as axios from "axios";
 import TopicCreator from "./TopicCreator";
+import TopicManager from "./TopicManager";
 
 let createHandlers = function (dispatch) {
     let createTopic = function (e) {
@@ -40,7 +41,7 @@ class Admin
         return (
             <div className="container">
                 <div className="row">
-                    <div className=" col-md-6">
+                    <div className="col-md-6">
                         <div className="panel panel-default">
                             <div className="panel-heading">New topic</div>
                             <div className="panel-body">
@@ -48,13 +49,23 @@ class Admin
                             </div>
                         </div>
                     </div>
-                    <div className=" col-md-6">
+                    <div className="col-md-6">
                         <div className="panel panel-default">
                             <div className="panel-body">Create test topic</div>
                             <div className="panel-footer">
                                 <a href="#" onClick={this.handlers.createTopic.bind(this)} className="btn btn-primary">CREATE
                                     TEST
                                     TOPIC</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md-12">
+                        <div className="panel panel-default">
+                            <div className="panel-heading">Topic list</div>
+                            <div className="panel-body">
+                                <TopicManager />
                             </div>
                         </div>
                     </div>

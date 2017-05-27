@@ -17,7 +17,7 @@ let createHandlers = function (dispatch) {
             .then(function (response) {
                 this.setState({success: true});
                 this.setState({error: false});
-            })
+            }.bind(this))
             .catch(function (error) {
                 this.setState({error: true});
                 this.setState({success: false});

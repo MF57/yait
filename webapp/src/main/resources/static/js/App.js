@@ -5,7 +5,7 @@ import {Route, Switch} from "react-router";
 import Login from "./Login";
 import Main from "./Main";
 import {withRouter} from "react-router-dom";
-import Admin from "./Admin";
+import Admin from "./admin/Admin";
 
 class App extends React.Component {
 
