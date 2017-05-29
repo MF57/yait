@@ -17,13 +17,13 @@ public class Issue {
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    private Date creationDate;
+    private Date created_at;
 
 //    @Column
 //    private User creator;
 
     @Column
-    private Integer points;
+    private Integer score;
 
     @Column
     private String title;
@@ -50,20 +50,20 @@ public class Issue {
         this.id = id;
     }
 
-    public Date getCreationDate() {
-        return creationDate;
+    public Date getCreated_at() {
+        return created_at;
     }
 
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
+    public void setCreated_at(Date created_at) {
+        this.created_at = created_at;
     }
 
-    public Integer getPoints() {
-        return points;
+    public Integer getScore() {
+        return score;
     }
 
-    public void setPoints(Integer points) {
-        this.points = points;
+    public void setScore(Integer score) {
+        this.score = score;
     }
 
     public String getTitle() {

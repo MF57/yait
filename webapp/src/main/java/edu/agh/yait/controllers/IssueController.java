@@ -34,7 +34,7 @@ public class IssueController {
         Issue issue = new Issue();
         issue.setTitle(issueDTO.getTitle());
         issue.setDescription(issueDTO.getDescription());
-        issue.setPoints(0);
+        issue.setScore(0);
         issue.setStatus(IssueStatus.OPEN);
 
         return issueRepository.save(issue);
