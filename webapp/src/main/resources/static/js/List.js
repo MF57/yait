@@ -2,6 +2,8 @@ import React, {Component} from "react";
 import Topic from "./Topic";
 import {connect} from "react-redux";
 import TopicModal from "./TopicModal";
+import {replaceComments} from "./actions/CommentActions";
+import * as axios from "axios";
 
 class List extends Component {
 
@@ -9,35 +11,44 @@ class List extends Component {
         super(props);
         this.state = {
           showModal: false,
-          topic: {}};
+          topic: {}
+        };
+
     }
 
     renderTopics() {
         let topicList = this.topicList();
         return (
-            <div className="row text-center">
+            <div className="row">
                 {topicList}
-                <TopicModal showModal={this.state.showModal} onHide={this.close.bind(this)} onClick={this.close.bind(this)} topic={this.state.topic}/>
+                <TopicModal showModal={this.state.showModal} onHide={this.close.bind(this)} onClick={this.close.bind(this)} topic={this.state.topic} comments={this.props.comments}/>
             </div>
         )
     }
 
     close() {
-      this.setState({
-        showModal: false
-       });
+      this.setState({showModal: false});
     }
 
-    open(topic) {
-      this.setState({
-        showModal: true,
-        topic: topic });
+    open(topic, dispatch) {
+      axios.get('/api/v1/issues/' + topic.id + '/comments')
+          .then(function (response) {
+              dispatch(replaceComments(response.data))
+              console.log(response);
+          })
+          .catch(function (error) {
+              console.log(error);
+          });
+          this.setState({
+            showModal: true,
+            topic: topic
+          });
     }
 
     topicList() {
         return this.props.topics.map((el,i)=>
-            <Topic title={el.title} name={el.name} status={el.status} id={el.id} score={el.score} author={el.author}
-                   description={el.description} key={i} onClickTopic={this.open.bind(this)}/>
+            <Topic title={el.title} status={el.status} id={el.id} points={el.points} author={el.author}
+                   description={el.description} date={el.creationDate} key={i} onClickTopic={this.open.bind(this)}/>
         )
     }
 
@@ -46,4 +57,8 @@ class List extends Component {
     }
 }
 
-export default connect()(List);
+function mapStateToProps(state) {
+    return {comments: state.comments}
+}
+
+export default connect(mapStateToProps)(List);

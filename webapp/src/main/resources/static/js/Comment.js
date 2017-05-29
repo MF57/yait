@@ -11,11 +11,8 @@ class Comment extends Component {
         return (
           <div className="media">
             <p className="pull-right">
-              <small>5 days ago</small>
+              <small>{new Date(this.props.date).toLocaleString()}</small>
             </p>
-            <a className="media-left" href="#">
-              <img src="http://lorempixel.com/40/40/people/1/"/>
-            </a>
             <div className="media-body">
               <h4 className="media-heading user_name">{this.props.author}</h4>
               {this.props.description}

@@ -1,9 +1,10 @@
 import {REPLACE_TOPICS, UPVOTE_TOPIC} from "./types/TopicActionTypes";
 
-export function upvoteTopic(id) {
+export function upvoteTopic(id, points) {
     return {
         type: UPVOTE_TOPIC,
-        id: id
+        id: id,
+        points: points
     };
 }
 

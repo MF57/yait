@@ -3,41 +3,38 @@ import {connect} from "react-redux";
 import {Button, Modal} from "react-bootstrap";
 import Comment from "./Comment";
 import CommentForm from "./CommentForm";
+import Infinite from 'react-infinite';
+import {upvoteTopic} from "./actions/TopicActions";
+import {addCOmment} from "./actions/CommentActions";
 
 class TopicModal extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            comments: [
-                {author: "Jan Nowak", text: "Sample comment"},
-                {author: "Jan Kowalski", text: "Sample comment 2"}
-            ]
-        }
-    }
+
+    };
 
     commentList() {
-        return this.state.comments.map((el, i) =>
-            <Comment author={el.author} description={el.text} key={i}/>
+        return this.props.comments.map((el, i) =>
+            <Comment author={el.author} description={el.comment} date={el.creationDate} key={i}/>
         )
-    }
+    };
 
 
     render() {
-        let commentList = this.commentList();
+          let commentList = this.commentList();
         return (
             <Modal show={this.props.showModal} onHide={this.props.onHide}>
-                <Modal.Header closeButton>
-                    <Modal.Title> by {this.props.topic.author}</Modal.Title>
-                </Modal.Header>
                 <Modal.Body>
-                    <h2>[{this.props.topic.status}]{this.props.topic.name}</h2>
-                    <h4>Topic description: {this.props.topic.description} </h4>
-                    <p>Score: {this.props.topic.score}</p>
-                    <div className="comments-list">
-                        {commentList}
-                    </div>
-                    <CommentForm />
+                    <h2>[{this.props.topic.points}] {this.props.topic.title}</h2>
+                    <p style={{color: "grey"}}>wysłane  {new Date(this.props.topic.date).toLocaleString()} przez {this.props.topic.author}</p>
+                    <p>{this.props.topic.description} </p>
+                          <Infinite containerHeight={400} elementHeight={45}>
+                          {commentList}
+                        </Infinite>
+                      <div className="row">
+                        <CommentForm id={this.props.topic.id}/>
+                      </div>
 
                 </Modal.Body>
                 <Modal.Footer>
@@ -45,8 +42,7 @@ class TopicModal extends Component {
                 </Modal.Footer>
             </Modal>
         )
-    }
+      }
 }
-
 
 export default connect()(TopicModal);

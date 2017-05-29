@@ -8,7 +8,7 @@ import * as axios from "axios";
 
 class Main extends Component {
 
-    componentWillMount() {
+  componentWillMount() {
         let dispatch = this.props.dispatch;
 
         let token = this.props.match.params.token;
