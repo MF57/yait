@@ -5,16 +5,17 @@ package edu.agh.yait.mailer;
  */
 public class RecipientInfo {
 
-    private String contactName;
+    private String contactName = "";
 
     private String[] mailAddresses;
 
-    public RecipientInfo(String contactName, String[] emailAddresses){
-        this.contactName = contactName;
+    public RecipientInfo(String[] emailAddresses){
         this.mailAddresses = emailAddresses;
     }
 
-    public String getContactName(){
+    public void setContactName(String contactName){ this.contactName = contactName;}
+
+    public String getContactName() {
         return contactName;
     }
 

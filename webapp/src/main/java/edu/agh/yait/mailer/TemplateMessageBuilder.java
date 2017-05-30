@@ -1,6 +1,7 @@
 package edu.agh.yait.mailer;
 
 import freemarker.template.Configuration;
+import freemarker.template.Template;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -23,30 +24,29 @@ public class TemplateMessageBuilder {
 
     Configuration freemarkerConfiguration = ConfigurationUtil.getConfiguration();
 
-    public TemplateMessageBuilder(String templateDirectoryPath) {
+    public TemplateMessageBuilder(String templateDirectoryPath){
         this.templateDirectoryPath = templateDirectoryPath;
     }
 
 
-    public MimeMessagePreparator constructMessagePreparator(String[] mailAddresses, String templateName, String subject, String senderMail, Map<String, String> dictionary){
+    public MimeMessagePreparator constructMessagePreparator(String[] mailAddresses, String templateName, Map<String, String> dictionary){
 
         MimeMessagePreparator preparator = new MimeMessagePreparator() {
             public void prepare(MimeMessage mimeMessage) throws Exception {
                 MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-                helper.setSubject(subject);
-                helper.setFrom(senderMail);
                 helper.setTo(mailAddresses);
+
                 Map<String, Object> dictionary = new HashMap<String, Object>();
-                dictionary.put("mailType", (Object)(new String("subject: "+subject+", senderMail: "+senderMail+", mailAddresses: "+mailAddresses[0])));
-
-
-                Map<String, Object> model = new HashMap<String, Object>();
-                RecipientInfo recipientInfo = new RecipientInfo(senderMail, mailAddresses);
-                MailType mailType = new MailType("42561", "whatever", recipientInfo);
-                model.put("mailType", mailType);
+                RecipientInfo recipientInfo = new RecipientInfo(mailAddresses);
+                MailType mailType = new MailType(recipientInfo);
+                dictionary.put("mailType", mailType);
                     //TODO Think about Object put into dictionary!
 
-                String text = getFreeMarkerTemplateContent(model, templateName);//Use Freemarker or Velocity
+
+                String text = getFreeMarkerTemplateContent(dictionary, templateName, mailType);
+                helper.setSubject(mailType.getSubject());
+                helper.setFrom(mailType.getSenderName());
+
                 System.out.println("Template content : "+text);
                 helper.setText(text, true);
             }
@@ -77,13 +77,17 @@ public class TemplateMessageBuilder {
     }
 
 
-    public String getFreeMarkerTemplateContent(Map<String, Object> model, String templateName){
+    public String getFreeMarkerTemplateContent(Map<String, Object> dictionary, String templateName, MailType mailType){
         StringBuffer content = new StringBuffer();
         try{
             System.out.println(freemarkerConfiguration.toString());
 
-            content.append(FreeMarkerTemplateUtils.processTemplateIntoString(
-                    freemarkerConfiguration.getTemplate(templateName),model));
+            Template template = freemarkerConfiguration.getTemplate(templateName);
+            String subject = (String) template.getCustomAttribute("subject");
+            String senderName = (String) template.getCustomAttribute("senderName");
+            mailType.setSubject(subject);
+            mailType.setSenderName(senderName);
+            content.append(FreeMarkerTemplateUtils.processTemplateIntoString(template, dictionary));
             return content.toString();
         }catch(Exception e){
             System.out.println("Exception occured while processing fmtemplate:"+e.getMessage());

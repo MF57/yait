@@ -5,24 +5,31 @@ package edu.agh.yait.mailer;
  */
 public class MailType {
 
-    private String mailID;
 
-    private String type;
+    private String subject = "";
+
+    private String senderName = "";
 
     private RecipientInfo recipientInfo;
 
-    public MailType(String mailID, String type, RecipientInfo recipientInfo){
-        this.mailID = mailID;
-        this.type = type;
+    public MailType(RecipientInfo recipientInfo){
         this.recipientInfo = recipientInfo;
     }
 
-    public String getMailID(){
-        return mailID;
+    public void setSubject(String subject){
+        this.subject = subject;
     }
 
-    public String getType(){
-        return type;
+    public void setSenderName(String senderName){
+        this.senderName = senderName;
+    }
+
+    public String getSubject(){
+        return subject;
+    }
+
+    public String getSenderName(){
+        return senderName;
     }
 
     public RecipientInfo getRecipientInfo(){
@@ -31,6 +38,6 @@ public class MailType {
 
     @Override
     public String toString(){
-        return "EmailType: [ mailID = "+getMailID()+", type = "+getType()+", recipientInfo = "+getRecipientInfo().toString()+" ]";
+        return "EmailType: [subject = "+getSubject()+", recipientInfo = "+getRecipientInfo().toString()+" ]";
     }
 }

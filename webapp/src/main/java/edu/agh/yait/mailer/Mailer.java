@@ -19,11 +19,11 @@ public class Mailer {
 * String[] mailList = {"marcin.sendera@gmail.com"};
 		RecipientInfo recipientInfo = new RecipientInfo("prototypeEmailList", mailList);
 		Mailer mailer = new Mailer();
-		mailer.sendMail(recipientInfo, "path to directory with ", "example_template.txt", "integracja", "kompoyait@gmail.com");
+		mailer.sendMail(recipientInfo, "path to directory with ", "example_template.txt");
 
 * */
 
-    public void sendMail(RecipientInfo recipientInfo, String templateDirectoryPath, String templateName, String subject, String senderMail) {
+    public void sendMail(RecipientInfo recipientInfo, String templateDirectoryPath, String templateName) {
 
         //TODO Think about getting context from webapp
         //TODO Think about taking properties like senderMail from application.properties
@@ -32,7 +32,7 @@ public class Mailer {
         TemplateMessageBuilder templateMessageBuilder = new TemplateMessageBuilder(templateDirectoryPath);
 
         MimeMessagePreparator preparator = templateMessageBuilder
-                .constructMessagePreparator(recipientInfo.getMailAddresses(), templateName, subject, senderMail, new HashMap<String, String>());
+                .constructMessagePreparator(recipientInfo.getMailAddresses(), templateName, new HashMap<String, String>());
 
 
         SenderService senderService = (SenderService) context.getBean("senderService");
