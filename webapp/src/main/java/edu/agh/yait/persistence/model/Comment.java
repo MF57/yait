@@ -1,5 +1,6 @@
 package edu.agh.yait.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -13,13 +14,14 @@ public class Comment {
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    private Date creationDate;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ", locale = "pl-PL")
+    private Date created_at;
 
     @Column
     private Integer issueId;
 
     @Column
-    private String comment;
+    private String text;
 
     public Integer getId() {
         return id;
@@ -29,12 +31,20 @@ public class Comment {
         this.id = id;
     }
 
-    public Date getCreationDate() {
-        return creationDate;
+    public Date getCreated_at() {
+        return created_at;
     }
 
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
+    public void setCreated_at(Date created_at) {
+        this.created_at = created_at;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     public Integer getIssueId() {
@@ -56,11 +66,4 @@ public class Comment {
     }
 */
 
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
 }

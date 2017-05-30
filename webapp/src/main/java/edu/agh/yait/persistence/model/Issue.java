@@ -25,7 +25,7 @@ public class Issue {
 //    private User author;
 
     @Column
-    private Integer points;
+    private Integer score;
 
     @Column
     private String title;
@@ -61,12 +61,12 @@ public class Issue {
         this.created_at = created_at;
     }
 
-    public Integer getPoints() {
-        return points;
+    public Integer getScore() {
+        return score;
     }
 
-    public void setPoints(Integer points) {
-        this.points = points;
+    public void setScore(Integer score) {
+        this.score = score;
     }
 
     public String getTitle() {

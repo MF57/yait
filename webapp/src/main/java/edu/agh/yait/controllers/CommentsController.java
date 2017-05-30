@@ -47,7 +47,7 @@ public class CommentsController {
         }
 
         Comment comment = new Comment();
-        comment.setComment(commentDto.getText());
+        comment.setText(commentDto.getText());
         comment.setIssueId(Integer.parseInt(issueId));
 
         return commentRepository.save(comment);

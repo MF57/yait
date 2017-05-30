@@ -29,6 +29,6 @@ public class TokenController {
             return ticket;
         }
 
-        return ticket;
+        return ticket.getPoints();
     }
 }

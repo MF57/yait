@@ -32,7 +32,7 @@ public class VoteController {
             return ResponseEntity.badRequest().body(new CustomErrorObject("Issue, id: " + issueId +  ", does not exists"));
         }
 
-        issue.setPoints(issue.getPoints() + voteDTO.getPoints());
+        issue.setScore(issue.getScore() + voteDTO.getPoints());
 
         return issueRepository.save(issue);
     }

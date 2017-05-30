@@ -1,5 +1,7 @@
 package edu.agh.yait.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +22,7 @@ public class User {
     private String lastName;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ", locale = "pl-PL")
     private Date firstLogin;
 
 //    @OneToMany(mappedBy = "user")
