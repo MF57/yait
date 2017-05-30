@@ -1,5 +1,6 @@
 package edu.agh.yait.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -13,8 +14,8 @@ public class Comment {
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ", locale = "pl-PL")
     private Date created_at;
-
 
     @Column
     private Integer issueId;

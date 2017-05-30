@@ -9,6 +9,5 @@ import java.util.List;
  * Created by Krzysztof Podsiadło on 26.04.17.
  */
 public interface CommentRepository extends CrudRepository<Comment, Integer> {
-    List<Comment> findByComment(String comment);
     List<Comment> findAllByIssueId(Integer issueId);
 }
