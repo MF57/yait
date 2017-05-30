@@ -36,7 +36,7 @@ public class LdapFascade {
 
     public Optional<UserData> getUserDataById(String userId) {
         try {
-            return Optional.ofNullable(cache.getUserData(userId));
+            return Optional.ofNullable(cache.getUserDataById(userId));
         } catch (ExecutionException e) {
             logger.error("Error in retrieving from user data cache", e);
             return Optional.empty();
@@ -44,15 +44,25 @@ public class LdapFascade {
     }
 
     public List<UserData> getUserDataByIds(List<String> usersIds) {
-        return handler.getUserDataByIds(usersIds);
+        List<UserData> userDatas = handler.getUserDataByIds(usersIds);
+        cache.putAll(userDatas);
+        return userDatas;
     }
 
     public Optional<UserData> getUserDataByLogin(String login) {
-        return handler.getUserDataByLogin(login);
+        Optional<UserData> cachedUserData = cache.getUserDataByLogin(login);
+        if (cachedUserData.isPresent()) {
+            return cachedUserData;
+        } else {
+            return handler.getUserDataByLogin(login);
+        }
     }
 
+
     public List<UserData> getUserDataByLogins(List<String> logins) {
-        return handler.getUserDataByLogins(logins);
+        List<UserData> userDatas = handler.getUserDataByLogins(logins);
+        cache.putAll(userDatas);
+        return userDatas;
     }
 
 
