@@ -19,20 +19,20 @@ public class Mailer {
 * String[] mailList = {"marcin.sendera@gmail.com"};
 		RecipientInfo recipientInfo = new RecipientInfo("prototypeEmailList", mailList);
 		Mailer mailer = new Mailer();
-		mailer.sendMail(recipientInfo, "path to directory with ", "example_template.txt");
+		mailer.sendMail(recipientInfo, "whatever", "example_template.txt", ticket);
 
 * */
+    private TicketManager ticketManager = new TicketManager();
 
-    public void sendMail(RecipientInfo recipientInfo, String templateDirectoryPath, String templateName) {
+    public void sendMail(RecipientInfo recipientInfo, String templateDirectoryPath, String templateName, Ticket ticket) {
 
         //TODO Think about getting context from webapp
         //TODO Think about taking properties like senderMail from application.properties
         AbstractApplicationContext context = new AnnotationConfigApplicationContext(MailerConfig.class);
 
         TemplateMessageBuilder templateMessageBuilder = new TemplateMessageBuilder(templateDirectoryPath);
-
         MimeMessagePreparator preparator = templateMessageBuilder
-                .constructMessagePreparator(recipientInfo.getMailAddresses(), templateName, new HashMap<String, String>());
+                .constructMessagePreparator(recipientInfo.getMailAddresses(), templateName, ticketManager.getTokenUrl(ticket));
 
 
         SenderService senderService = (SenderService) context.getBean("senderService");
@@ -41,5 +41,4 @@ public class Mailer {
         ((AbstractApplicationContext) context).close();
     }
 
-    // TODO: how to send emails? seperate thread and queueing?
 }

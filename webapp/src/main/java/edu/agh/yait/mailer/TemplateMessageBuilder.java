@@ -29,7 +29,7 @@ public class TemplateMessageBuilder {
     }
 
 
-    public MimeMessagePreparator constructMessagePreparator(String[] mailAddresses, String templateName, Map<String, String> dictionary){
+    public MimeMessagePreparator constructMessagePreparator(String[] mailAddresses, String templateName, String tokenUrl){
 
         MimeMessagePreparator preparator = new MimeMessagePreparator() {
             public void prepare(MimeMessage mimeMessage) throws Exception {
@@ -38,10 +38,9 @@ public class TemplateMessageBuilder {
 
                 Map<String, Object> dictionary = new HashMap<String, Object>();
                 RecipientInfo recipientInfo = new RecipientInfo(mailAddresses);
-                MailType mailType = new MailType(recipientInfo);
+                //recipientInfo.setContactName("Student");
+                MailType mailType = new MailType(recipientInfo, tokenUrl);
                 dictionary.put("mailType", mailType);
-                    //TODO Think about Object put into dictionary!
-
 
                 String text = getFreeMarkerTemplateContent(dictionary, templateName, mailType);
                 helper.setSubject(mailType.getSubject());

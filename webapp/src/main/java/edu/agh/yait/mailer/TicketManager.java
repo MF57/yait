@@ -1,12 +1,20 @@
 package edu.agh.yait.mailer;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
+@PropertySource("classpath:application.properties")
 public class TicketManager {
+
+    private String key = "secret";
+
+    private String url = "http://www.vote.iiet.pl/token/";
 
     private TicketMessageBuilder ticketMessageBuilder;
 
@@ -25,7 +33,7 @@ public class TicketManager {
             Ticket ticket = entry.getValue();
             // TODO: sendTicket should be creating mail message objects that can be sent by Mailer
             String token = this.generateToken(ticket);
-            this.ticketMessageBuilder.sendTicket(email, Ticket.getTicketURL(token), ticket.getPoints(), ticket.getExpirationDate());
+           // this.ticketMessageBuilder.sendTicket(email, Ticket.getTicketURL(token), ticket.getPoints(), ticket.getExpirationDate());
             // send mail using mailer
         }
     }
@@ -44,19 +52,28 @@ public class TicketManager {
     }
 
     public String generateToken(Ticket ticket) {
-        String key = "secret";  // TODO: inject secret key
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("ticket", ticket.getIdentifier());
+        //Map<String, Object> claims = new HashMap<>();
+        Claims claims = Jwts.claims().setId(ticket.getId().toString());
+        //claims.put("id", ticket.getId());
+        claims.put("create", ticket.getCreationDate());
+        claims.put("expire", ticket.getExpirationDate());
+        claims.put("points", ticket.getPoints());
+        claims.put("hash", ticket.getHash());
         String token = null;
         try {
             token = Jwts.builder()
                     .setClaims(claims)
-                    .signWith(SignatureAlgorithm.HS256, key.getBytes("UTF-8"))
+                    .signWith(SignatureAlgorithm.HS512, key.getBytes("UTF-8"))
                     .compact();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         return token;
+    }
+
+    public String getTokenUrl(Ticket ticket){
+        String token = generateToken(ticket);
+        return url+token+"/";
     }
 
 }

@@ -12,8 +12,15 @@ public class MailType {
 
     private RecipientInfo recipientInfo;
 
-    public MailType(RecipientInfo recipientInfo){
+    private String tokenUrl;
+
+    public MailType(RecipientInfo recipientInfo, String tokenUrl){
         this.recipientInfo = recipientInfo;
+        this.tokenUrl = tokenUrl;
+    }
+
+    public String getTokenUrl(){
+        return tokenUrl;
     }
 
     public void setSubject(String subject){

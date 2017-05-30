@@ -1,7 +1,7 @@
 <#ftl attributes={ "subject": "TYPE SUBJECT HERE", "senderName": "marek.gajecki@agh.edu.pl"}>
 <html>
     <body>
-        <h3>Dear ${mailType.recipientInfo.contactName}, I am writing to announce that we can send mails via gmail smtp server and say: .</h3>
+        <h3>Dear ${mailType.recipientInfo.contactName}, your token is: ${mailType.tokenUrl}.</h3>
 
         <div>
             Hello!
