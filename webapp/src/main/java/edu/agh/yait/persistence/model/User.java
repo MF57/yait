@@ -11,19 +11,10 @@ public class User {
     private Integer id;
 
     @Column
-    private String login;
-
-    @Column
-    private String firstName;
-
-    @Column
-    private String lastName;
+    private String ldapId;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date firstLogin;
-
-//    @OneToMany(mappedBy = "user")
-//    private List<Comment> comments;
 
     public Integer getId() {
         return id;
@@ -33,28 +24,12 @@ public class User {
         this.id = id;
     }
 
-    public String getLogin() {
-        return login;
+    public String getLdapId() {
+        return ldapId;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setLdapId(String ldapId) {
+        this.ldapId = ldapId;
     }
 
     public Date getFirstLogin() {
@@ -64,5 +39,4 @@ public class User {
     public void setFirstLogin(Date firstLogin) {
         this.firstLogin = firstLogin;
     }
-
 }

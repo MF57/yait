@@ -6,6 +6,7 @@ import edu.agh.yait.persistence.model.IssueStatus;
 import edu.agh.yait.persistence.model.Ticket;
 import edu.agh.yait.persistence.repositories.IssueRepository;
 import edu.agh.yait.persistence.repositories.TicketRepository;
+import edu.agh.yait.security.TokenAuthenticationService;
 import edu.agh.yait.utils.CustomErrorObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,8 @@ import java.util.List;
 public class AdminController {
     @Autowired
     IssueRepository issueRepository;
+
+    @Autowired
     TicketRepository ticketRepository;
 
     @RequestMapping(value = "issues/{issueId}/status", method = RequestMethod.PATCH)
@@ -48,23 +51,31 @@ public class AdminController {
             return ResponseEntity.badRequest().body(result.getAllErrors());
         }
 
+        //TODO: check if user is admin
+
         List<String> emails = request.getEmails();
         List<String> ldapGroups = request.getLdapGroups();
         Integer tokenPoints = request.getTokenPoints();
         Date expirationDate = request.getExpires_at();
 
-        List<Ticket> tokens = new LinkedList<Ticket>();
+        //List<Ticket> tokens = new LinkedList<Ticket>();
+
+        //TODO: group validation
         for(String email: emails) {
             Ticket ticket = new Ticket();
             ticket.setCreationDate(new Date());
             ticket.setPoints(tokenPoints);
             ticket.setExpirationDate(expirationDate);
 
+            ticket = ticketRepository.save(ticket);
+            ticket.setHash(TokenAuthenticationService.generateVoteToken(ticket.getId()));
+            ticketRepository.save(ticket);
             // generate token
             // send mail
+
         }
 
-        return ticketRepository.save(tokens);
+        return ticketRepository.findAll();
     }
 
     @RequestMapping(value = "/ldapGroups", method = RequestMethod.GET)

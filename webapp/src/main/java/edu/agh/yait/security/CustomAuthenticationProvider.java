@@ -26,6 +26,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String login = authentication.getName();
         String password = authentication.getCredentials().toString();
 
+        System.out.println("CustomAuthenticationProvider: auhtenticate");
         if (true /* auth method */ /*ldapHandler.auth(login, password)*/) {
 
             // use the credentials

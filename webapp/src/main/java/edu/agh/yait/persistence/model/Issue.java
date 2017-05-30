@@ -19,8 +19,8 @@ public class Issue {
     @Temporal(TemporalType.TIMESTAMP)
     private Date created_at;
 
-//    @Column
-//    private User creator;
+    @Column
+    private String author;
 
     @Column
     private Integer score;
@@ -41,6 +41,14 @@ public class Issue {
     @OneToMany
     @JoinColumn(name = "issueId")
     private List<Comment> comments;
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
 
     public Integer getId() {
         return id;
