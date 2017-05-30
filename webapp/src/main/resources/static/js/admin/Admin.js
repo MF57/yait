@@ -64,7 +64,7 @@ class Admin
                 <div className="row">
                     <div className="col-md-12">
                         <div className="panel panel-default">
-                            <div className="panel-heading">Manage topics</div>
+                            <div className="panel-heading">Generate tokens</div>
                             <div className="panel-body">
                                 <TokenGenerator/>
                             </div>
@@ -74,7 +74,7 @@ class Admin
                 <div className="row">
                     <div className="col-md-12">
                         <div className="panel panel-default">
-                            <div className="panel-heading">Generate tokens</div>
+                            <div className="panel-heading">Manage topics</div>
                             <div className="panel-body">
                                 <TopicManager />
                             </div>
