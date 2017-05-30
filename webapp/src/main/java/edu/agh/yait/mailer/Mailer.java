@@ -1,18 +1,12 @@
 package edu.agh.yait.mailer;
 
+import edu.agh.yait.persistence.model.Ticket;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.mail.MailException;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-
 @Service("mailerService")
 public class Mailer {
-
 /*
 * Usage example
 *
@@ -22,23 +16,22 @@ public class Mailer {
 		mailer.sendMail(recipientInfo, "whatever", "example_template.txt", ticket);
 
 * */
-    private TicketManager ticketManager = new TicketManager();
+    private final TicketManager ticketManager;
+    private final SenderService senderService;
+
+    @Autowired
+    public Mailer(TicketManager ticketManager, SenderService senderService) {
+        this.ticketManager = ticketManager;
+        this.senderService = senderService;
+    }
 
     public void sendMail(RecipientInfo recipientInfo, String templateDirectoryPath, String templateName, Ticket ticket) {
-
-        //TODO Think about getting context from webapp
         //TODO Think about taking properties like senderMail from application.properties
-        AbstractApplicationContext context = new AnnotationConfigApplicationContext(MailerConfig.class);
 
         TemplateMessageBuilder templateMessageBuilder = new TemplateMessageBuilder(templateDirectoryPath);
         MimeMessagePreparator preparator = templateMessageBuilder
                 .constructMessagePreparator(recipientInfo.getMailAddresses(), templateName, ticketManager.getTokenUrl(ticket));
 
-
-        SenderService senderService = (SenderService) context.getBean("senderService");
         senderService.sendMail(preparator);
-
-        ((AbstractApplicationContext) context).close();
     }
-
 }

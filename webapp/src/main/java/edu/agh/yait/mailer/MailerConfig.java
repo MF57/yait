@@ -3,23 +3,20 @@ package edu.agh.yait.mailer;
 /**
  * Created by marcinsendera on 23.05.2017.
  */
-import java.util.Properties;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean;
+
+import java.util.Properties;
 
 
 @SuppressWarnings("deprecation")
 @Configuration
-@ComponentScan(basePackages = "edu.agh.yait.mailer")
 @PropertySource("classpath:application.properties")
 public class MailerConfig {
 
@@ -28,14 +25,29 @@ public class MailerConfig {
         return new PropertySourcesPlaceholderConfigurer();
     }
 
-    private @Value("${mailer.host}") String host;
-    private @Value("${mailer.port}") int port;
-    private @Value("${mailer.username}") String username;
-    private @Value("${mailer.password}") String password;
-    private @Value("${mailer.mail.smtp.starttls.enable}") String mailSmtpStarttlsEnable;
-    private @Value("${mailer.mail.smtp.auth}") String mailSmtpAuth;
-    private @Value("${mailer.mail.transport.protocol}") String mailTransportProtocol;
-    private @Value("${mailer.mail.debug}") String mailDebug;
+    @Value("${mailer.host}")
+    private String host;
+
+    @Value("${mailer.port}")
+    private int port;
+
+    @Value("${mailer.username}")
+    private String username;
+
+    @Value("${mailer.password}")
+    private String password;
+
+    @Value("${mailer.mail.smtp.starttls.enable}")
+    private String mailSmtpStarttlsEnable;
+
+    @Value("${mailer.mail.smtp.auth}")
+    private String mailSmtpAuth;
+
+    @Value("${mailer.mail.transport.protocol}")
+    private String mailTransportProtocol;
+
+    @Value("${mailer.mail.debug}")
+    private String mailDebug;
 
     @Bean
     public JavaMailSender getMailSender() {
@@ -55,7 +67,4 @@ public class MailerConfig {
         mailSender.setJavaMailProperties(javaMailProperties);
         return mailSender;
     }
-
-
-
 }

@@ -1,5 +1,7 @@
 package edu.agh.yait.mailer;
 
+import edu.agh.yait.persistence.model.Ticket;
+
 public class TokenStatus {
 
     private Ticket ticket;

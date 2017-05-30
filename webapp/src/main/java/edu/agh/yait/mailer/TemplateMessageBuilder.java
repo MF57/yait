@@ -2,71 +2,62 @@ package edu.agh.yait.mailer;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
-import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
-import javax.mail.internet.MimeMessage;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
 public class TemplateMessageBuilder {
-
+    private static final Logger logger = LoggerFactory.getLogger(TemplateMessageBuilder.class);
+    private final Configuration freemarkerConfiguration = ConfigurationUtil.getConfiguration();
     private String templateDirectoryPath;
 
-
-    Configuration freemarkerConfiguration = ConfigurationUtil.getConfiguration();
-
-    public TemplateMessageBuilder(String templateDirectoryPath){
+    public TemplateMessageBuilder(String templateDirectoryPath) {
         this.templateDirectoryPath = templateDirectoryPath;
     }
 
+    public MimeMessagePreparator constructMessagePreparator(String[] mailAddresses, String templateName, String tokenUrl) {
 
-    public MimeMessagePreparator constructMessagePreparator(String[] mailAddresses, String templateName, String tokenUrl){
+        MimeMessagePreparator preparator = mimeMessage -> {
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+            helper.setTo(mailAddresses);
 
-        MimeMessagePreparator preparator = new MimeMessagePreparator() {
-            public void prepare(MimeMessage mimeMessage) throws Exception {
-                MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-                helper.setTo(mailAddresses);
+            Map<String, Object> dictionary = new HashMap<>();
+            RecipientInfo recipientInfo = new RecipientInfo(mailAddresses);
+            //recipientInfo.setContactName("Student");
+            MailType mailType = new MailType(recipientInfo, tokenUrl);
+            dictionary.put("mailType", mailType);
 
-                Map<String, Object> dictionary = new HashMap<String, Object>();
-                RecipientInfo recipientInfo = new RecipientInfo(mailAddresses);
-                //recipientInfo.setContactName("Student");
-                MailType mailType = new MailType(recipientInfo, tokenUrl);
-                dictionary.put("mailType", mailType);
+            String text = getFreeMarkerTemplateContent(dictionary, templateName, mailType);
+            helper.setSubject(mailType.getSubject());
+            helper.setFrom(mailType.getSenderName());
 
-                String text = getFreeMarkerTemplateContent(dictionary, templateName, mailType);
-                helper.setSubject(mailType.getSubject());
-                helper.setFrom(mailType.getSenderName());
-
-                System.out.println("Template content : "+text);
-                helper.setText(text, true);
-            }
+            logger.debug("Template content : " + text);
+            helper.setText(text, true);
         };
 
-    return preparator;
+        return preparator;
     }
 
     /**
      * Constructs email messages to {@code mailAddress} by dropping {@code dictionary} values to fields
      * in template {@code templateName}. All fields must be filled.
+     *
      * @param mailAddress
      * @param templateName
      * @param subject
      * @param dictionary
      */
     public void constructMessage(String mailAddress, String templateName, String subject, Map<String, String> dictionary) {
-        System.out.println("Constructing message to " + mailAddress + " from template " + this.getTemplatePath(templateName));
-        System.out.println("Message subject: " + subject);
+        logger.debug("Constructing message to " + mailAddress + " from template " + this.getTemplatePath(templateName));
+        logger.debug("Message subject: " + subject);
         for (Map.Entry<String, String> entry : dictionary.entrySet()) {
-            System.out.println(entry.getKey() + " -> " + entry.getValue());
+            logger.debug(entry.getKey() + " -> " + entry.getValue());
         }
     }
 
@@ -76,10 +67,10 @@ public class TemplateMessageBuilder {
     }
 
 
-    public String getFreeMarkerTemplateContent(Map<String, Object> dictionary, String templateName, MailType mailType){
-        StringBuffer content = new StringBuffer();
-        try{
-            System.out.println(freemarkerConfiguration.toString());
+    public String getFreeMarkerTemplateContent(Map<String, Object> dictionary, String templateName, MailType mailType) {
+        StringBuilder content = new StringBuilder();
+        try {
+            logger.debug(freemarkerConfiguration.toString());
 
             Template template = freemarkerConfiguration.getTemplate(templateName);
             String subject = (String) template.getCustomAttribute("subject");
@@ -88,10 +79,10 @@ public class TemplateMessageBuilder {
             mailType.setSenderName(senderName);
             content.append(FreeMarkerTemplateUtils.processTemplateIntoString(template, dictionary));
             return content.toString();
-        }catch(Exception e){
-            System.out.println("Exception occured while processing fmtemplate:"+e.getMessage());
+        } catch (Exception e) {
+            logger.error("Exception occured while processing fmtemplate:" + e.getMessage());
         }
-        return "";
+        return null;
     }
 
 }

@@ -1,31 +1,34 @@
 package edu.agh.yait.mailer;
 
+import java.util.Arrays;
+
 /**
  * Created by marcinsendera on 23.05.2017.
  */
 public class RecipientInfo {
 
     private String contactName = "";
-
     private String[] mailAddresses;
 
-    public RecipientInfo(String[] emailAddresses){
+    public RecipientInfo(String[] emailAddresses) {
         this.mailAddresses = emailAddresses;
     }
 
-    public void setContactName(String contactName){ this.contactName = contactName;}
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
+    }
 
     public String getContactName() {
         return contactName;
     }
 
-    public String[] getMailAddresses(){
+    public String[] getMailAddresses() {
         return mailAddresses;
     }
 
     @Override
-    public String toString(){
-        return "RecipientInfo: [ contactName = "+getContactName()+"; emailAddresses = { " +getMailAddresses()+" } ]";
+    public String toString() {
+        return "RecipientInfo: [ contactName = " + getContactName() + "; emailAddresses = { " + Arrays.toString(getMailAddresses()) + " } ]";
     }
 
 }
