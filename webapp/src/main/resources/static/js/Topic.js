@@ -8,7 +8,7 @@ let createHandlers = function (dispatch) {
         e.preventDefault();
         e.stopPropagation();
         let points = this.inputs.points;
-        axios.post('http://localhost:8090/api/v1/issues/' + id + '/vote', {"points": points})
+        axios.post('/api/v1/issues/' + id + '/vote', {"points": points})
             .then(function (response) {
               console.log(response);
               dispatch(upvoteTopic(id, points));

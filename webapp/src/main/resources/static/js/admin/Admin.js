@@ -3,6 +3,7 @@ import React, {Component} from "react";
 import * as axios from "axios";
 import TopicCreator from "./TopicCreator";
 import TopicManager from "./TopicManager";
+import TokenGenerator from "./TokenGenerator";
 
 let createHandlers = function (dispatch) {
     let createTopic = function (e) {
@@ -64,6 +65,16 @@ class Admin
                     <div className="col-md-12">
                         <div className="panel panel-default">
                             <div className="panel-heading">Manage topics</div>
+                            <div className="panel-body">
+                                <TokenGenerator/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md-12">
+                        <div className="panel panel-default">
+                            <div className="panel-heading">Generate tokens</div>
                             <div className="panel-body">
                                 <TopicManager />
                             </div>

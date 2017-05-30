@@ -13,7 +13,7 @@ let createHandlers = function (dispatch) {
         };
 
 
-        axios.post('http://localhost:8090/api/v1/issues', newIssue)
+        axios.post('/api/v1/issues', newIssue)
             .then(function (response) {
                 this.setState({success: true});
                 this.setState({error: false});
