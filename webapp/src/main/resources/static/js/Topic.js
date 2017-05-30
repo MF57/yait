@@ -52,25 +52,28 @@ class Topic extends Component {
             date: this.props.date
         };
         return (
-            <div className="col-md-12 hero-feature" onClick={this.props.onClickTopic.bind(this, topic, this.props.dispatch)}>
-              <div className="panel panel-primary">
-                <div className="panel-heading">
-                  <h3 className="panel-title">{this.props.title}</h3>
+            <div>
+                <div className="row" onClick={this.props.onClickTopic.bind(this, topic, this.props.dispatch)}>
+                    <div className="col-xs-1 media-middle text-center">
+                        <a href="#">
+                            <img src="http://placehold.it/100x100" alt=""/>
+                        </a>
+                    </div>
+                    <div className="col-xs-9 col-xs-offset-1">
+                        <h4>{this.props.title}</h4>
+                        <p> Author: {this.props.author}</p>
+                        <p> Created: {new Date(this.props.date).toLocaleString()} </p>
+                    </div>
+                    <div className="col-xs-1 text-center media-middle">
+                        <p> Score: {this.props.points} </p>
+                        <input type="number" onChange={this.handlePointsChange} onClick={this.handleInputClick} className="form-control" placeholder="1"
+                               aria-describedby="basic-addon1" min={1}/>
+                        <button onClick={this.handlers.onClickUpvote.bind(this, this.props.id)}
+                              className="btn btn-primary glyphicon glyphicon-arrow-up col-xs-12"><span>UP</span></button>
+                    </div>
                 </div>
-                <div className="panel-body">
-                  <div className="col-md-2"> Score: {this.props.points} </div>
-                  <div className="col-md-2"> Status: {this.props.status} </div>
-                  <div className="col-md-2"> Author: {this.props.author} </div>
-                  <div className="col-md-4"> Created: {new Date(this.props.date).toLocaleString()} </div>
-                  <div className="col-md-2 pull-right input-group">
-                    <input type="text form-control" onChange={this.handlePointsChange} onClick={this.handleInputClick} className="form-control" placeholder="1"
-                           aria-describedby="basic-addon1"/>
-                    <span onClick={this.handlers.onClickUpvote.bind(this, this.props.id)}
-                       className="input-group-addon btn btn-primary">UPVOTE</span>
-                  </div>
-                </div>
+                <hr/>
             </div>
-          </div>
         )
     }
 }
