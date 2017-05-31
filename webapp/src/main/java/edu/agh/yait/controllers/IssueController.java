@@ -39,19 +39,6 @@ public class IssueController {
         return issues;
     }
 
-    private void setIssueAuthor(Issue issue) {
-        if (issue.getAuthor() != null) {
-            Optional<UserData> creator = ldapHandler.getUserDataById(issue.getAuthor().getId().toString());
-            if (creator.isPresent()) {
-                User user = new User();
-                user.setLogin(creator.get().getLogin());
-                user.setFirstName(creator.get().getName().orElse(null));
-                user.setLastName(creator.get().getSurname().orElse(null));
-                issue.setAuthor(user);
-            }
-        }
-    }
-
     @RequestMapping(method = RequestMethod.POST)
     public Object addIssue(@Valid @RequestBody IssueDTO issueDTO,
                            Errors result){
@@ -84,5 +71,18 @@ public class IssueController {
         Issue issue = issueRepository.findOne(Integer.parseInt(issueId));
         setIssueAuthor(issue);
         return issue;
+    }
+
+    private void setIssueAuthor(Issue issue) {
+        if (issue.getAuthor() != null) {
+            Optional<UserData> creator = ldapHandler.getUserDataById(issue.getAuthor().getId().toString());
+            if (creator.isPresent()) {
+                User user = new User();
+                user.setLogin(creator.get().getLogin());
+                user.setFirstName(creator.get().getName().orElse(null));
+                user.setLastName(creator.get().getSurname().orElse(null));
+                issue.setAuthor(user);
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 package edu.agh.yait.controllers;
 
+import edu.agh.yait.LdapHandler;
 import edu.agh.yait.dto.TokenRequestDTO;
 import edu.agh.yait.persistence.model.Issue;
 import edu.agh.yait.persistence.model.IssueStatus;
@@ -27,6 +28,8 @@ public class AdminController {
     private IssueRepository issueRepository;
     @Autowired
     private TicketRepository ticketRepository;
+    @Autowired
+    private LdapHandler ldapHandler;
 
     @RequestMapping(value = "issues/{issueId}/status", method = RequestMethod.PATCH)
     public Object addIssue(@PathVariable("issueId") String issueId, @RequestParam String status) {
@@ -56,25 +59,27 @@ public class AdminController {
 
         List<Ticket> tokens = new LinkedList<>();
         for(String email: emails) {
-            Ticket ticket = new Ticket();
-            ticket.setCreationDate(new Date());
-            ticket.setPoints(tokenPoints);
-            ticket.setExpirationDate(expirationDate);
-
-            // generate token
-            // send mail
+            Ticket token = generateToken(tokenPoints, expirationDate);
+            //TODO: send mail
         }
 
         return ticketRepository.save(tokens);
     }
 
     @RequestMapping(value = "/ldapGroups", method = RequestMethod.GET)
-    public Object getLdapGroups(@Valid @RequestBody List<String> ldapGroups, Errors result) {
-
+    public Object getLdapGroups(Errors result) {
         if(result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors());
         }
+        return ldapHandler.getGroups();
+    }
 
-        return "OK";
+    private Ticket generateToken(int points, Date expirationDate) {
+        Ticket ticket = new Ticket();
+        ticket.setCreationDate(new Date());
+        ticket.setPoints(points);
+        ticket.setExpirationDate(expirationDate);
+        ticketRepository.save(ticket);
+        return ticket;
     }
 }
