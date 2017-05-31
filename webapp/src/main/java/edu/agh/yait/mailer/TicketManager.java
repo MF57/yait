@@ -2,14 +2,18 @@ package edu.agh.yait.mailer;
 
 import edu.agh.yait.persistence.model.Ticket;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.impl.TextCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -17,64 +21,54 @@ import java.util.Map;
 public class TicketManager {
     private static final Logger logger = LoggerFactory.getLogger(TicketManager.class);
 
-    private String key = "secret";
-    private String url = "http://www.vote.iiet.pl/token/";
-    private TicketMessageBuilder ticketMessageBuilder;
+    @Value("${mailer.ticket.secretKey}")
+    private String secretKey;
 
-    public TicketManager() {
-        this.ticketMessageBuilder = new TicketMessageBuilder("You've been granted ticket to vote", "/path/to/template/dir");
-    }
+    @Value("${mailer.ticket.url}")
+    private String url;
 
     /**
-     * Constructs email messages to {@code mailAddresses} informing about assigned points, their expiration date
-     * and containing URL to access the website.
+     * Creates token for Ticket.
+     * Ticket id is encoded inside JWT token.
+     * Ticket is not changed during this process.
      *
-     * @param addressedTickets email address to Ticket mapping
      */
-    public void sendTickets(Map<String, Ticket> addressedTickets) {
-        for (Map.Entry<String, Ticket> entry : addressedTickets.entrySet()) {
-            String email = entry.getKey();
-            Ticket ticket = entry.getValue();
-            // TODO: sendTicket should be creating mail message objects that can be sent by Mailer
-            String token = this.generateToken(ticket);
-            // this.ticketMessageBuilder.sendTicket(email, Ticket.getTicketURL(token), ticket.getPoints(), ticket.getExpirationDate());
-            // send mail using mailer
-        }
-    }
-
-    /**
-     * Validate string token
-     *
-     * @param token
-     * @return
-     */
-    public TokenStatus validateToken(String token) {
-        // decode token to ticket
-        // if cannot decode return null, INCORRECT
-        // if ticket found but expired return null, EXPIRED
-        // otherwise return ticket, VALID (doesn't matter if points are left or not)
-        return new TokenStatus(null, TokenStatusType.INCORRECT);
-    }
-
     public String generateToken(Ticket ticket) {
-        //Map<String, Object> claims = new HashMap<>();
-        Claims claims = Jwts.claims().setId(ticket.getId().toString());
-        //claims.put("id", ticket.getId());
-        claims.put("create", ticket.getCreationDate());
-        claims.put("expire", ticket.getExpirationDate());
-        claims.put("points", ticket.getPoints());
-        claims.put("hash", ticket.getHash());
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("ticket", ticket.getId());
+        Integer ticketId = ticket.getId();
         String token = null;
         try {
             token = Jwts.builder()
-                    .setClaims(claims)
-                    .signWith(SignatureAlgorithm.HS512, key.getBytes("UTF-8"))
+                    .claim("ticket", ticketId)
+                    .signWith(SignatureAlgorithm.HS256, this.secretKeyBytes())
                     .compact();
         } catch (UnsupportedEncodingException e) {
             logger.error(e.getMessage());
         }
         return token;
     }
+
+    /**
+     * Returns ticket id encoded in JWT string.
+     * The ticket may not exist, so backend controllers must test and get it from database.
+     *
+     */
+    public Integer validateToken(String token) {
+        Integer ticketId = null;
+        try {
+            ticketId = Jwts.parser().setSigningKey(this.secretKeyBytes())
+                    .parseClaimsJws(token).getBody().get("ticket", Integer.class);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return ticketId;
+    }
+
+    private byte[] secretKeyBytes() throws UnsupportedEncodingException {
+        return this.secretKey.getBytes("UTF-8");
+    }
+
 
     public String getTokenUrl(Ticket ticket) {
         String token = generateToken(ticket);

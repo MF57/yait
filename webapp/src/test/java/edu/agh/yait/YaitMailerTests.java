@@ -9,17 +9,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class YaitMailerTests {
+
     @Autowired
     TicketManager ticketManager;
-
-    @Test
-    public void testGrantingPoints() {
-
-    }
 
     @Test
     public void testCreatingToken() {
@@ -27,7 +24,16 @@ public class YaitMailerTests {
         ticket.setId(1);
         String value = ticketManager.generateToken(ticket);
         assertNotNull(value);
-//        assertEquals("eyJhbGciOiJIUzI1NiJ9.eyJ0aWNrZXQiOiIxMjM0NTY3ODkwIn0.vC1pOy4ppImfZm0AzmsQaanmOwLlgeCFY2H3nOZhTeU", value);
+    }
+
+    @Test
+    public void testValidatingToken() {
+        Ticket ticket = new Ticket();
+        ticket.setId(1);
+        String value = ticketManager.generateToken(ticket);
+        assertNotNull(value);
+        Integer validatedId = ticketManager.validateToken(value);
+        assertEquals(new Integer(1), validatedId);
     }
 
 
