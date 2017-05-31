@@ -27,7 +27,7 @@ let createHandlers = function (dispatch) {
 
     };
     return {
-        closeTopic
+        changeTopicStatus
     };
 };
 
@@ -66,8 +66,13 @@ class TopicManager extends Component {
                     <td>{el.description}</td>
                     <td>
                         <a href="#"
-                            onClick={this.handlers.closeTopic.bind(el.id, this)}
-                           className="btn btn-danger">CLOSE TOPIC</a>
+                            onClick={this.handlers.changeTopicStatus.bind(el.id, this)}
+                           className="btn btn-primary">RESOLVED</a>
+                    </td>
+                    <td>
+                        <a href="#"
+                            onClick={this.handlers.changeTopicStatus.bind(el.id, this)}
+                           className="btn btn-danger">CLOSE</a>
                     </td>
                 </tr>
         )

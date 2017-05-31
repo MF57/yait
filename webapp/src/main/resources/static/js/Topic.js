@@ -69,7 +69,7 @@ class Topic extends Component {
                         <input type="number" onChange={this.handlePointsChange} onClick={this.handleInputClick} className="form-control" placeholder="1"
                                aria-describedby="basic-addon1" min={1}/>
                         <button onClick={this.handlers.onClickUpvote.bind(this, this.props.id)}
-                              className="btn btn-primary glyphicon glyphicon-arrow-up col-xs-12"><span>UP</span></button>
+                              className="btn btn-primary glyphicon glyphicon-arrow-up col-xs-12"><span>VOTE</span></button>
                     </div>
                 </div>
                 <hr/>
