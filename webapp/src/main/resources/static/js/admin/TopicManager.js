@@ -3,7 +3,7 @@ import React, {Component} from "react";
 import * as axios from "axios";
 
 let createHandlers = function (dispatch) {
-    let closeTopic = function (id, e) {
+    let changeTopicStatus = function (id, e) {
         e.preventDefault();
         e.stopPropagation();
 
