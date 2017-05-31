@@ -1,17 +1,12 @@
 package edu.agh.yait.mailer;
 
-import java.util.Arrays;
-
-/**
- * Created by marcinsendera on 23.05.2017.
- */
 public class RecipientInfo {
 
     private String contactName = "";
-    private String[] mailAddresses;
+    private String mailAddress;
 
-    public RecipientInfo(String[] emailAddresses) {
-        this.mailAddresses = emailAddresses;
+    public RecipientInfo(String emailAddress) {
+        this.mailAddress = emailAddress;
     }
 
     public void setContactName(String contactName) {
@@ -22,13 +17,13 @@ public class RecipientInfo {
         return contactName;
     }
 
-    public String[] getMailAddresses() {
-        return mailAddresses;
+    public String getMailAddress() {
+        return mailAddress;
     }
 
     @Override
     public String toString() {
-        return "RecipientInfo: [ contactName = " + getContactName() + "; emailAddresses = { " + Arrays.toString(getMailAddresses()) + " } ]";
+        return "RecipientInfo: [ contactName = " + getContactName() + "; emailAddresses = { " + getMailAddress() + " } ]";
     }
 
 }

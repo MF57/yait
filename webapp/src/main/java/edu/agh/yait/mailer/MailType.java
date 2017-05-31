@@ -1,8 +1,5 @@
 package edu.agh.yait.mailer;
 
-/**
- * Created by marcinsendera on 23.05.2017.
- */
 public class MailType {
     private String subject = "";
     private String senderName = "";

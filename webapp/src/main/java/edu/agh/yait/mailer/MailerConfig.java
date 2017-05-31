@@ -1,9 +1,5 @@
 package edu.agh.yait.mailer;
 
-/**
- * Created by marcinsendera on 23.05.2017.
- */
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +9,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
-
 
 @SuppressWarnings("deprecation")
 @Configuration
