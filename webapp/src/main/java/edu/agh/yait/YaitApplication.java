@@ -29,11 +29,8 @@ public class YaitApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(YaitApplication.class, args);
-//        String[] mailList = {"marcin.sendera@gmail.com"};
-//        RecipientInfo recipientInfo = new RecipientInfo(mailList);
-//        Ticket ticket = new Ticket();//new Ticket(24354, new Date(1994,10,10,16,30), new Date(2017, 5, 30, 18, 3), 20, "myverylonghash");
+//        Ticket ticket = new Ticket();
 //        ticket.setId(1);
-//
-//        mailer.sendMail(recipientInfo, "whatever", "example_template.txt", ticket);
+//        mailer.sendMail("roxelum@gmail.com", ticket);
     }
 }
