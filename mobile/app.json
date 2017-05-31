@@ -1,5 +1,16 @@
 {
   "expo": {
-    "sdkVersion": "15.0.0"
+    name: "YAIT",
+    iconUrl: "https://s3.amazonaws.com/exp-brand-assets/ExponentEmptyManifest_192.png",
+    version: "1.0.0",
+    slug: "yait",
+    sdkVersion: "17.0.0",
+    ios: {
+      bundleIdentifier: "pl.edu.agh.yait",
+    },
+    android: {
+      package: "pl.edu.agh.yait",
+    },
+    scheme: 'yait'
   }
 }

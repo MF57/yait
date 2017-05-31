@@ -1,11 +1,14 @@
 import React from 'react';
-import { ActivityIndicator, StyleSheet, Text, View, Button, Image, ListView, StatusBar, TouchableHighlight, TextInput, KeyboardAvoidingView, ScrollView } from 'react-native';
+import { Platform, ActivityIndicator, StyleSheet, Text, View, Button, Image, FlatList, StatusBar, TouchableHighlight, TextInput, KeyboardAvoidingView, ScrollView, Linking, Alert } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Expo from 'expo';
 import { FontAwesome } from '@expo/vector-icons';
-import { StackNavigator, TabNavigator } from 'react-navigation';
+import { StackNavigator, TabNavigator, NavigationActions } from 'react-navigation';
 import store from 'react-native-simple-store';
 import axios from 'axios';
+import jwtDecode from 'jwt-decode';
+const PropTypes = require('prop-types');
+
 
 import IssuesList from './components/IssuesList';
 import IssueView from './components/IssueView';
@@ -13,7 +16,8 @@ import AddComment from './components/AddComment';
 
 
 const iconSize = 24;
-axios.defaults.baseURL = 'http://yait.lagiewka.pl';
+const prefix = Platform.OS == 'android' ? 'yait://yait/' : 'yait://';
+axios.defaults.baseURL = 'http://176.9.152.5:8080/api/v1/';
 
 const styles = StyleSheet.create({
   container: {
@@ -22,6 +26,8 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
 });
+
+
 
 export class DefaultContainer extends React.Component {
   render() {
@@ -81,7 +87,7 @@ class IssueSubmit extends React.Component {
 }
 
 const IssuesTab = StackNavigator({
-    List: {
+  List: {
     screen: IssuesList,
   },
   Single: { 
@@ -103,7 +109,31 @@ const IssuesTab = StackNavigator({
   }
 });
 
+const prevGetStateForActionIssuesTab = IssuesTab.router.getStateForAction;
+IssuesTab.router = {
+  ...IssuesTab.router,
+  getStateForAction(action, state) {
+    if (state && action.type === 'ReplaceCurrentScreen') {
+      const routes = state.routes.slice(0, state.routes.length - 1);
+      routes.push(action);
+      return {
+        ...state,
+        routes,
+        index: routes.length - 1,
+      };
+    }
+    return prevGetStateForActionIssuesTab(action, state);
+  },
+};
+
+
+
+
+
 class Ticket extends React.Component {
+  static navigationOptions = {
+    title: 'single ticket'
+  };
   constructor(props) {
     super(props);
     this.state = {
@@ -114,24 +144,27 @@ class Ticket extends React.Component {
 
   componentDidMount() {
     const { params } = this.props.navigation.state;
-    axios.get('/token', {
-        headers: {'Authorization': params.token},
-    })
-      .then((response) => {
-          this.setState({
-              data: response.data,
-              loading: false
-          })
-      })
-      .catch((error) => {
-          console.log("error")
-          console.log(error)
-      });
+    // axios.get('/token', {
+    //     headers: {'Authorization': params.token},
+    // })
+    //   .then((response) => {
+    //       this.setState({
+    //           data: response.data,
+    //           loading: false
+    //       })
+    //   })
+    //   .catch((error) => {
+    //       console.log("error")
+    //       console.log(error)
+    //   });
   }
 
   render () {
     if(this.state.loading) {
-        return <ActivityIndicator />;
+        return <View>
+          <Text>token: {this.props.navigation.state.params.token}</Text>
+          <ActivityIndicator />
+        </View>;
     }
 
     return (
@@ -143,14 +176,22 @@ class Ticket extends React.Component {
 }
 
 class Tickets extends React.Component {
-
+  static navigationOptions = {
+    title: 'voting tickets'
+  };
   constructor(props) {
     super(props)
-    this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
-        dataSource: this.ds.cloneWithRows([]),
         loading: true
     };
+  }
+  componentDidMount = () => {
+    const { params } = this.props.navigation.state;
+
+    if(params && params.token) {
+      console.log(params)
+      this.props.navigation.navigate('TicketSingle', {token: params.token})
+    }
   }
 
   static navigationOptions = {
@@ -160,39 +201,47 @@ class Tickets extends React.Component {
     ),
   };
 
-  componentDidMount() {
+  componentDidMount = () => {
       let tokens = [
           {'token': 'sampleVotingToken'}
       ];
       this.setState({
-          dataSource: this.ds.cloneWithRows(tokens)
+          data: tokens
       });
   }
 
+  _keyExtractor = (item, index) => item.token;
+
   render() {
     return (
-        <ListView
-            dataSource={this.state.dataSource}
-            renderRow={(rowData) => <TouchableHighlight onPress={() => this.props.navigation.navigate('Single', {token: rowData.token})}>
-              <View style={styles.row}>
-                <View style={{flex:5}}><Text>{rowData.token}</Text></View>
-              </View>
-            </TouchableHighlight>}
-            renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />}
-        />
+        <DefaultContainer>
+          <FlatList
+              data={this.state.data}
+              keyExtractor={this._keyExtractor}
+              renderItem={(rowData) =>{ 
+                console.log(rowData)
+                return <TouchableHighlight onPress={() => this.props.navigation.navigate('TicketSingle', {token: rowData.item.token})}>
+                <View style={styles.row}>
+                  <View style={{flex:5}}><Text>{rowData.item.token}</Text></View>
+                </View>
+              </TouchableHighlight>}}
+          />
+        </DefaultContainer>
     );
   }
 }
 
 const TicketsTab = StackNavigator({
-    List: {
+    TicketsList: {
       screen: Tickets,
     },
-    Single: {
-      screen: Ticket
+    TicketSingle: {
+      screen: Ticket,
+      path: 'ticket/:token'
     }
 }, {
     navigationOptions: {
+        title: 'voting tickets',
         headerStyle: {marginTop: Expo.Constants.statusBarHeight},
         tabBarLabel: 'Tickets',
         tabBarIcon: ({ tintColor }) => (
@@ -211,6 +260,27 @@ class Settings extends React.Component {
     ),
   };
 
+  // componentDidMount() {
+  //   Linking.getInitialURL().then((urla) => {
+  //     const url = 'yait://yait/ticket/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ';
+  //     if (url) {
+  //       Alert.alert(
+  //         'external url',
+  //         url);
+  //       const matches = url.match(/yait\/ticket\/([A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+\/=]*)/);
+  //       if(matches) {
+  //         const token = matches[1];
+  //         this.props.navigation.navigate('Tickets', {}, NavigationActions.navigate({
+  //           routeName: 'TicketSingle',
+  //           params: {token}
+  //         }))
+  //         console.log(matches[1]);
+  //       }
+  //       // console.log('Initial url is: ' + url);
+  //     }
+  //   }).catch(err => console.error('An error occurred', err));
+  // }
+
   render() {
     return (
       <DefaultContainer>
@@ -224,8 +294,8 @@ class LoginView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      login: 'tester',
-      password: 'password123',
+      login: 'pracow1',
+      password: 'Haslo1234!',
       wrongCredentials: false
     };
   }
@@ -236,7 +306,7 @@ class LoginView extends React.Component {
 
   login = () => {
     axios.post('/login', {
-      user: this.state.login, // TODO
+      login: this.state.login, // TODO
       password: this.state.password
     })
     .then((response) => {
@@ -283,10 +353,10 @@ class LoginView extends React.Component {
 
 const LoggedinNav = TabNavigator({
   Issues: {
-    screen: IssuesTab,
+    screen: IssuesTab
   },
-  Notifications: {
-    screen: TicketsTab,
+  Tickets: {
+    screen: TicketsTab
   },
   Settings: {
     screen: Settings
@@ -300,10 +370,15 @@ const LoggedinNav = TabNavigator({
 });
 
 export default class NavWrapper extends React.Component {
+  getChildContext() {
+    return {user: this.state.user};
+  }
+
   constructor(props) {
     super(props);
     this.state = {
-      loading: true
+      loading: true,
+      user: {}
     };
   }
 
@@ -314,7 +389,7 @@ export default class NavWrapper extends React.Component {
         (loginToken) => {
           if(loginToken) {
             axios.defaults.headers.common['Authorization'] = loginToken;
-            this.setState({loggedIn: true, loading: false})
+            this.setState({loggedIn: true, loading: false, user: jwtDecode(loginToken)})
           } else {
             this.setState({loggedIn: false, loading: false})
           }
@@ -325,6 +400,9 @@ export default class NavWrapper extends React.Component {
     store.save('loginToken', token);
     axios.defaults.headers.common['Authorization'] = token;
     this.setState({loggedIn: !!token});
+    if(token) {
+      this.setState({user: jwtDecode(token)})
+    }
   }
 
   logout = () => {
@@ -336,9 +414,13 @@ export default class NavWrapper extends React.Component {
       return <DefaultContainer><ActivityIndicator /></DefaultContainer>;
     }
     if(this.state.loggedIn) {
-      return <LoggedinNav screenProps={{logout: this.logout}} />;
+      return <LoggedinNav uriPrefix={prefix} screenProps={{logout: this.logout}} />;
     } else {
       return <LoginView saveNewToken={this.saveNewToken} />;
     }
   }
 }
+
+NavWrapper.childContextTypes = {
+  user: PropTypes.object
+};
