@@ -6,7 +6,6 @@ import edu.agh.yait.persistence.model.IssueStatus;
 import edu.agh.yait.persistence.model.Ticket;
 import edu.agh.yait.persistence.repositories.IssueRepository;
 import edu.agh.yait.persistence.repositories.TicketRepository;
-import edu.agh.yait.security.AuthorizationType;
 import edu.agh.yait.security.TokenAuthenticationService;
 import edu.agh.yait.utils.CustomErrorObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ import javax.validation.Valid;
 public class VoteController {
 
     @Autowired
-    IssueRepository issueRepository;
+    private IssueRepository issueRepository;
 
     @Autowired
     TicketRepository ticketRepository;
@@ -47,7 +46,7 @@ public class VoteController {
             return ResponseEntity.badRequest().body(new CustomErrorObject("Issue, id: " + issueId +  ", does not exists"));
         }
 
-        if(issue.getStatus() != IssueStatus.OPEN){
+        if (issue.getStatus() != IssueStatus.open) {
             return ResponseEntity.status(400).body(new CustomErrorObject("Issue is not opened."));
         }
 

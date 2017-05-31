@@ -1,5 +1,6 @@
 package edu.agh.yait.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -19,8 +20,8 @@ public class Issue {
     @Temporal(TemporalType.TIMESTAMP)
     private Date created_at;
 
-    @Column
-    private String author;
+    @ManyToOne
+    private User author;
 
     @Column
     private Integer score;
@@ -36,19 +37,12 @@ public class Issue {
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ", locale = "pl-PL")
     private Date statusChangeDate;
 
     @OneToMany
     @JoinColumn(name = "issueId")
     private List<Comment> comments;
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
 
     public Integer getId() {
         return id;
@@ -64,6 +58,14 @@ public class Issue {
 
     public void setCreated_at(Date created_at) {
         this.created_at = created_at;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
     }
 
     public Integer getScore() {

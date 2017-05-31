@@ -1,5 +1,6 @@
 package edu.agh.yait.controllers;
 
+import edu.agh.yait.LdapHandler;
 import edu.agh.yait.dto.TokenRequestDTO;
 import edu.agh.yait.persistence.model.Issue;
 import edu.agh.yait.persistence.model.IssueStatus;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -25,15 +25,16 @@ import java.util.List;
 @RequestMapping("/api/v1/admin")
 public class AdminController {
     @Autowired
-    IssueRepository issueRepository;
-
+    private IssueRepository issueRepository;
     @Autowired
-    TicketRepository ticketRepository;
+    private TicketRepository ticketRepository;
+    @Autowired
+    private LdapHandler ldapHandler;
 
     @RequestMapping(value = "issues/{issueId}/status", method = RequestMethod.PATCH)
     public Object addIssue(@PathVariable("issueId") String issueId, @RequestParam String status) {
         Issue issue = issueRepository.findOne(Integer.valueOf(issueId));
-        IssueStatus newStatus = null;
+        IssueStatus newStatus;
         try {
             newStatus = IssueStatus.valueOf(status.toUpperCase());
         } catch (IllegalArgumentException e) {
@@ -79,12 +80,10 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/ldapGroups", method = RequestMethod.GET)
-    public Object getLdapGroups(@Valid @RequestBody List<String> ldapGroups, Errors result) {
-
+    public Object getLdapGroups(Errors result) {
         if(result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors());
         }
-
-        return "OK";
+        return ldapHandler.getGroups();
     }
 }
