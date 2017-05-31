@@ -7,10 +7,7 @@ import edu.agh.yait.LdapHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -51,8 +48,14 @@ public class UserDataCache {
      * @return - user data of given id
      * @throws ExecutionException - when something went wrong during operation on cache
      */
-    public UserData getUserData(String id) throws ExecutionException {
+    public UserData getUserDataById(String id) throws ExecutionException {
         return cache.get(id);
+    }
+
+    public Optional<UserData> getUserDataByLogin(String login) {
+        return cache.asMap().entrySet().stream()
+                .map(Map.Entry::getValue)
+                .filter(userData -> userData.getLogin().equals(login)).findAny();
     }
 
     /**
