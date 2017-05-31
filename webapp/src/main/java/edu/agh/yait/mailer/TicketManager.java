@@ -34,8 +34,6 @@ public class TicketManager {
      *
      */
     public String generateToken(Ticket ticket) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("ticket", ticket.getId());
         Integer ticketId = ticket.getId();
         String token = null;
         try {

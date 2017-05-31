@@ -1,9 +1,5 @@
 package edu.agh.yait.mailer;
 
-/**
- * Created by marcinsendera on 23.05.2017.
- */
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +23,7 @@ public class SenderServiceImpl implements SenderService {
     public void sendMail(MimeMessagePreparator preparator) {
         try {
             mailSender.send(preparator);
-            System.out.println("Message has been sent.............................");
+            logger.info("Message has been sent.............................");
         } catch (MailException ex) {
             logger.error(ex.getMessage());
         }

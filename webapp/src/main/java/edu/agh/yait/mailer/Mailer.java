@@ -10,12 +10,15 @@ public class Mailer {
 /*
 * Usage example
 *
-* String[] mailList = {"marcin.sendera@gmail.com"};
-		RecipientInfo recipientInfo = new RecipientInfo("prototypeEmailList", mailList);
-		Mailer mailer = new Mailer();
-		mailer.sendMail(recipientInfo, "whatever", "example_template.txt", ticket);
-
+*
+* private static Mailer mailer;
+  @Autowired
+  public void setMailer(Mailer mailer) {
+    YaitApplication.mailer = mailer;
+  }
+   mailer.sendMail(String mailAddress, Ticket ticket);
 * */
+
     private final TicketManager ticketManager;
     private final SenderService senderService;
 
@@ -25,12 +28,10 @@ public class Mailer {
         this.senderService = senderService;
     }
 
-    public void sendMail(RecipientInfo recipientInfo, String templateDirectoryPath, String templateName, Ticket ticket) {
-        //TODO Think about taking properties like senderMail from application.properties
-
-        TemplateMessageBuilder templateMessageBuilder = new TemplateMessageBuilder(templateDirectoryPath);
+    public void sendMail(String recipientMail, Ticket ticket) {
+        TemplateMessageBuilder templateMessageBuilder = new TemplateMessageBuilder();
         MimeMessagePreparator preparator = templateMessageBuilder
-                .constructMessagePreparator(recipientInfo.getMailAddresses(), templateName, ticketManager.getTokenUrl(ticket));
+                .constructMessagePreparator(recipientMail, ticketManager.getTokenUrl(ticket));
 
         senderService.sendMail(preparator);
     }

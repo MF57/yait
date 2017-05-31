@@ -1,9 +1,5 @@
 package edu.agh.yait.mailer;
 
-/**
- * Created by marcinsendera on 24.05.2017.
- */
-
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateExceptionHandler;
