@@ -1,5 +1,6 @@
 package edu.agh.yait.security;
 
+import edu.agh.yait.LdapFascade;
 import edu.agh.yait.LdapHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
-    private LdapHandler ldapHandler;
+    private LdapFascade ldapHandler;
 
     @Override
     public Authentication authenticate(Authentication authentication)
@@ -27,7 +28,10 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String password = authentication.getCredentials().toString();
 
         System.out.println("CustomAuthenticationProvider: auhtenticate");
-        if (true /* auth method */ /*ldapHandler.auth(login, password)*/) {
+
+        boolean status = ldapHandler.auth(login, password);
+        System.out.println(status);
+        if (status) {
 
             // use the credentials
             // and authenticate against the third-party system
