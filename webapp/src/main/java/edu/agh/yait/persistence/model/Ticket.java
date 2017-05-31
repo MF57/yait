@@ -21,6 +21,9 @@ public class Ticket {
     @Column
     private String hash;
 
+    //@ManyToOne
+   // private User user;
+
     public Integer getId() {
         return id;
     }

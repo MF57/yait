@@ -12,3 +12,10 @@
 ## Running Web Application
 1. Simply Run 'YaitApplication' class
 2. If everything is ok, GET to the http://localhost:8080/api/hello should return "Hello World"
+
+## LDAP SSL
+```
+openssl x509 -in <(openssl s_client -connect <host>:<port> -prexit 2>/dev/null) -out ~/example.crt
+sudo keytool -importcert -file ~/example.crt -alias example -keystore $(/usr/libexec/java_home)/jre/lib/security/cacerts -storepass changeit
+
+```

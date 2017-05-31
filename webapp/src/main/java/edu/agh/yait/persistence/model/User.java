@@ -1,32 +1,34 @@
 package edu.agh.yait.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
 
+    @Id
     @Column
+    @JsonIgnore
+    private String ldapId;
+
     private String login;
 
-    @Column
     private String firstName;
 
-    @Column
     private String lastName;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonIgnore
     private Date firstLogin;
 
-    public Integer getId() {
-        return id;
+    public String getLdapId() {
+        return ldapId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setLdapId(String ldapId) {
+        this.ldapId = ldapId;
     }
 
     public String getLogin() {

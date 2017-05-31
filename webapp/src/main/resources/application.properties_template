@@ -1,0 +1,8 @@
+ldap.url =
+ldap.usersDn =
+ldap.groupsDn =
+ldap.user =
+ldap.password =
+ldap.timeout =
+spring.datasource.url=jdbc:h2:./yait
+spring.jpa.hibernate.ddl-auto=update
