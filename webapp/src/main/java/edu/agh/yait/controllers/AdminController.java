@@ -24,13 +24,14 @@ import java.util.List;
 @RequestMapping("/api/v1/admin")
 public class AdminController {
     @Autowired
-    IssueRepository issueRepository;
-    TicketRepository ticketRepository;
+    private IssueRepository issueRepository;
+    @Autowired
+    private TicketRepository ticketRepository;
 
     @RequestMapping(value = "issues/{issueId}/status", method = RequestMethod.PATCH)
     public Object addIssue(@PathVariable("issueId") String issueId, @RequestParam String status) {
         Issue issue = issueRepository.findOne(Integer.valueOf(issueId));
-        IssueStatus newStatus = null;
+        IssueStatus newStatus;
         try {
             newStatus = IssueStatus.valueOf(status.toUpperCase());
         } catch (IllegalArgumentException e) {
@@ -53,7 +54,7 @@ public class AdminController {
         Integer tokenPoints = request.getTokenPoints();
         Date expirationDate = request.getExpires_at();
 
-        List<Ticket> tokens = new LinkedList<Ticket>();
+        List<Ticket> tokens = new LinkedList<>();
         for(String email: emails) {
             Ticket ticket = new Ticket();
             ticket.setCreationDate(new Date());

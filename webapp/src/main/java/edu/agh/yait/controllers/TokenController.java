@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TokenController {
 
     @Autowired
-    TicketRepository ticketRepository;
+    private TicketRepository ticketRepository;
 
     @RequestMapping(method = RequestMethod.GET)
     public Object getTokenPointsLeft(@RequestHeader(value="Authorization") String hash,

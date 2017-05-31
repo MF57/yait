@@ -16,7 +16,7 @@ import javax.validation.Valid;
 public class VoteController {
 
     @Autowired
-    IssueRepository issueRepository;
+    private IssueRepository issueRepository;
 
     @RequestMapping(method = RequestMethod.POST)
     public Object voteIssue(@PathVariable("issueId") String issueId,

@@ -1,26 +1,55 @@
 package edu.agh.yait.controllers;
 
+import edu.agh.yait.LdapHandler;
 import edu.agh.yait.dto.IssueDTO;
 import edu.agh.yait.persistence.model.Issue;
 import edu.agh.yait.persistence.model.IssueStatus;
+import edu.agh.yait.persistence.model.User;
 import edu.agh.yait.persistence.repositories.IssueRepository;
+import edu.agh.yait.persistence.repositories.UserRepository;
+import edu.agh.yait.userData.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Date;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/issues")
 public class IssueController {
 
     @Autowired
-    IssueRepository issueRepository;
+    private IssueRepository issueRepository;
+    @Autowired
+    private LdapHandler ldapHandler;
+    @Autowired
+    private UserRepository userRepository;
 
     @RequestMapping(method = RequestMethod.GET)
     public Object getIssues(){
-        return issueRepository.findAll();
+        Iterable<Issue> issues = issueRepository.findAll();
+        for (Issue issue : issues) {
+            setIssueAuthor(issue);
+        }
+        return issues;
+    }
+
+    private void setIssueAuthor(Issue issue) {
+        if (issue.getAuthor() != null) {
+            Optional<UserData> creator = ldapHandler.getUserDataById(issue.getAuthor().getId().toString());
+            if (creator.isPresent()) {
+                User user = new User();
+                user.setLogin(creator.get().getLogin());
+                user.setFirstName(creator.get().getName().orElse(null));
+                user.setLastName(creator.get().getSurname().orElse(null));
+                issue.setAuthor(user);
+            }
+        }
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -36,12 +65,24 @@ public class IssueController {
         issue.setDescription(issueDTO.getDescription());
         issue.setScore(0);
         issue.setStatus(IssueStatus.open);
+        issue.setCreated_at(new Date());
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Optional<UserData> userData = ldapHandler.getUserDataByLogin(auth.getName());
+        if (userData.isPresent()) {
+            User user = new User();
+            user.setId(Integer.valueOf(userData.get().getId()));
+            userRepository.save(user);
+            issue.setAuthor(user);
+        }
 
         return issueRepository.save(issue);
     }
 
     @RequestMapping(value = "/{issueId}", method = RequestMethod.GET)
     public Object getIssueById(@PathVariable("issueId") String issueId){
-        return issueRepository.findOne(Integer.parseInt(issueId));
+        Issue issue = issueRepository.findOne(Integer.parseInt(issueId));
+        setIssueAuthor(issue);
+        return issue;
     }
 }
