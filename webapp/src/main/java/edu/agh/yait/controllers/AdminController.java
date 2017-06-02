@@ -32,7 +32,7 @@ public class AdminController {
         Issue issue = issueRepository.findOne(Integer.valueOf(issueId));
         IssueStatus newStatus = null;
         try {
-            newStatus = IssueStatus.valueOf(status.toUpperCase());
+            newStatus = IssueStatus.valueOf(status);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new CustomErrorObject("Invalid status"));
         }

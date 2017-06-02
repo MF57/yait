@@ -1,29 +1,23 @@
 import {connect} from "react-redux";
 import React, {Component} from "react";
 import * as axios from "axios";
+import {replaceTopics} from "../actions/TopicActions";
 
 let createHandlers = function (dispatch) {
-    let changeTopicStatus = function (id, e) {
+    let changeTopicStatus = function (status, id, e) {
         e.preventDefault();
         e.stopPropagation();
 
-
-        //fixme no possible API endpoint to close issue
-        // let newIssue = {
-        //     title: this.inputs.title,
-        //     description: this.inputs.description
-        // };
-
-
-        // axios.post('/api/v1/issues', newIssue)
-        //     .then(function (response) {
-        //         this.setState({success: true});
-        //         this.setState({error: false});
-        //     }.bind(this))
-        //     .catch(function (error) {
-        //         this.setState({error: true});
-        //         this.setState({success: false});
-        //     }.bind(this))
+        axios.patch('/api/v1/admin/issues/' + id + '/status?status=' + status)
+            .then(function (response) {
+                axios.get('/api/v1/issues')
+                    .then(function (response) {
+                        dispatch(replaceTopics(response.data))
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            })
 
     };
     return {
@@ -48,6 +42,7 @@ class TopicManager extends Component {
                         <th>#</th>
                         <th>Title</th>
                         <th>Description</th>
+                        <th>Status</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -60,21 +55,22 @@ class TopicManager extends Component {
 
     topicList() {
         return this.props.topics.map((el, i) =>
-                <tr key={i}>
-                    <th scope="row">{el.id}</th>
-                    <td>{el.title}</td>
-                    <td>{el.description}</td>
-                    <td>
-                        <a href="#"
-                            onClick={this.handlers.changeTopicStatus.bind(el.id, this)}
-                           className="btn btn-primary">RESOLVED</a>
-                    </td>
-                    <td>
-                        <a href="#"
-                            onClick={this.handlers.changeTopicStatus.bind(el.id, this)}
-                           className="btn btn-danger">CLOSE</a>
-                    </td>
-                </tr>
+            <tr key={i}>
+                <th scope="row">{el.id}</th>
+                <td>{el.title}</td>
+                <td>{el.description}</td>
+                <td>{el.status}</td>
+                <td>
+                    <a href="#"
+                       onClick={ (event) => this.handlers.changeTopicStatus("resolved", el.id, event)}
+                       className="btn btn-primary">RESOLVE</a>
+                </td>
+                <td>
+                    <a href="#"
+                       onClick={(event) => this.handlers.changeTopicStatus("declined", el.id, event)}
+                       className="btn btn-danger">DECLINE</a>
+                </td>
+            </tr>
         )
     }
 
