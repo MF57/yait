@@ -62,7 +62,7 @@ class TopicManager extends Component {
                 <td>{el.status}</td>
                 <td>
                     <a href="#"
-                       onClick={ (event) => this.handlers.changeTopicStatus("resolved", el.id, event)}
+                       onClick={(event) => this.handlers.changeTopicStatus("resolved", el.id, event)}
                        className="btn btn-primary">RESOLVE</a>
                 </td>
                 <td>
