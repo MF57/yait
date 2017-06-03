@@ -24,9 +24,11 @@ repositories {
 
 dependencies {
 	compile project(':ldap')
-	//compile('org.springframework.boot:spring-boot-starter-security')
+	compile('org.springframework.boot:spring-boot-starter-security')
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('com.h2database:h2')
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
+	compile('org.springframework.boot:spring-boot-starter-security')
+	compile('io.jsonwebtoken:jjwt:0.7.0')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }

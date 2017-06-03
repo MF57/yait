@@ -21,8 +21,8 @@ public class Issue {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ", locale = "pl-PL")
     private Date created_at;
 
-//    @Column
-//    private User author;
+    @ManyToOne
+    private User author;
 
     @Column
     private Integer score;
@@ -59,6 +59,14 @@ public class Issue {
 
     public void setCreated_at(Date created_at) {
         this.created_at = created_at;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
     }
 
     public Integer getScore() {

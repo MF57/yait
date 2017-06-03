@@ -53,8 +53,7 @@ public class LdapHandler {
             AndFilter baseFilter = new AndFilter();
             baseFilter.and(new EqualsFilter("objectclass", "posixAccount"));
             baseFilter.and(new EqualsFilter("uid", login));
-            ldapTemplate.authenticate("", baseFilter.encode(), password);
-            return true;
+            return ldapTemplate.authenticate("", baseFilter.encode(), password);
         } catch (Exception e) {
             logger.error("Could not auth user with login: " + login + " - reason: ", e);
             return false;

@@ -2,6 +2,7 @@ package edu.agh.yait.controllers;
 
 import edu.agh.yait.persistence.model.Ticket;
 import edu.agh.yait.persistence.repositories.TicketRepository;
+import edu.agh.yait.security.TokenAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -14,16 +15,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class TokenController {
 
     @Autowired
-    TicketRepository ticketRepository;
+    private TicketRepository ticketRepository;
 
     @RequestMapping(method = RequestMethod.GET)
-    public Object getTokenPointsLeft(@RequestHeader(value="Authorization") String hash,
+    public Object getTokenPointsLeft(@RequestHeader(value="Authorization") String token,
                                      Errors result){
         if(result.hasErrors()){
             return result.getAllErrors();
         }
 
-        Ticket ticket = ticketRepository.findByHash(hash);
+        Ticket ticket = ticketRepository.findByHash(token);
+
+        System.out.println(TokenAuthenticationService.parseTokenType(token));
 
         if(ticket == null){
             return ticket;
