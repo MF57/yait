@@ -12,7 +12,6 @@ let createHandlers = function (dispatch) {
             password: this.inputs.password
         };
 
-
         axios.post('/api/v1/login', login)
             .then(function (response) {
                 console.log(response)

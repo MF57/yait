@@ -15,16 +15,23 @@ export const preloadState = {
         {title: "TOPIC3", status: "DONE", id: 3, points: 0, author: "123", description: "Topic 3 description", creationDate: "1495942865"},
         {title: "TOPIC4", status: "DONE", id: 4, points: 0, author: "123", description: "Topic 4 description", creationDate: "1495942865"}
     ],
-    token: {
+    votingToken: {
         number: "TOKEN_TEST",
         tokenPoints: 10
     },
-    comments: []
+    comments: [],
+    login: {
+        isUserLogged: false,
+        isTokenBeingUsed: false,
+        isAdmin: false,
+        authorizationToken: ""
+    }
+
 };
 
 const rootReducer = combineReducers({
     topics: topicReducer,
-    token: tokenReducer,
+    votingToken: tokenReducer,
     comments: commentReducer
 });
 const store = createStore(rootReducer, preloadState);

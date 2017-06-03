@@ -5,10 +5,11 @@ import {connect} from "react-redux";
 import {registerTokenInStore} from "./actions/TokenActions";
 import {replaceTopics} from "./actions/TopicActions";
 import * as axios from "axios";
+import TopicCreator from "./admin/TopicCreator";
 
 class Main extends Component {
 
-  componentWillMount() {
+    componentWillMount() {
         let dispatch = this.props.dispatch;
 
         let token = this.props.match.params.token;
@@ -29,8 +30,32 @@ class Main extends Component {
     render() {
         return (
             <div className="container">
-                <InfoPanel/>
-                <List topics={this.props.topics}/>
+                <div className="row">
+                    <div className="col-md-6">
+                        <div className="panel panel-default">
+                            <div className="panel-heading">New topic
+                                <button className="btn btn-xs pull-right" data-toggle="collapse" data-target="#newTopic">+
+                                </button>
+                            </div>
+                            <div id="newTopic" className="panel-body collapse">
+                                <TopicCreator />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-6">
+                        <div className="panel panel-default">
+                            <div className="panel-heading">Token
+                                <button className="btn btn-xs pull-right" data-toggle="collapse" data-target="#token">+</button>
+                            </div>
+                            <div className="panel-body collapse" id="token">
+                                <InfoPanel/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="row">
+                    <List topics={this.props.topics}/>
+                </div>
             </div>
         )
     }

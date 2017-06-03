@@ -1,7 +1,6 @@
 import {connect} from "react-redux";
 import React, {Component} from "react";
 import * as axios from "axios";
-import TopicCreator from "./TopicCreator";
 import TopicManager from "./TopicManager";
 import TokenGenerator from "./TokenGenerator";
 
@@ -42,14 +41,6 @@ class Admin
         return (
             <div className="container">
                 <div className="row">
-                    <div className="col-md-6">
-                        <div className="panel panel-default">
-                            <div className="panel-heading">New topic</div>
-                            <div className="panel-body">
-                                <TopicCreator />
-                            </div>
-                        </div>
-                    </div>
                     <div className="col-md-6">
                         <div className="panel panel-default">
                             <div className="panel-body">Create test topic</div>

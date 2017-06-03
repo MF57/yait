@@ -9,11 +9,9 @@ class InfoPanel extends Component {
 
     render() {
         return (
-            <div className="panel panel-default">
-                <div className="panel-body">
+            <div >
                     Token: {this.props.token.number} <br/>
                     Points left: {this.props.token.tokenPoints}
-                </div>
             </div>
         )
     }
@@ -21,7 +19,7 @@ class InfoPanel extends Component {
 
 function mapStateToProps(state) {
     return {
-        token: state.token,
+        token: state.votingToken,
     }
 };
 
