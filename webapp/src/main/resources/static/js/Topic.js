@@ -10,8 +10,8 @@ let createHandlers = function (dispatch) {
         let points = this.inputs.points;
         axios.post('/api/v1/issues/' + id + '/vote', {"points": points})
             .then(function (response) {
-              console.log(response);
-              dispatch(upvoteTopic(id, points));
+                console.log(response);
+                dispatch(upvoteTopic(id, points));
             })
             .catch(function (error) {
                 console.log(error);
@@ -64,13 +64,22 @@ class Topic extends Component {
                         <p> Author: {this.props.author}</p>
                         <p> Created: {new Date(this.props.date).toLocaleString()} </p>
                     </div>
-                    <div className="col-xs-1 text-center media-middle">
-                        <p> Score: {this.props.points} </p>
-                        <input type="number" onChange={this.handlePointsChange} onClick={this.handleInputClick} className="form-control" placeholder="1"
-                               aria-describedby="basic-addon1" min={1}/>
-                        <button onClick={this.handlers.onClickUpvote.bind(this, this.props.id)}
-                              className="btn btn-primary glyphicon glyphicon-arrow-up col-xs-12"><span>VOTE</span></button>
-                    </div>
+
+                    {
+                        this.props.login.isTokenBeingUsed === true ?
+                            <div className="col-xs-1 text-center media-middle">
+                                <p> Score: {this.props.points} </p>
+                                <input type="number" onChange={this.handlePointsChange} onClick={this.handleInputClick}
+                                       className="form-control" placeholder="1"
+                                       aria-describedby="basic-addon1" min={1}/>
+                                <button onClick={this.handlers.onClickUpvote.bind(this, this.props.id)}
+                                        className="btn btn-primary glyphicon glyphicon-arrow-up col-xs-12"><span>VOTE</span>
+                                </button>
+                            </div>
+                            : null
+                    }
+
+
                 </div>
                 <hr/>
             </div>
@@ -78,4 +87,8 @@ class Topic extends Component {
     }
 }
 
-export default connect()(Topic);
+function mapStateToProps(state) {
+    return {login: state.login}
+}
+
+export default connect(mapStateToProps)(Topic);

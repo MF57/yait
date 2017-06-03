@@ -6,6 +6,7 @@ import {registerTokenInStore} from "./actions/TokenActions";
 import {replaceTopics} from "./actions/TopicActions";
 import * as axios from "axios";
 import TopicCreator from "./admin/TopicCreator";
+import {votingTokenInUse} from "./actions/LoginActions";
 
 class Main extends Component {
 
@@ -14,7 +15,8 @@ class Main extends Component {
 
         let token = this.props.match.params.token;
         if (token !== undefined) {
-            dispatch(registerTokenInStore(token))
+            dispatch(registerTokenInStore(token));
+            dispatch(votingTokenInUse())
         }
 
         axios.get('/api/v1/issues')

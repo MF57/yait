@@ -7,6 +7,7 @@ import {tokenReducer} from "./reducers/TokenReducer";
 import {commentReducer} from "./reducers/CommentReducer";
 import {Provider} from "react-redux";
 import {HashRouter} from "react-router-dom";
+import {loginReducer} from "./reducers/LoginReducer";
 
 export const preloadState = {
     topics: [
@@ -32,7 +33,8 @@ export const preloadState = {
 const rootReducer = combineReducers({
     topics: topicReducer,
     votingToken: tokenReducer,
-    comments: commentReducer
+    comments: commentReducer,
+    login: loginReducer
 });
 const store = createStore(rootReducer, preloadState);
 
