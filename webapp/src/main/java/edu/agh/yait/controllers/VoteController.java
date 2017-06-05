@@ -24,7 +24,10 @@ public class VoteController {
     private IssueRepository issueRepository;
 
     @Autowired
-    TicketRepository ticketRepository;
+    private TicketRepository ticketRepository;
+
+//    @Autowired //TODO: Odkomentowac kiedy bedzie mailer
+//    private TicketManager ticketManager;
 
     @RequestMapping(method = RequestMethod.POST)
     public Object voteIssue(@PathVariable("issueId") String issueId,
@@ -50,7 +53,8 @@ public class VoteController {
             return ResponseEntity.status(400).body(new CustomErrorObject("Issue is not opened."));
         }
 
-        Ticket ticket = ticketRepository.findByHash(token);
+        Ticket ticket = ticketRepository.findOne(1);
+//        Ticket ticket = ticketRepository.findOne(TicketManager.validateToken(token)); //TODO: Podmienic kiedy bedzie mailer
         if(ticket == null){
             return ResponseEntity.status(400).body(new CustomErrorObject("Ticket not found."));
         }

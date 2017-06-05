@@ -17,6 +17,9 @@ public class TokenController {
     @Autowired
     private TicketRepository ticketRepository;
 
+//    @Autowired //TODO: Odkomentowac kiedy bedzie mailer
+//    private TicketManager ticketManager;
+
     @RequestMapping(method = RequestMethod.GET)
     public Object getTokenPointsLeft(@RequestHeader(value="Authorization") String token,
                                      Errors result){
@@ -24,7 +27,8 @@ public class TokenController {
             return result.getAllErrors();
         }
 
-        Ticket ticket = ticketRepository.findByHash(token);
+//        Ticket ticket = ticketRepository.findOne(TicketManager.validateToken(token)); //TODO: Podmienic kiedy bedzie mailer
+        Ticket ticket = ticketRepository.findOne(1);
 
         System.out.println(TokenAuthenticationService.parseTokenType(token));
 
