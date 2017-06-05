@@ -6,6 +6,7 @@ import edu.agh.yait.persistence.model.Comment;
 import edu.agh.yait.persistence.model.Issue;
 import edu.agh.yait.persistence.repositories.CommentRepository;
 import edu.agh.yait.persistence.repositories.IssueRepository;
+import edu.agh.yait.persistence.repositories.UserRepository;
 import edu.agh.yait.security.TokenAuthenticationService;
 import edu.agh.yait.utils.CustomErrorObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class CommentsController {
 
     @Autowired
     private IssueRepository issueRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Object getComments(@PathVariable("issueId") String issueId) {
@@ -52,7 +56,7 @@ public class CommentsController {
         Comment comment = new Comment();
         comment.setText(commentDto.getText());
         comment.setIssueId(Integer.parseInt(issueId));
-        comment.setAuthor(userLdapId);
+        comment.setAuthor(userRepository.findOne(userLdapId));
         return commentRepository.save(comment);
     }
 

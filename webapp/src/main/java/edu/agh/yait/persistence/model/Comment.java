@@ -23,8 +23,8 @@ public class Comment {
     @Column
     private String text;
 
-    @Column
-    private String author;
+    @ManyToOne
+    private User author;
 
     public Integer getId() {
         return id;
@@ -58,11 +58,11 @@ public class Comment {
         this.text = text;
     }
 
-    public String getAuthor() {
+    public User getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(User author) {
         this.author = author;
     }
 }
