@@ -33,20 +33,20 @@ public class VoteController {
     public Object voteIssue(@PathVariable("issueId") String issueId,
                             @Valid @RequestBody VoteDTO voteDTO,
                             @RequestHeader HttpHeaders headers,
-                            Errors result){
+                            Errors result) {
 
         String token = headers.get("Authorization").get(0);
-        if(!TokenAuthenticationService.parseTokenType(token).equals("VOTE_TOKEN")){
+        if (!TokenAuthenticationService.parseTokenType(token).equals("VOTE_TOKEN")) {
             return ResponseEntity.status(400).body(new CustomErrorObject("Wrong auth token type."));
         }
 
-        if(result.hasErrors()){
+        if (result.hasErrors()) {
             return result.getAllErrors();
         }
 
         Issue issue = issueRepository.findOne(Integer.parseInt(issueId));
-        if(issue == null){
-            return ResponseEntity.badRequest().body(new CustomErrorObject("Issue, id: " + issueId +  ", does not exists"));
+        if (issue == null) {
+            return ResponseEntity.badRequest().body(new CustomErrorObject("Issue, id: " + issueId + ", does not exists"));
         }
 
         if (issue.getStatus() != IssueStatus.open) {
@@ -55,11 +55,11 @@ public class VoteController {
 
         Ticket ticket = ticketRepository.findOne(1);
 //        Ticket ticket = ticketRepository.findOne(TicketManager.validateToken(token)); //TODO: Podmienic kiedy bedzie mailer
-        if(ticket == null){
+        if (ticket == null) {
             return ResponseEntity.status(400).body(new CustomErrorObject("Ticket not found."));
         }
 
-        if(ticket.getPoints() < voteDTO.getPoints()){
+        if (ticket.getPoints() < voteDTO.getPoints()) {
             return ResponseEntity.status(400).body(new CustomErrorObject("Not enough points left"));
         }
 

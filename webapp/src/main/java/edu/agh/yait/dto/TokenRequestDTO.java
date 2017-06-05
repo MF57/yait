@@ -18,7 +18,7 @@ public class TokenRequestDTO {
     @NotNull
     private Integer tokenPoints;
 
-//    @NotNull
+    //    @NotNull
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ", locale = "pl-PL")
     private Date expires_at;
 

@@ -50,7 +50,7 @@ public class AdminController {
     @RequestMapping(value = "/generate_tokens", method = RequestMethod.POST)
     public Object generateTokens(@Valid @RequestBody TokenRequestDTO request, Errors result) {
 
-        if(result.hasErrors()) {
+        if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors());
         }
 
@@ -63,7 +63,7 @@ public class AdminController {
 
         //TODO: group validation
 
-        for(String email: emails) {
+        for (String email : emails) {
             Ticket ticket = new Ticket();
             ticket.setCreationDate(new Date());
             ticket.setPoints(tokenPoints);
@@ -78,7 +78,7 @@ public class AdminController {
 
     @RequestMapping(value = "/ldapGroups", method = RequestMethod.GET)
     public Object getLdapGroups(Errors result) {
-        if(result.hasErrors()) {
+        if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors());
         }
         return ldapHandler.getGroups();

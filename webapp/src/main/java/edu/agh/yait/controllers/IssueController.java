@@ -31,7 +31,7 @@ public class IssueController {
     private UserRepository userRepository;
 
     @RequestMapping(method = RequestMethod.GET)
-    public Object getIssues(){
+    public Object getIssues() {
         Iterable<Issue> issues = issueRepository.findAll();
         for (Issue issue : issues) {
             setIssueAuthor(issue);
@@ -42,9 +42,9 @@ public class IssueController {
     @RequestMapping(method = RequestMethod.POST)
     public Object addIssue(@Valid @RequestBody IssueDTO issueDTO,
                            @RequestHeader HttpHeaders header,
-                           Errors result){
+                           Errors result) {
 
-        if(result.hasErrors()){
+        if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors());
         }
 
@@ -67,7 +67,7 @@ public class IssueController {
     }
 
     @RequestMapping(value = "/{issueId}", method = RequestMethod.GET)
-    public Object getIssueById(@PathVariable("issueId") String issueId){
+    public Object getIssueById(@PathVariable("issueId") String issueId) {
         Issue issue = issueRepository.findOne(Integer.parseInt(issueId));
         setIssueAuthor(issue);
         return issue;

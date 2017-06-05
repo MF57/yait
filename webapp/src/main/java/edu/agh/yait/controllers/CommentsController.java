@@ -12,11 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/issues/{issueId}/comments")
@@ -29,8 +27,7 @@ public class CommentsController {
     private IssueRepository issueRepository;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public Object getComments(@PathVariable("issueId") String issueId)
-    {
+    public Object getComments(@PathVariable("issueId") String issueId) {
         return commentRepository.findAllByIssueId(Integer.parseInt(issueId));
     }
 
@@ -38,15 +35,15 @@ public class CommentsController {
     public Object addComment(@Valid @RequestBody CommentDTO commentDto,
                              @RequestHeader HttpHeaders header,
                              Errors result,
-                             @PathVariable("issueId") String issueId){
+                             @PathVariable("issueId") String issueId) {
 
-        if(result.hasErrors()){
+        if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors());
         }
 
         Issue issue = issueRepository.findOne(Integer.parseInt(issueId));
-        if(issue == null) {
-            return ResponseEntity.badRequest().body(new CustomErrorObject("Issue, id: " + issueId +  ", does not exists"));
+        if (issue == null) {
+            return ResponseEntity.badRequest().body(new CustomErrorObject("Issue, id: " + issueId + ", does not exists"));
         }
 
         String token = header.get("Authorization").get(0);
@@ -61,7 +58,7 @@ public class CommentsController {
 
     @RequestMapping(value = "/{commentId}", method = RequestMethod.GET)
     public Object getCommentById(@PathVariable("issueId") String issueId,
-                               @PathVariable("commentId") String commentId){
+                                 @PathVariable("commentId") String commentId) {
 
         //List<Comment> comments = commentRepository.findOne(Integer.parseInt(commentId));
         return commentRepository.findOne(Integer.parseInt(commentId));

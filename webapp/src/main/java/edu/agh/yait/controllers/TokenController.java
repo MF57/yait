@@ -21,9 +21,9 @@ public class TokenController {
 //    private TicketManager ticketManager;
 
     @RequestMapping(method = RequestMethod.GET)
-    public Object getTokenPointsLeft(@RequestHeader(value="Authorization") String token,
-                                     Errors result){
-        if(result.hasErrors()){
+    public Object getTokenPointsLeft(@RequestHeader(value = "Authorization") String token,
+                                     Errors result) {
+        if (result.hasErrors()) {
             return result.getAllErrors();
         }
 
@@ -32,7 +32,7 @@ public class TokenController {
 
         System.out.println(TokenAuthenticationService.parseTokenType(token));
 
-        if(ticket == null){
+        if (ticket == null) {
             return ticket;
         }
 
