@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import {ActivityIndicator, StyleSheet, Text, View, TextInput, Button} from 'react-native';
+import { NavigationActions } from 'react-navigation'
 
 export default class AddComment extends React.Component {
   static navigationOptions = ({navigation}) => ({
@@ -16,16 +17,17 @@ export default class AddComment extends React.Component {
   }
 
   addComment = () => {
-    const {id,title} = this.props.navigation.state.params
+    const {issueId,title, goBack} = this.props.navigation.state.params
     this.setState({loading: true})
-    axios.post('/issues/' + id + '/comments', {
+    axios.post('/issues/' + issueId + '/comments', {
       text: this.state.body
     })
     .then((response) => {
-      this.props.navigation.navigate('Single', {issueId: id, title: title})
+      goBack();
+      this.props.navigation.goBack()
     })
     .catch((error) => {
-      
+      console.log(error)
     });
   }
 
@@ -38,13 +40,12 @@ export default class AddComment extends React.Component {
         <TextInput
           multiline={true}
           numberOfLines={10}
-          onChange={(body) => this.setState({body})}
+          onChangeText={(body) => this.setState({body})}
           value={this.state.body}
           style={styles.input}
           returnKeyType="done"
         />
         <Button onPress={() => this.addComment()} title="Submit comment" />
-
       </View>
     );
   }
