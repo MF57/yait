@@ -64,7 +64,9 @@ class Main extends Component {
 }
 
 function mapStateToProps(state) {
-    return {topics: state.topics}
+    return {
+        topics: state.topics
+    }
 }
 
 export default connect(mapStateToProps)(Main);

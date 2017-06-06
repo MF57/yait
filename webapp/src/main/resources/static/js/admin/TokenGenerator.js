@@ -3,6 +3,7 @@ import React, {Component} from "react";
 import * as axios from "axios";
 import DatePicker from "react-bootstrap-date-picker";
 import * as EmailValidator from "email-validator";
+import LdapGroups from '../LdapGroups'
 
 let createHandlers = function (dispatch) {
     let generateTokens = function (e) {
@@ -21,10 +22,15 @@ let createHandlers = function (dispatch) {
         }
         let xyx = misspelledEmails.join().replace(",", "\n");
         this.setState({mails: xyx});
+        if(xyx.length > 0){
+            this.setState({error: true});
+        } else {
+            this.setState({error: false});
+        }
 
         let tokenData = {
             emails: parsedEmails,
-            // ldapGroups: this.inputs.groups,
+            ldapGroups: this.inputs.ldapGroups,
             tokenPoints: this.inputs.tokens,
             expires_at: this.inputs.date
         };
@@ -71,6 +77,11 @@ class TokenGenerator extends Component {
         this.inputs.tokens = event.target.value
     }
 
+    handleLdapGroupsChange(selectedCheckboxes) {
+        this.inputs.ldapGroups = selectedCheckboxes;
+        console.log(selectedCheckboxes);
+    }
+
     render() {
         return (
             <div>
@@ -88,25 +99,49 @@ class TokenGenerator extends Component {
                         </div> : null
                 }
 
-                <div className="row form-group col-md-6">
-                    <div className="col-md-12">
+                <div className="col-md-6">
+                    <div className="row form-group col-md-12">
                         <textarea className="form-control" onChange={this.handleMailsChange} placeholder="List of email addresses"
                                   rows="5" id="description" value={this.state.mails}/>
                     </div>
-                    <div className="col-xs-4 text-center media-middle">
-                        <DatePicker className="form-control" onChange={this.handleDateChange} />
+                    <div className="col-md-6">
+                        <div className="row form-group">
+                            <div className="col-md-4">
+                                Expiring:
+                            </div>
+                            <div className="col-md-8">
+                                <DatePicker className="form-control" onChange={this.handleDateChange} />
+                            </div>
+                        </div>
+                        <div className="row form-group">
+                            <div className="col-md-4">
+                                Tokens:
+                            </div>
+                            <div className="col-md-8">
+                                <input type="number" onChange={this.handleTokensChange} className="form-control" placeholder="1"
+                                   aria-describedby="basic-addon1" min={1}/>
+                            </div>
+                        </div>
+                        <div className="row form-group">
+                            <div className="col-md-12">
+                                <a href="#" onClick={this.handlers.generateTokens.bind(this)} className="btn btn-primary">GENERATE</a>
+
+                            </div>
+                        </div>
                     </div>
-                    <div className="col-xs-2 text-center media-middle">
-                        <input type="number" onChange={this.handleTokensChange} className="form-control" placeholder="1"
-                           aria-describedby="basic-addon1" min={1}/>
-                    </div>
-                    <div className="col-md-4">
-                        <a href="#" onClick={this.handlers.generateTokens.bind(this)} className="btn btn-primary">GENERATE</a>
-                    </div>
+                </div>
+                <div className="col-md-6">
+                    <LdapGroups ldapGroups={this.props.ldapGroups} handleCheckboxChange={this.handleLdapGroupsChange.bind(this)}/>
                 </div>
             </div>
         )
     }
 }
 
-export default connect()(TokenGenerator);
+
+function mapStateToProps(state) {
+    return { ldapGroups: state.ldapGroups}
+}
+
+
+export default connect(mapStateToProps)(TokenGenerator);

@@ -15,7 +15,7 @@ class Comment extends Component {
             </p>
             <div className="media-body">
               <h4 className="media-heading user_name">{this.props.author}</h4>
-              {this.props.description}
+              {this.props.text}
             </div>
           </div>
         )

@@ -9,7 +9,7 @@ export function topicReducer(state, action) {
 
     switch (action.type) {
         case UPVOTE_TOPIC: {
-            return upvoteTopic(action.id, action.points, state);
+            return upvoteTopic(action.id, action.score, state);
         }
         case REPLACE_TOPICS: {
             return replaceTopics(action.topics)
@@ -19,16 +19,16 @@ export function topicReducer(state, action) {
 }
 
 let replaceTopics = function (newTopics) {
-    console.log(newTopics)
-    console.log("Replace topics")
+    console.log(newTopics);
+    console.log("Replace topics");
     return newTopics
 };
 
-let upvoteTopic = function (id, points, topics) {
+let upvoteTopic = function (id, score, topics) {
     let newTopics = [];
     for (let i = 0; i < topics.length; i++) {
         if (topics[i].id === id) {
-            newTopics.push(Object.assign({}, topics[i], {points: topics[i].points + parseInt(points)}));
+            newTopics.push(Object.assign({}, topics[i], {score: topics[i].score + parseInt(score)}));
         } else {
             newTopics.push(topics[i]);
         }

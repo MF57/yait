@@ -3,8 +3,9 @@ import React, {Component} from "react";
 import * as axios from "axios";
 import TopicManager from "./TopicManager";
 import TokenGenerator from "./TokenGenerator";
+import {replaceLdapGroups} from "../actions/LdapGroupsActions"
 
-let createHandlers = function (dispatch) {
+let createHandlers = function (dispatch, authorizationToken) {
     let createTopic = function (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -14,7 +15,9 @@ let createHandlers = function (dispatch) {
             description: "Description"
         };
 
-        axios.post('/api/v1/issues', exampleIssue,)
+        axios.post('/api/v1/issues', exampleIssue, {
+            headers: {'Authorization': authorizationToken}
+        })
             .then(function (response) {
                 console.log(response);
             })
@@ -31,10 +34,21 @@ let createHandlers = function (dispatch) {
 class Admin
     extends Component {
 
+    componentWillMount() {
+        let dispatch = this.props.dispatch;
+        axios.get('/api/v1/admin/ldapGroups')
+            .then(function (response) {
+                dispatch(replaceLdapGroups(response.data));
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
 
     constructor(props) {
         super(props);
-        this.handlers = createHandlers(this.props.dispatch);
+        this.handlers = createHandlers(this.props.dispatch, this.props.login.authorizationToken);
     }
 
     render() {
@@ -78,4 +92,8 @@ class Admin
     }
 }
 
-export default connect()(Admin);
+function mapStateToProps(state) {
+    return {login: state.login}
+}
+
+export default connect(mapStateToProps)(Admin);

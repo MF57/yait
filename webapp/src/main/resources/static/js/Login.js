@@ -1,20 +1,23 @@
 import {connect} from "react-redux";
 import React, {Component} from "react";
 import * as axios from "axios";
+import {login} from "./actions/LoginActions";
+
 
 let createHandlers = function (dispatch) {
-    let login = function (e) {
+    let loginAction = function (e) {
         e.preventDefault();
         e.stopPropagation();
 
-        let login = {
+        let loginData = {
             login: this.inputs.login,
             password: this.inputs.password
         };
 
-        axios.post('/api/v1/login', login)
+        axios.post('/api/v1/login', loginData)
             .then(function (response) {
-                console.log(response)
+                console.log(response);
+                dispatch(login(response.data.authenticationToken))
             }.bind(this))
             .catch(function (error) {
                 console.log(error)
@@ -22,7 +25,7 @@ let createHandlers = function (dispatch) {
 
     };
     return {
-        login
+        loginAction
     };
 };
 
@@ -31,7 +34,7 @@ class Login extends Component {
 
     constructor(props) {
         super(props);
-        this.handlers = createHandlers();
+        this.handlers = createHandlers(this.props.dispatch);
         this.inputs = {};
     }
 
@@ -70,7 +73,7 @@ class Login extends Component {
 
                                 <div style={{marginTop: '10px'}} className="form-group">
                                     <div className="col-sm-12 controls">
-                                        <a onClick={this.handlers.login.bind(this)} id="btn-login" className="btn btn-success">Login </a>
+                                        <a onClick={this.handlers.loginAction.bind(this)} id="btn-login" className="btn btn-success">Login </a>
                                     </div>
                                 </div>
                             </form>

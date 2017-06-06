@@ -33,7 +33,7 @@ class List extends Component {
     open(topic, dispatch) {
       axios.get('/api/v1/issues/' + topic.id + '/comments')
           .then(function (response) {
-              dispatch(replaceComments(response.data))
+              dispatch(replaceComments(response.data));
               console.log(response);
           })
           .catch(function (error) {
@@ -47,8 +47,8 @@ class List extends Component {
 
     topicList() {
         return this.props.topics.map((el,i)=>
-            <Topic title={el.title} status={el.status} id={el.id} points={el.points} author={el.author}
-                   description={el.description} date={el.creationDate} key={i} onClickTopic={this.open.bind(this)}/>
+            <Topic title={el.title} status={el.status} id={el.id} score={el.score} author={el.author.firstName + ' ' + el.author.lastName}
+                   description={el.description} date={el.created_at} key={i} onClickTopic={this.open.bind(this)}/>
         )
     }
 
@@ -58,7 +58,9 @@ class List extends Component {
 }
 
 function mapStateToProps(state) {
-    return {comments: state.comments}
+    return {
+        comments: state.comments
+    }
 }
 
 export default connect(mapStateToProps)(List);

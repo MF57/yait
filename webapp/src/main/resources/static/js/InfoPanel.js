@@ -19,8 +19,8 @@ class InfoPanel extends Component {
 
 function mapStateToProps(state) {
     return {
-        token: state.votingToken,
+        token: state.votingToken
     }
-};
+}
 
 export default connect(mapStateToProps)(InfoPanel);

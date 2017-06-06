@@ -2,7 +2,7 @@ import {connect} from "react-redux";
 import React, {Component} from "react";
 import * as axios from "axios";
 
-let createHandlers = function (dispatch) {
+let createHandlers = function (dispatch, authorizationToken) {
     let createTopic = function (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -13,7 +13,9 @@ let createHandlers = function (dispatch) {
         };
 
 
-        axios.post('/api/v1/issues', newIssue)
+        axios.post('/api/v1/issues', newIssue, {
+            headers: {'Authorization': authorizationToken}
+        })
             .then(function (response) {
                 this.setState({success: true});
                 this.setState({error: false});
@@ -33,7 +35,7 @@ class TopicCreator extends Component {
 
     constructor(props) {
         super(props);
-        this.handlers = createHandlers(this.props.dispatch);
+        this.handlers = createHandlers(this.props.dispatch, this.props.login.authorizationToken);
         this.inputs = {};
         this.state = {};
         this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
@@ -87,4 +89,10 @@ class TopicCreator extends Component {
     }
 }
 
-export default connect()(TopicCreator);
+
+function mapStateToProps(state) {
+    return {login: state.login}
+}
+
+
+export default connect(mapStateToProps)(TopicCreator);

@@ -4,6 +4,10 @@ import {preloadState} from "../index";
 
 
 export function commentReducer(state, action) {
+    if (state === undefined) {
+        return preloadState
+    }
+
     switch (action.type) {
         case REPLACE_COMMENTS: {
             return replaceComments(action.comments);

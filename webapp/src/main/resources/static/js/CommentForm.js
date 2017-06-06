@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import * as axios from "axios";
 import {addComment} from "./actions/CommentActions";
 
-let createHandlers = function (dispatch) {
+let createHandlers = function (dispatch, authorizationToken) {
     let submitComment = function (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -12,7 +12,9 @@ let createHandlers = function (dispatch) {
             text: this.inputs.comment
         };
 
-        axios.post('/api/v1/issues/' + this.props.id + '/comments', newComment)
+        axios.post('/api/v1/issues/' + this.props.id + '/comments', newComment, {
+            headers: {'Authorization': authorizationToken}
+        })
             .then(function (response) {
                 console.log(response);
                 dispatch(addComment(response.data))
@@ -32,7 +34,7 @@ class CommentForm extends Component {
 
     constructor(props) {
         super(props);
-        this.handlers = createHandlers(this.props.dispatch);
+        this.handlers = createHandlers(this.props.dispatch, this.props.login.authorizationToken);
         this.inputs = {};
         this.handleCommentChange = this.handleCommentChange.bind(this);
     }
@@ -52,4 +54,9 @@ class CommentForm extends Component {
     }
 }
 
-export default connect()(CommentForm);
+function mapStateToProps(state) {
+    return {login: state.login}
+}
+
+
+export default connect(mapStateToProps)(CommentForm);

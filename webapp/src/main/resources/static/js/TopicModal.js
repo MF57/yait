@@ -4,8 +4,6 @@ import {Button, Modal} from "react-bootstrap";
 import Comment from "./Comment";
 import CommentForm from "./CommentForm";
 import Infinite from 'react-infinite';
-import {upvoteTopic} from "./actions/TopicActions";
-import {addCOmment} from "./actions/CommentActions";
 
 class TopicModal extends Component {
 
@@ -16,9 +14,14 @@ class TopicModal extends Component {
 
     commentList() {
         return this.props.comments.map((el, i) =>
-            <Comment author={el.author} description={el.comment} date={el.creationDate} key={i}/>
+            <Comment author={el.author} text={el.text} date={el.created_at} key={i}/>
         )
     };
+    //TO DO
+    hasUserCommented() {
+        return true;
+        // return (this.props.comments.map((el, i) => el.author).indexOf(this.props.login.username) != -1)
+    }
 
 
     render() {
@@ -33,7 +36,15 @@ class TopicModal extends Component {
                           {commentList}
                         </Infinite>
                       <div className="row">
-                        <CommentForm id={this.props.topic.id}/>
+                          {
+                              this.hasUserCommented() ?
+                                  <div className="alert alert-success" id="errorTopicAdd">
+                                      You have already commented this issue!
+                                  </div>
+                                  :
+                                  <CommentForm id={this.props.topic.id}/>
+                          }
+
                       </div>
 
                 </Modal.Body>

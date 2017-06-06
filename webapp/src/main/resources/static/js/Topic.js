@@ -3,15 +3,17 @@ import {connect} from "react-redux";
 import {upvoteTopic} from "./actions/TopicActions";
 import * as axios from "axios";
 
-let createHandlers = function (dispatch) {
+let createHandlers = function (dispatch, votingToken) {
     let onClickUpvote = function (id, e) {
         e.preventDefault();
         e.stopPropagation();
-        let points = this.inputs.points;
-        axios.post('/api/v1/issues/' + id + '/vote', {"points": points})
+        let score = this.inputs.score;
+        axios.post('/api/v1/issues/' + id + '/vote', {"points": score}, {
+            headers: {'Authorization': votingToken}
+        })
             .then(function (response) {
                 console.log(response);
-                dispatch(upvoteTopic(id, points));
+                dispatch(upvoteTopic(id, score));
             })
             .catch(function (error) {
                 console.log(error);
@@ -26,14 +28,14 @@ class Topic extends Component {
 
     constructor(props) {
         super(props);
-        this.handlers = createHandlers(this.props.dispatch);
+        this.handlers = createHandlers(this.props.dispatch, this.props.votingToken.number);
         this.inputs = {};
-        this.handlePointsChange = this.handlePointsChange.bind(this);
+        this.handleScoreChange = this.handleScoreChange.bind(this);
         this.handleInputClick = this.handleInputClick.bind(this);
     };
 
-    handlePointsChange(event) {
-        this.inputs.points = event.target.value
+    handleScoreChange(event) {
+        this.inputs.score = event.target.value
     }
 
     handleInputClick(event) {
@@ -46,7 +48,7 @@ class Topic extends Component {
             id: this.props.id,
             title: this.props.title,
             status: this.props.status,
-            points: this.props.points,
+            score: this.props.score,
             author: this.props.author,
             description: this.props.description,
             date: this.props.date
@@ -68,8 +70,8 @@ class Topic extends Component {
                     {
                         this.props.login.isTokenBeingUsed === true ?
                             <div className="col-xs-1 text-center media-middle">
-                                <p> Score: {this.props.points} </p>
-                                <input type="number" onChange={this.handlePointsChange} onClick={this.handleInputClick}
+                                <p> Score: {this.props.score} </p>
+                                <input type="number" onChange={this.handleScoreChange} onClick={this.handleInputClick}
                                        className="form-control" placeholder="1"
                                        aria-describedby="basic-addon1" min={1}/>
                                 <button onClick={this.handlers.onClickUpvote.bind(this, this.props.id)}
@@ -78,8 +80,6 @@ class Topic extends Component {
                             </div>
                             : null
                     }
-
-
                 </div>
                 <hr/>
             </div>
@@ -88,7 +88,10 @@ class Topic extends Component {
 }
 
 function mapStateToProps(state) {
-    return {login: state.login}
+    return {
+        login: state.login,
+        votingToken: state.votingToken
+    }
 }
 
 export default connect(mapStateToProps)(Topic);
