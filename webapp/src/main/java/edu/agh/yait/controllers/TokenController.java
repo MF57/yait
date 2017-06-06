@@ -1,5 +1,6 @@
 package edu.agh.yait.controllers;
 
+import edu.agh.yait.mailer.TicketManager;
 import edu.agh.yait.persistence.model.Ticket;
 import edu.agh.yait.persistence.repositories.TicketRepository;
 import edu.agh.yait.security.TokenAuthenticationService;
@@ -17,8 +18,8 @@ public class TokenController {
     @Autowired
     private TicketRepository ticketRepository;
 
-//    @Autowired //TODO: Odkomentowac kiedy bedzie mailer
-//    private TicketManager ticketManager;
+    @Autowired
+    private TicketManager ticketManager;
 
     @RequestMapping(method = RequestMethod.GET)
     public Object getTokenPointsLeft(@RequestHeader(value = "Authorization") String token,
@@ -27,8 +28,7 @@ public class TokenController {
             return result.getAllErrors();
         }
 
-//        Ticket ticket = ticketRepository.findOne(TicketManager.validateToken(token)); //TODO: Podmienic kiedy bedzie mailer
-        Ticket ticket = ticketRepository.findOne(1);
+        Ticket ticket = ticketRepository.findOne(ticketManager.validateToken(token));
 
         System.out.println(TokenAuthenticationService.parseTokenType(token));
 

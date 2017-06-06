@@ -5,9 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.apache.tomcat.util.http.parser.Authorization;
-import org.springframework.security
-        .authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,14 +17,14 @@ import static java.util.Collections.emptyList;
 
 public class TokenAuthenticationService {
 
-    private enum type{
+    private enum type {
         auth, vote
     }
 
     static final long EXPIRATIONTIME = 864_000_000; // 10 days
 
     //TODO: move secret to properties
-    static final String SECRET = "ThisIsASecret";
+    static final String SECRET = "rEZp+AKS9d+DWCVocoZisAVadkF9DEvPbrMD4Dsluzw=";
     static final String AUTHORIZATION_STRING = "Authorization";
 
     static void addAuthentication(HttpServletResponse res, String username) throws IOException {
@@ -60,7 +58,7 @@ public class TokenAuthenticationService {
         return null;
     }
 
-    public static String parseTokenType(String token){
+    public static String parseTokenType(String token) {
         String type = Jwts.parser()
                 .setSigningKey(SECRET)
                 .parseClaimsJws(token)
@@ -69,7 +67,7 @@ public class TokenAuthenticationService {
         return type;
     }
 
-    public static String parseTokenLdapId(String token){
+    public static String parseTokenLdapId(String token) {
         System.out.println(token);
         String user = Jwts.parser()
                 .setSigningKey(SECRET)
@@ -79,7 +77,7 @@ public class TokenAuthenticationService {
         return user;
     }
 
-    public static String generateVoteToken(Integer tokenId){
+    public static String generateVoteToken(Integer tokenId) {
         String JWT = Jwts.builder()
                 .claim("type", AuthorizationType.VOTE_TOKEN)
                 .setSubject(tokenId.toString())

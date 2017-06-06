@@ -64,7 +64,6 @@ public class CommentsController {
     public Object getCommentById(@PathVariable("issueId") String issueId,
                                  @PathVariable("commentId") String commentId) {
 
-        //List<Comment> comments = commentRepository.findOne(Integer.parseInt(commentId));
         return commentRepository.findOne(Integer.parseInt(commentId));
     }
 }

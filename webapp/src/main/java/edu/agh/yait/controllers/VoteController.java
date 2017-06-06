@@ -1,6 +1,7 @@
 package edu.agh.yait.controllers;
 
 import edu.agh.yait.dto.VoteDTO;
+import edu.agh.yait.mailer.TicketManager;
 import edu.agh.yait.persistence.model.Issue;
 import edu.agh.yait.persistence.model.IssueStatus;
 import edu.agh.yait.persistence.model.Ticket;
@@ -26,8 +27,8 @@ public class VoteController {
     @Autowired
     private TicketRepository ticketRepository;
 
-//    @Autowired //TODO: Odkomentowac kiedy bedzie mailer
-//    private TicketManager ticketManager;
+    @Autowired
+    private TicketManager ticketManager;
 
     @RequestMapping(method = RequestMethod.POST)
     public Object voteIssue(@PathVariable("issueId") String issueId,
@@ -53,8 +54,7 @@ public class VoteController {
             return ResponseEntity.status(400).body(new CustomErrorObject("Issue is not opened."));
         }
 
-        Ticket ticket = ticketRepository.findOne(1);
-//        Ticket ticket = ticketRepository.findOne(TicketManager.validateToken(token)); //TODO: Podmienic kiedy bedzie mailer
+        Ticket ticket = ticketRepository.findOne(ticketManager.validateToken(token));
         if (ticket == null) {
             return ResponseEntity.status(400).body(new CustomErrorObject("Ticket not found."));
         }

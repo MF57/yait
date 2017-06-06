@@ -1,13 +1,15 @@
 package edu.agh.yait.persistence.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import edu.agh.yait.LdapFascade;
+import edu.agh.yait.userData.UserData;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Optional;
 
 @Entity
 public class User {
-
     @Id
     @Column
     @JsonIgnore
@@ -63,4 +65,12 @@ public class User {
         this.firstLogin = firstLogin;
     }
 
+    public void fetchInformation(LdapFascade ldapFascade) {
+        Optional<UserData> creator = ldapFascade.getUserDataById(getLdapId());
+        if (creator.isPresent()) {
+            setLogin(creator.get().getLogin());
+            setFirstName(creator.get().getName().orElse(null));
+            setLastName(creator.get().getSurname().orElse(null));
+        }
+    }
 }

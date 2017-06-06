@@ -1,7 +1,8 @@
 package edu.agh.yait.controllers;
 
-import edu.agh.yait.LdapHandler;
+import edu.agh.yait.LdapFascade;
 import edu.agh.yait.dto.TokenRequestDTO;
+import edu.agh.yait.mailer.Mailer;
 import edu.agh.yait.persistence.model.Issue;
 import edu.agh.yait.persistence.model.IssueStatus;
 import edu.agh.yait.persistence.model.Ticket;
@@ -28,9 +29,9 @@ public class AdminController {
     @Autowired
     private TicketRepository ticketRepository;
     @Autowired
-    private LdapHandler ldapHandler;
-//    @Autowired //TODO: Odkomentować kiedy będzie działał mailer
-//    private Mailer mailer;
+    private LdapFascade ldapFascade;
+    @Autowired
+    private Mailer mailer;
 
 
     @RequestMapping(value = "issues/{issueId}/status", method = RequestMethod.PATCH)
@@ -70,10 +71,10 @@ public class AdminController {
             ticket.setExpirationDate(expirationDate);
             ticket = ticketRepository.save(ticket);
 
-            //mailer.sendMail(String email, Ticket ticket_ktory_jest_w_bazie); //TODO: Odkomentować kiedy będzie mailer
+            mailer.sendMail(email, ticket);
         }
 
-        return ticketRepository.findAll();
+        return ResponseEntity.ok();
     }
 
     @RequestMapping(value = "/ldapGroups", method = RequestMethod.GET)
@@ -81,6 +82,6 @@ public class AdminController {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors());
         }
-        return ldapHandler.getGroups();
+        return ldapFascade.getGroups();
     }
 }
