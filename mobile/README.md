@@ -84,11 +84,11 @@ This will start the process of "ejecting" from Create React Native App's build s
 
 ## Customizing App Display Name and Icon
 
-You can edit `app.json` to include [configuration keys](https://docs.expo.io/versions/latest/guides/configuration.html) under the `expo` secret_key.
+You can edit `app.json` to include [configuration keys](https://docs.expo.io/versions/latest/guides/configuration.html) under the `expo` key.
 
-To change your app's display name, set the `expo.name` secret_key in `app.json` to an appropriate string.
+To change your app's display name, set the `expo.name` key in `app.json` to an appropriate string.
 
-To set an app icon, set the `expo.icon` secret_key in `app.json` to be either a local path or a URL. It's recommended that you use a 512x512 png file with transparency.
+To set an app icon, set the `expo.icon` key in `app.json` to be either a local path or a URL. It's recommended that you use a 512x512 png file with transparency.
 
 ## Writing and Running Tests
 
