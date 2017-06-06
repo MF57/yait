@@ -1,15 +1,17 @@
+# SMTP server settings
 mailer.host=
 mailer.port=
 mailer.username=
 mailer.password=
-
-mailer.ticket.secretKey=
-
 mailer.mail.smtp.starttls.enable=true
 mailer.mail.smtp.auth=true
 mailer.mail.transport.protocol=smtp
 mailer.mail.debug=true
 
+# secret key as base for jwt signature generation
+mailer.ticket.secretKey=
+
+# base url for accessing tickets; jwt token is appended and sent to users
 mailer.ticket.url=http://localhost/hash/
 mailer.template.name=ticket_template.txt
 
