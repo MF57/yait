@@ -4,6 +4,7 @@ package edu.agh.yait.controllers;
 import edu.agh.yait.dto.CommentDTO;
 import edu.agh.yait.persistence.model.Comment;
 import edu.agh.yait.persistence.model.Issue;
+import edu.agh.yait.persistence.model.User;
 import edu.agh.yait.persistence.repositories.CommentRepository;
 import edu.agh.yait.persistence.repositories.IssueRepository;
 import edu.agh.yait.persistence.repositories.UserRepository;
@@ -16,6 +17,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/issues/{issueId}/comments")
@@ -32,7 +34,9 @@ public class CommentsController {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Object getComments(@PathVariable("issueId") String issueId) {
-        return commentRepository.findAllByIssueId(Integer.parseInt(issueId));
+        List<Comment> comments = commentRepository.findAllByIssueId(Integer.parseInt(issueId));
+        comments.forEach(comment -> comment.getAuthor().fetchInformation());
+        return comments;
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
@@ -56,7 +60,9 @@ public class CommentsController {
         Comment comment = new Comment();
         comment.setText(commentDto.getText());
         comment.setIssueId(Integer.parseInt(issueId));
-        comment.setAuthor(userRepository.findOne(userLdapId));
+        User author = userRepository.findOne(userLdapId);
+        author.fetchInformation();
+        comment.setAuthor(author);
         return commentRepository.save(comment);
     }
 
@@ -64,6 +70,8 @@ public class CommentsController {
     public Object getCommentById(@PathVariable("issueId") String issueId,
                                  @PathVariable("commentId") String commentId) {
 
-        return commentRepository.findOne(Integer.parseInt(commentId));
+        Comment comment = commentRepository.findOne(Integer.parseInt(commentId));
+        comment.getAuthor().fetchInformation();
+        return comment;
     }
 }

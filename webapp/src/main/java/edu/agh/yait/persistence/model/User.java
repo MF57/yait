@@ -3,6 +3,7 @@ package edu.agh.yait.persistence.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.agh.yait.LdapFascade;
 import edu.agh.yait.userData.UserData;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -10,6 +11,11 @@ import java.util.Optional;
 
 @Entity
 public class User {
+    @Autowired
+    @JsonIgnore
+    @Transient
+    private LdapFascade ldapFascade;
+
     @Id
     @Column
     @JsonIgnore
@@ -65,7 +71,7 @@ public class User {
         this.firstLogin = firstLogin;
     }
 
-    public void fetchInformation(LdapFascade ldapFascade) {
+    public void fetchInformation() {
         Optional<UserData> creator = ldapFascade.getUserDataById(getLdapId());
         if (creator.isPresent()) {
             setLogin(creator.get().getLogin());

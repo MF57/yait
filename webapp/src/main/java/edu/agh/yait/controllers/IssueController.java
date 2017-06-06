@@ -1,6 +1,5 @@
 package edu.agh.yait.controllers;
 
-import edu.agh.yait.LdapFascade;
 import edu.agh.yait.dto.IssueDTO;
 import edu.agh.yait.persistence.model.Issue;
 import edu.agh.yait.persistence.model.IssueStatus;
@@ -20,8 +19,6 @@ import java.util.Date;
 @RestController
 @RequestMapping("/api/v1/issues")
 public class IssueController {
-    @Autowired
-    private LdapFascade ldapFascade;
 
     @Autowired
     private IssueRepository issueRepository;
@@ -57,7 +54,7 @@ public class IssueController {
         User user = new User();
         user.setLdapId(userLdapId);
         userRepository.save(user);
-        user.fetchInformation(ldapFascade);
+        user.fetchInformation();
         issue.setAuthor(user);
 
         return issueRepository.save(issue);
@@ -67,14 +64,14 @@ public class IssueController {
     public Object getIssueById(@PathVariable("issueId") String issueId) {
         Issue issue = issueRepository.findOne(Integer.parseInt(issueId));
         fetchIssueUserData(issue);
-        issue.getComments().forEach(e -> e.getAuthor().fetchInformation(ldapFascade));
+        issue.getComments().forEach(e -> e.getAuthor().fetchInformation());
         return issue;
     }
 
     private void fetchIssueUserData(Issue issue) {
         if (issue.getAuthor() != null) {
-            issue.getAuthor().fetchInformation(ldapFascade);
+            issue.getAuthor().fetchInformation();
         }
-        issue.getComments().forEach(comment -> comment.getAuthor().fetchInformation(ldapFascade));
+        issue.getComments().forEach(comment -> comment.getAuthor().fetchInformation());
     }
 }
