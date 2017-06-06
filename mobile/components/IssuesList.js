@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { StyleSheet, Text, View, ListView, TouchableHighlight, ActivityIndicator, Button } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableHighlight, ActivityIndicator, Button } from 'react-native';
 import {DefaultContainer} from "../App";
 
 export default class IssuesList extends React.Component {
@@ -10,18 +10,21 @@ export default class IssuesList extends React.Component {
 
   constructor(props) {
     super(props);
-    this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       loading: true
     };
   }
 
   componentDidMount() {
+    this._refresh()
+  }
+  _refresh = () => {
     axios.get('/issues')
     .then((response) => {
       this.setState({
         loading: false,
-        dataSource: this.ds.cloneWithRows(response.data)
+        refreshing: false,
+        data: response.data,
       })
     })
     .catch((error) => {
@@ -30,22 +33,34 @@ export default class IssuesList extends React.Component {
     });
   }
 
+  _onRefresh = () => {
+    this.setState({refreshing: true});
+    this._refresh()
+  }
+
+  _keyExtractor = (item, index) => item.id;
+
   render() {
     if(this.state.loading) {
       return <ActivityIndicator />;
     }
     return (
       <DefaultContainer>
-        <ListView
-            dataSource={this.state.dataSource}
-            renderRow={(rowData) => <TouchableHighlight onPress={() => this.props.navigation.navigate('Single', {issueId: rowData.id, title: rowData.title})}>
+        <FlatList
+            onRefresh={this._onRefresh}
+            refreshing={this.state.refreshing}
+            keyExtractor={this._keyExtractor}
+            data={this.state.data}
+            renderItem={(item) => {
+              const rowData = item.item;
+              return <TouchableHighlight onPress={() => this.props.navigation.navigate('Single', {issueId: rowData.id, title: rowData.title})}>
               <View style={styles.row}>
                 <View style={{flex:5}}><Text>{rowData.title}</Text></View>
                 <View style={styles.votes}>
                   <Text style={{textAlign: 'right'}}>{rowData.score}</Text>
                 </View>
               </View>
-            </TouchableHighlight>}
+            </TouchableHighlight>}}
             renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />}
         />
         <Button title="Add issue" onPress={() => this.props.navigation.navigate('Submit')}/>
