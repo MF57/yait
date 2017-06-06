@@ -57,10 +57,20 @@ public class CommentsController {
         String token = header.get("Authorization").get(0);
         String userLdapId = TokenAuthenticationService.parseTokenLdapId(token);
 
+        User author = userRepository.findOne(userLdapId);
+        List<Comment> comments = commentRepository.findAllByIssueId(Integer.parseInt(issueId));
+        for(Comment commentTemp : comments) {
+            if (commentTemp.getAuthor().getLdapId().equals(author.getLdapId())) {
+                return ResponseEntity.badRequest().body(new CustomErrorObject("You have already written a comment"));
+            }
+        }
+
+        comments.forEach(comment -> comment.getAuthor().fetchInformation());
+
         Comment comment = new Comment();
         comment.setText(commentDto.getText());
         comment.setIssueId(Integer.parseInt(issueId));
-        User author = userRepository.findOne(userLdapId);
+
         author.fetchInformation();
         comment.setAuthor(author);
         return commentRepository.save(comment);
