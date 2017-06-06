@@ -16,7 +16,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @Import(LdapConfig.class)
 public class YaitApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(YaitApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(YaitApplication.class, args);
+    }
 }

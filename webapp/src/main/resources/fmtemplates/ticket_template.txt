@@ -1,0 +1,11 @@
+<#ftl attributes={ "subject": "TYPE SUBJECT HERE", "senderName": "marek.gajecki@agh.edu.pl"}>
+<html>
+    <body>
+        <h3>Dear Student, your token is: ${mailType.tokenUrl}.</h3>
+
+        <div>
+            Hello!
+        </div>
+        <span></span>
+    </body>
+</html>
