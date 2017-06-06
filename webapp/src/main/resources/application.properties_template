@@ -1,3 +1,18 @@
+mailer.host=
+mailer.port=
+mailer.username=
+mailer.password=
+
+mailer.ticket.secretKey=
+
+mailer.mail.smtp.starttls.enable=true
+mailer.mail.smtp.auth=true
+mailer.mail.transport.protocol=smtp
+mailer.mail.debug=true
+
+mailer.ticket.url=http://localhost/hash/
+mailer.template.name=ticket_template.txt
+
 ldap.url =
 ldap.usersDn =
 ldap.groupsDn =
@@ -6,3 +21,4 @@ ldap.password =
 ldap.timeout =
 spring.datasource.url=jdbc:h2:./yait
 spring.jpa.hibernate.ddl-auto=update
+

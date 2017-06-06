@@ -7,17 +7,17 @@ import org.springframework.stereotype.Service;
 
 @Service("mailerService")
 public class Mailer {
-/*
-* Usage example
-*
-*
-* private static Mailer mailer;
-  @Autowired
-  public void setMailer(Mailer mailer) {
-    YaitApplication.mailer = mailer;
-  }
-   mailer.sendMail(String mailAddress, Ticket ticket);
-* */
+    /**
+    * Usage example
+    *
+    *
+        private static Mailer mailer;
+        @Autowired
+        public void setMailer(Mailer mailer) {
+            YaitApplication.mailer = mailer;
+        }
+        mailer.sendMail(String mailAddress, Ticket ticket);
+    */
 
     private final TicketManager ticketManager;
     private final SenderService senderService;
