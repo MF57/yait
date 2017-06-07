@@ -132,123 +132,156 @@ IssuesTab.router = {
 
 class Ticket extends React.Component {
   static navigationOptions = {
-    title: 'single ticket'
+    title: 'voting ticket',
+    headerStyle: {marginTop: Expo.Constants.statusBarHeight},
+    tabBarLabel: 'Tickets',
+    tabBarIcon: ({ tintColor }) => (
+        <FontAwesome name="ticket" size={iconSize} color={tintColor} />
+    )
   };
   constructor(props) {
     super(props);
     this.state = {
         data: {},
-        loading: true
+        loading: false,
+        tokenPresent: false
     };
+  }
+
+  loadTokenData = () => {
+    this.setState({loading:true});
+    axios.get('/token', {
+        headers: {'Authorization': this.state.token},
+    })
+      .then((response) => {
+          this.setState({
+              data: response.data,
+              loading: false
+          })
+      })
+      .catch((error) => {
+          console.log("error")
+          console.log(error)
+      });
   }
 
   componentDidMount() {
     const { params } = this.props.navigation.state;
-    // axios.get('/token', {
-    //     headers: {'Authorization': params.token},
-    // })
-    //   .then((response) => {
-    //       this.setState({
-    //           data: response.data,
-    //           loading: false
-    //       })
-    //   })
-    //   .catch((error) => {
-    //       console.log("error")
-    //       console.log(error)
-    //   });
+    if(params && params.token) {
+      store.save('votingToken', params.token);
+      this.setState({tokenPresent: true, token: params.token})
+    }
+    this.loadTokenData()
+    store
+      .get('votingToken')
+      .then(
+        (votingToken) => {
+          if(votingToken) {
+            this.setState({token: votingToken, tokenPresent: true})
+          }
+        });
   }
 
   render () {
+    if(!this.state.tokenPresent) {
+      return <DefaultContainer>
+        <Text>no token persisted</Text>
+      </DefaultContainer>;
+    }
+
     if(this.state.loading) {
-        return <View>
-          <Text>token: {this.props.navigation.state.params.token}</Text>
-          <ActivityIndicator />
-        </View>;
+      return <DefaultContainer>
+        <Text>token: {this.state.token}</Text>
+        <ActivityIndicator />
+      </DefaultContainer>;
     }
 
-    return (
-        <View style={styles.container}>
-          <Text>Votes available: {this.state.data.points} </Text>
-        </View>
-    );
-  }
-}
-
-class Tickets extends React.Component {
-  static navigationOptions = {
-    title: 'voting tickets'
-  };
-  constructor(props) {
-    super(props)
-    this.state = {
-        loading: true
-    };
-  }
-  componentDidMount = () => {
-    const { params } = this.props.navigation.state;
-
-    if(params && params.token) {
-      console.log(params)
-      this.props.navigation.navigate('TicketSingle', {token: params.token})
-    }
-  }
-
-  static navigationOptions = {
-    tabBarLabel: 'Tickets',
-    tabBarIcon: ({ tintColor }) => (
-      <FontAwesome name="ticket" size={iconSize} color={tintColor} />
-    ),
-  };
-
-  componentDidMount = () => {
-      let tokens = [
-          {'token': 'sampleVotingToken'}
-      ];
-      this.setState({
-          data: tokens
-      });
-  }
-
-  _keyExtractor = (item, index) => item.token;
-
-  render() {
     return (
         <DefaultContainer>
-          <FlatList
-              data={this.state.data}
-              keyExtractor={this._keyExtractor}
-              renderItem={(rowData) =>{ 
-                console.log(rowData)
-                return <TouchableHighlight onPress={() => this.props.navigation.navigate('TicketSingle', {token: rowData.item.token})}>
-                <View style={styles.row}>
-                  <View style={{flex:5}}><Text>{rowData.item.token}</Text></View>
-                </View>
-              </TouchableHighlight>}}
-          />
+          <Text>Votes available: {this.state.data.points} </Text>
         </DefaultContainer>
     );
   }
 }
 
-const TicketsTab = StackNavigator({
-    TicketsList: {
-      screen: Tickets,
-    },
-    TicketSingle: {
-      screen: Ticket,
-      path: 'ticket/:token'
-    }
-}, {
-    navigationOptions: {
-        title: 'voting tickets',
-        headerStyle: {marginTop: Expo.Constants.statusBarHeight},
-        tabBarLabel: 'Tickets',
-        tabBarIcon: ({ tintColor }) => (
-            <FontAwesome name="th-list" size={iconSize} color={tintColor} />
-        ),
-    }
-});
+// class Tickets extends React.Component {
+//   static navigationOptions = {
+//     title: 'voting tickets'
+//   };
+//   constructor(props) {
+//     super(props)
+//     this.state = {
+//         loading: true
+//     };
+//   }
+//   componentDidMount = () => {
+//     const { params } = this.props.navigation.state;
+
+//     if(params && params.token) {
+//       this.props.navigation.navigate('TicketSingle', {token: params.token})
+//       store.save('votinToken', parmas.token);
+//     }
+//   }
+
+//   static navigationOptions = {
+//     tabBarLabel: 'Tickets',
+//     tabBarIcon: ({ tintColor }) => (
+//       <FontAwesome name="ticket" size={iconSize} color={tintColor} />
+//     ),
+//   };
+
+//   // componentDidMount = () => {
+//   //     let tokens = [
+//   //         {'token': 'sampleVotingToken'}
+//   //     ];
+//   //     this.setState({
+//   //         data: tokens
+//   //     });
+//   // }
+
+//   // _keyExtractor = (item, index) => item.token;
+
+//   // <FlatList
+//   //     data={this.state.data}
+//   //     keyExtractor={this._keyExtractor}
+//   //     renderItem={(rowData) =>{ 
+//   //       console.log(rowData)
+//   //       return <TouchableHighlight onPress={() => this.props.navigation.navigate('TicketSingle', {token: rowData.item.token})}>
+//   //       <View style={styles.row}>
+//   //         <View style={{flex:5}}><Text>{rowData.item.token}</Text></View>
+//   //       </View>
+//   //     </TouchableHighlight>}}
+//   // />
+
+//   render() {
+//     return (
+//         <DefaultContainer>
+//           <View>
+
+//           </View>
+//         </DefaultContainer>
+//     );
+//   }
+// }
+
+// const TicketsTab = StackNavigator({
+//     TicketsList: {
+//       screen: Tickets,
+//     },
+//     TicketSingle: {
+//       screen: Ticket,
+//       path: 'ticket/:token'
+//     }
+// }, {
+//     navigationOptions: {
+//         title: 'voting tickets',
+//         headerStyle: {marginTop: Expo.Constants.statusBarHeight},
+//         tabBarLabel: 'Tickets',
+//         tabBarIcon: ({ tintColor }) => (
+//             <FontAwesome name="th-list" size={iconSize} color={tintColor} />
+//         ),
+//     }
+// });
 
 
 
@@ -356,7 +389,8 @@ const LoggedinNav = TabNavigator({
     screen: IssuesTab
   },
   Tickets: {
-    screen: TicketsTab
+    screen: Ticket,
+    path: 'ticket/:token'
   },
   Settings: {
     screen: Settings
@@ -397,6 +431,7 @@ export default class NavWrapper extends React.Component {
   }
 
   saveNewToken = (token) => {
+    // console.log(token)
     store.save('loginToken', token);
     axios.defaults.headers.common['Authorization'] = token;
     this.setState({loggedIn: !!token});
@@ -410,6 +445,7 @@ export default class NavWrapper extends React.Component {
   }
 
   render() {
+    // console.log(this.state.user)
     if(this.state.loading) {
       return <DefaultContainer><ActivityIndicator /></DefaultContainer>;
     }
