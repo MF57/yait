@@ -16,6 +16,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Date;
 
 @RestController
 @RequestMapping("/api/v1/issues/{issueId}/vote")
@@ -57,6 +58,11 @@ public class VoteController {
         Ticket ticket = ticketRepository.findOne(ticketManager.validateToken(token));
         if (ticket == null) {
             return ResponseEntity.status(400).body(new CustomErrorObject("Ticket not found."));
+        }
+
+        Date today = new Date();
+        if (ticket.getExpirationDate().before(today)) {
+            return ResponseEntity.status(400).body(new CustomErrorObject("The ticket expired."));
         }
 
         if (ticket.getPoints() < voteDTO.getPoints()) {
