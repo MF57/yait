@@ -66,20 +66,20 @@ class Topic extends Component {
                         <p> Author: {this.props.author}</p>
                         <p> Created: {new Date(this.props.date).toLocaleString()} </p>
                     </div>
-
-                    {
+                    <div className="col-xs-1 text-center media-middle">
+                        <p> Score: {this.props.score} </p>
+                        {
                         this.props.login.isTokenBeingUsed === true ?
-                            <div className="col-xs-1 text-center media-middle">
-                                <p> Score: {this.props.score} </p>
+                            <div>
                                 <input type="number" onChange={this.handleScoreChange} onClick={this.handleInputClick}
                                        className="form-control" placeholder="1"
                                        aria-describedby="basic-addon1" min={1}/>
                                 <button onClick={this.handlers.onClickUpvote.bind(this, this.props.id)}
                                         className="btn btn-primary glyphicon glyphicon-arrow-up col-xs-12"><span>VOTE</span>
                                 </button>
-                            </div>
-                            : null
-                    }
+                            </div> : null
+                        }
+                    </div>
                 </div>
                 <hr/>
             </div>
