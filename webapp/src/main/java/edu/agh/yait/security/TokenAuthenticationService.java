@@ -67,7 +67,7 @@ public class TokenAuthenticationService {
         return type;
     }
 
-    public static String parseTokenLdapId(String token) {
+    public static String parseTokenLdapLogin(String token) {
         System.out.println(token);
         String user = Jwts.parser()
                 .setSigningKey(SECRET)

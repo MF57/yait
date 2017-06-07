@@ -10,6 +10,7 @@ import edu.agh.yait.persistence.repositories.IssueRepository;
 import edu.agh.yait.persistence.repositories.UserRepository;
 import edu.agh.yait.security.TokenAuthenticationService;
 import edu.agh.yait.utils.CustomErrorObject;
+import edu.agh.yait.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -32,10 +33,13 @@ public class CommentsController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserUtils userUtils;
+
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Object getComments(@PathVariable("issueId") String issueId) {
         List<Comment> comments = commentRepository.findAllByIssueId(Integer.parseInt(issueId));
-        comments.forEach(comment -> comment.getAuthor().fetchInformation());
+        comments.forEach(comment -> userUtils.fetchInformation(comment.getAuthor()));
         return comments;
     }
 
@@ -55,9 +59,15 @@ public class CommentsController {
         }
 
         String token = header.get("Authorization").get(0);
-        String userLdapId = TokenAuthenticationService.parseTokenLdapId(token);
+        String userLdapLogin = TokenAuthenticationService.parseTokenLdapLogin(token);
 
-        User author = userRepository.findOne(userLdapId);
+        User author = new User();
+        author.setLogin(userLdapLogin);
+        userUtils.fetchInformation(author);
+        if (userRepository.findOne(author.getLdapId()) == null) {
+            userRepository.save(author);
+        }
+
         List<Comment> comments = commentRepository.findAllByIssueId(Integer.parseInt(issueId));
         for(Comment commentTemp : comments) {
             if (commentTemp.getAuthor().getLdapId().equals(author.getLdapId())) {
@@ -65,13 +75,12 @@ public class CommentsController {
             }
         }
 
-        comments.forEach(comment -> comment.getAuthor().fetchInformation());
+        comments.forEach(comment -> userUtils.fetchInformation(comment.getAuthor()));
 
         Comment comment = new Comment();
         comment.setText(commentDto.getText());
         comment.setIssueId(Integer.parseInt(issueId));
 
-        author.fetchInformation();
         comment.setAuthor(author);
         return commentRepository.save(comment);
     }
@@ -81,7 +90,7 @@ public class CommentsController {
                                  @PathVariable("commentId") String commentId) {
 
         Comment comment = commentRepository.findOne(Integer.parseInt(commentId));
-        comment.getAuthor().fetchInformation();
+        userUtils.fetchInformation(comment.getAuthor());
         return comment;
     }
 }

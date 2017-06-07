@@ -7,6 +7,7 @@ import edu.agh.yait.persistence.model.User;
 import edu.agh.yait.persistence.repositories.IssueRepository;
 import edu.agh.yait.persistence.repositories.UserRepository;
 import edu.agh.yait.security.TokenAuthenticationService;
+import edu.agh.yait.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,8 @@ public class IssueController {
     private IssueRepository issueRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserUtils userUtils;
 
     @RequestMapping(method = RequestMethod.GET)
     public Object getIssues() {
@@ -49,12 +52,12 @@ public class IssueController {
         issue.setCreated_at(new Date());
 
         String token = header.get("Authorization").get(0);
-        String userLdapId = TokenAuthenticationService.parseTokenLdapId(token);
+        String userLdapLogin = TokenAuthenticationService.parseTokenLdapLogin(token);
 
         User user = new User();
-        user.setLdapId(userLdapId);
+        user.setLogin(userLdapLogin);
+        userUtils.fetchInformation(user);
         userRepository.save(user);
-        user.fetchInformation();
         issue.setAuthor(user);
 
         return issueRepository.save(issue);
@@ -64,14 +67,13 @@ public class IssueController {
     public Object getIssueById(@PathVariable("issueId") String issueId) {
         Issue issue = issueRepository.findOne(Integer.parseInt(issueId));
         fetchIssueUserData(issue);
-        issue.getComments().forEach(e -> e.getAuthor().fetchInformation());
         return issue;
     }
 
     private void fetchIssueUserData(Issue issue) {
         if (issue.getAuthor() != null) {
-            issue.getAuthor().fetchInformation();
+            userUtils.fetchInformation(issue.getAuthor());
         }
-        issue.getComments().forEach(comment -> comment.getAuthor().fetchInformation());
+        issue.getComments().forEach(comment -> userUtils.fetchInformation(comment.getAuthor()));
     }
 }
