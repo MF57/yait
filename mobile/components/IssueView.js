@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import {ActivityIndicator, StyleSheet, Text, View, FlatList, Button} from 'react-native';
 import store from 'react-native-simple-store';
+import moment from 'moment';
 const PropTypes = require('prop-types');
 
 export default class IssueView extends React.Component {
@@ -76,7 +77,13 @@ export default class IssueView extends React.Component {
     return (
       <View>
         <View style={styles.container}>
+          <View style={styles.row}>
+            <View style={{flex:5}}>
+              <Text>Title: {this.state.data.description}</Text>
+            </View>
+          </View>
           <Text>Description: {this.state.data.description} </Text>
+          <Text>Submitted at: {moment(this.state.data.created_at).format('LLL')}</Text>
           <Text>Status: {this.state.data.status}</Text>
           <Text>Score: {this.state.data.score}</Text>
           <Text>Submitted by: {this.state.data.author.first_name} {this.state.data.author.last_name}</Text>
@@ -112,4 +119,10 @@ const styles = StyleSheet.create({
   container: {
     padding: 10
   },
+  row: {
+    flex: 1,
+    padding: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+  }
 });
