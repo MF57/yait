@@ -19,8 +19,7 @@ class TopicModal extends Component {
     };
     //TO DO
     hasUserCommented() {
-        return true;
-        // return (this.props.comments.map((el, i) => el.author).indexOf(this.props.login.username) != -1)
+        return (this.props.comments.map((el, i) => el.author.login).indexOf(this.props.login.username) != -1)
     }
 
 
@@ -29,8 +28,8 @@ class TopicModal extends Component {
         return (
             <Modal show={this.props.showModal} onHide={this.props.onHide}>
                 <Modal.Body>
-                    <h2>[{this.props.topic.points}] {this.props.topic.title}</h2>
-                    <p style={{color: "grey"}}>wysłane  {new Date(this.props.topic.date).toLocaleString()} przez {this.props.topic.author}</p>
+                    <h2>[{this.props.topic.score}] {this.props.topic.title}</h2>
+                    <p style={{color: "grey"}}>created  {new Date(this.props.topic.date).toLocaleString()} by {this.props.topic.author}</p>
                     <p>{this.props.topic.description} </p>
                           <Infinite containerHeight={400} elementHeight={45}>
                           {commentList}
@@ -38,15 +37,17 @@ class TopicModal extends Component {
                       <div className="row">
                           {
                               this.hasUserCommented() ?
-                                  <div className="alert alert-success" id="errorTopicAdd">
+                                  <div className="alert alert-success">
                                       You have already commented this issue!
                                   </div>
-                                  :
-                                  <CommentForm id={this.props.topic.id}/>
+                                  : this.props.login.isUserLogged ?
+                                    <CommentForm id={this.props.topic.id}/>
+                                      :
+                                      <div className="alert alert-warning">
+                                          You are not logged in!
+                                      </div>
                           }
-
                       </div>
-
                 </Modal.Body>
                 <Modal.Footer>
                     <Button onClick={this.props.onClick}>Close</Button>
@@ -55,5 +56,9 @@ class TopicModal extends Component {
         )
       }
 }
-
-export default connect()(TopicModal);
+function mapStateToProps(state) {
+    return {
+        login: state.login
+    }
+}
+export default connect(mapStateToProps)(TopicModal);

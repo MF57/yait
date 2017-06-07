@@ -14,7 +14,7 @@ class Comment extends Component {
               <small>{new Date(this.props.date).toLocaleString()}</small>
             </p>
             <div className="media-body">
-              <h4 className="media-heading user_name">{this.props.author}</h4>
+              <h4 className="media-heading user_name">{this.props.author.login}</h4>
               {this.props.text}
             </div>
           </div>
