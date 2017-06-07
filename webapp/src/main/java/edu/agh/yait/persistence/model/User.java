@@ -1,19 +1,13 @@
 package edu.agh.yait.persistence.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import edu.agh.yait.LdapFascade;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 public class User {
-    @Autowired
-    @JsonIgnore
-    @Transient
-    private LdapFascade ldapFascade;
-
     @Id
     @Column
     @JsonIgnore
@@ -21,8 +15,10 @@ public class User {
 
     private String login;
 
+    @JsonProperty("first_name")
     private String firstName;
 
+    @JsonProperty("last_name")
     private String lastName;
 
     @Temporal(TemporalType.TIMESTAMP)
