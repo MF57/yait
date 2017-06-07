@@ -11,7 +11,7 @@
 
 ## Running Web Application
 1. `npm install`
-2. `npm run build`
+2. `npm run dev`
 3. Simply Run 'YaitApplication' class
 4. Go to http://localhost:8080
 

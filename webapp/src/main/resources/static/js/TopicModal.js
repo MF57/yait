@@ -29,7 +29,7 @@ class TopicModal extends Component {
         return (
             <Modal show={this.props.showModal} onHide={this.props.onHide}>
                 <Modal.Body>
-                    <h2>[{this.props.topic.points}] {this.props.topic.title}</h2>
+                    <h2>[{this.props.topic.score}] {this.props.topic.title}</h2>
                     <p style={{color: "grey"}}>wysłane  {new Date(this.props.topic.date).toLocaleString()} przez {this.props.topic.author}</p>
                     <p>{this.props.topic.description} </p>
                           <Infinite containerHeight={400} elementHeight={45}>
