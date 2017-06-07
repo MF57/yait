@@ -3,12 +3,14 @@ import React, {Component} from "react";
 import * as axios from "axios";
 import {replaceTopics} from "../actions/TopicActions";
 
-let createHandlers = function (dispatch) {
+let createHandlers = function (dispatch, authorizationToken) {
     let changeTopicStatus = function (status, id, e) {
         e.preventDefault();
         e.stopPropagation();
 
-        axios.patch('/api/v1/admin/issues/' + id + '/status?status=' + status)
+        axios.patch('/api/v1/admin/issues/' + id + '/status?status=' + status, {},{
+            headers: {'Authorization': authorizationToken}
+        })
             .then(function (response) {
                 axios.get('/api/v1/issues')
                     .then(function (response) {
@@ -29,7 +31,7 @@ class TopicManager extends Component {
 
     constructor(props) {
         super(props);
-        this.handlers = createHandlers(this.props.dispatch);
+        this.handlers = createHandlers(this.props.dispatch, this.props.login.authorizationToken);
     }
 
     render() {
@@ -77,7 +79,10 @@ class TopicManager extends Component {
 }
 
 function mapStateToProps(state) {
-    return {topics: state.topics}
+    return {
+        topics: state.topics,
+        login: state.login
+    }
 }
 
 export default connect(mapStateToProps)(TopicManager);

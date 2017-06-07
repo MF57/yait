@@ -1,6 +1,7 @@
 import {connect} from "react-redux";
 import React, {Component} from "react";
 import * as axios from "axios";
+import {replaceTopics} from "../actions/TopicActions"
 
 let createHandlers = function (dispatch, authorizationToken) {
     let createTopic = function (e) {
@@ -19,6 +20,13 @@ let createHandlers = function (dispatch, authorizationToken) {
             .then(function (response) {
                 this.setState({success: true});
                 this.setState({error: false});
+                axios.get('/api/v1/issues')
+                    .then(function (response) {
+                        dispatch(replaceTopics(response.data))
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
             }.bind(this))
             .catch(function (error) {
                 this.setState({error: true});
