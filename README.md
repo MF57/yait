@@ -10,8 +10,10 @@
 7. If everything is ok, .gradle and gradle folders should appear INSIDE webapp folder
 
 ## Running Web Application
-1. Simply Run 'YaitApplication' class
-2. If everything is ok, GET to the http://localhost:8080/api/hello should return "Hello World"
+1. `npm install`
+2. `npm run build`
+3. Simply Run 'YaitApplication' class
+4. Go to http://localhost:8080
 
 ## LDAP SSL
 ```
