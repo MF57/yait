@@ -37,8 +37,8 @@ public class LdapFascade {
     public Optional<UserData> getUserDataById(String userId) {
         try {
             return Optional.ofNullable(cache.getUserDataById(userId));
-        } catch (ExecutionException e) {
-            logger.error("Error in retrieving from user data cache", e);
+        } catch (Exception e) {
+            logger.warn("Error in retrieving from user data cache", e);
             return Optional.empty();
         }
     }

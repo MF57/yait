@@ -18,12 +18,6 @@ public class Ticket {
     @Column
     private Integer points;
 
-    @Column
-    private String hash;
-
-    //@ManyToOne
-   // private User user;
-
     public Integer getId() {
         return id;
     }
@@ -54,14 +48,6 @@ public class Ticket {
 
     public void setPoints(Integer points) {
         this.points = points;
-    }
-
-    public String getHash() {
-        return hash;
-    }
-
-    public void setHash(String hash) {
-        this.hash = hash;
     }
 }
 
