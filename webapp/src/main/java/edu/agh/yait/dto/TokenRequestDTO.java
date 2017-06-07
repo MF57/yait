@@ -2,17 +2,14 @@ package edu.agh.yait.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
 public class TokenRequestDTO {
-    @NotEmpty
     private List<String> emails;
 
-    @NotEmpty
     private List<String> ldapGroups;
 
     @NotNull
