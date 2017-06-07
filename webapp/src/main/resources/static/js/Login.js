@@ -17,7 +17,8 @@ let createHandlers = function (dispatch) {
         axios.post('/api/v1/login', loginData)
             .then(function (response) {
                 console.log(response);
-                dispatch(login(response.data.authenticationToken))
+                dispatch(login(response.data.authenticationToken));
+                this.props.history.push('/');
             }.bind(this))
             .catch(function (error) {
                 console.log(error)
