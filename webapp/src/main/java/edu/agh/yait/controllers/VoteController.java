@@ -1,6 +1,7 @@
 package edu.agh.yait.controllers;
 
 import edu.agh.yait.dto.VoteDTO;
+import edu.agh.yait.mailer.TicketManager;
 import edu.agh.yait.persistence.model.Issue;
 import edu.agh.yait.persistence.model.IssueStatus;
 import edu.agh.yait.persistence.model.Ticket;
@@ -24,38 +25,41 @@ public class VoteController {
     private IssueRepository issueRepository;
 
     @Autowired
-    TicketRepository ticketRepository;
+    private TicketRepository ticketRepository;
+
+    @Autowired
+    private TicketManager ticketManager;
 
     @RequestMapping(method = RequestMethod.POST)
     public Object voteIssue(@PathVariable("issueId") String issueId,
                             @Valid @RequestBody VoteDTO voteDTO,
                             @RequestHeader HttpHeaders headers,
-                            Errors result){
+                            Errors result) {
 
         String token = headers.get("Authorization").get(0);
-        if(!TokenAuthenticationService.parseTokenType(token).equals("VOTE_TOKEN")){
+        if (!TokenAuthenticationService.parseTokenType(token).equals("VOTE_TOKEN")) {
             return ResponseEntity.status(400).body(new CustomErrorObject("Wrong auth token type."));
         }
 
-        if(result.hasErrors()){
+        if (result.hasErrors()) {
             return result.getAllErrors();
         }
 
         Issue issue = issueRepository.findOne(Integer.parseInt(issueId));
-        if(issue == null){
-            return ResponseEntity.badRequest().body(new CustomErrorObject("Issue, id: " + issueId +  ", does not exists"));
+        if (issue == null) {
+            return ResponseEntity.badRequest().body(new CustomErrorObject("Issue, id: " + issueId + ", does not exists"));
         }
 
         if (issue.getStatus() != IssueStatus.open) {
             return ResponseEntity.status(400).body(new CustomErrorObject("Issue is not opened."));
         }
 
-        Ticket ticket = ticketRepository.findByHash(token);
-        if(ticket == null){
+        Ticket ticket = ticketRepository.findOne(ticketManager.validateToken(token));
+        if (ticket == null) {
             return ResponseEntity.status(400).body(new CustomErrorObject("Ticket not found."));
         }
 
-        if(ticket.getPoints() < voteDTO.getPoints()){
+        if (ticket.getPoints() < voteDTO.getPoints()) {
             return ResponseEntity.status(400).body(new CustomErrorObject("Not enough points left"));
         }
 

@@ -1,5 +1,6 @@
 package edu.agh.yait.controllers;
 
+import edu.agh.yait.mailer.TicketManager;
 import edu.agh.yait.persistence.model.Ticket;
 import edu.agh.yait.persistence.repositories.TicketRepository;
 import edu.agh.yait.security.TokenAuthenticationService;
@@ -17,18 +18,21 @@ public class TokenController {
     @Autowired
     private TicketRepository ticketRepository;
 
+    @Autowired
+    private TicketManager ticketManager;
+
     @RequestMapping(method = RequestMethod.GET)
-    public Object getTokenPointsLeft(@RequestHeader(value="Authorization") String token,
-                                     Errors result){
-        if(result.hasErrors()){
+    public Object getTokenPointsLeft(@RequestHeader(value = "Authorization") String token,
+                                     Errors result) {
+        if (result.hasErrors()) {
             return result.getAllErrors();
         }
 
-        Ticket ticket = ticketRepository.findByHash(token);
+        Ticket ticket = ticketRepository.findOne(ticketManager.validateToken(token));
 
         System.out.println(TokenAuthenticationService.parseTokenType(token));
 
-        if(ticket == null){
+        if (ticket == null) {
             return ticket;
         }
 

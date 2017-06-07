@@ -1,12 +1,18 @@
 package edu.agh.yait.persistence.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import edu.agh.yait.LdapFascade;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 public class User {
+    @Autowired
+    @JsonIgnore
+    @Transient
+    private LdapFascade ldapFascade;
 
     @Id
     @Column
@@ -62,5 +68,6 @@ public class User {
     public void setFirstLogin(Date firstLogin) {
         this.firstLogin = firstLogin;
     }
+
 
 }

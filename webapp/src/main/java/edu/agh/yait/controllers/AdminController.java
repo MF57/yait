@@ -1,13 +1,13 @@
 package edu.agh.yait.controllers;
 
-import edu.agh.yait.LdapHandler;
+import edu.agh.yait.LdapFascade;
 import edu.agh.yait.dto.TokenRequestDTO;
+import edu.agh.yait.mailer.Mailer;
 import edu.agh.yait.persistence.model.Issue;
 import edu.agh.yait.persistence.model.IssueStatus;
 import edu.agh.yait.persistence.model.Ticket;
 import edu.agh.yait.persistence.repositories.IssueRepository;
 import edu.agh.yait.persistence.repositories.TicketRepository;
-import edu.agh.yait.security.TokenAuthenticationService;
 import edu.agh.yait.utils.CustomErrorObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +29,10 @@ public class AdminController {
     @Autowired
     private TicketRepository ticketRepository;
     @Autowired
-    private LdapHandler ldapHandler;
+    private LdapFascade ldapFascade;
+    @Autowired
+    private Mailer mailer;
+
 
     @RequestMapping(value = "issues/{issueId}/status", method = RequestMethod.PATCH)
     public Object addIssue(@PathVariable("issueId") String issueId, @RequestParam String status) {
@@ -48,7 +51,7 @@ public class AdminController {
     @RequestMapping(value = "/generate_tokens", method = RequestMethod.POST)
     public Object generateTokens(@Valid @RequestBody TokenRequestDTO request, Errors result) {
 
-        if(result.hasErrors()) {
+        if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors());
         }
 
@@ -59,31 +62,34 @@ public class AdminController {
         Integer tokenPoints = request.getTokenPoints();
         Date expirationDate = request.getExpires_at();
 
-        //List<Ticket> tokens = new LinkedList<Ticket>();
-
         //TODO: group validation
-        for(String email: emails) {
+//        if (!ldapGroups.isEmpty()) {
+//            for (String ldapGroup : ldapGroups) {
+//                if (!ldapFascade.getGroups().contains(ldapGroup)) {
+//                    return ResponseEntity.badRequest().body(new CustomErrorObject("Given group does not exist"));
+//                }
+//            }
+//        }
+
+
+        for (String email : emails) {
             Ticket ticket = new Ticket();
             ticket.setCreationDate(new Date());
             ticket.setPoints(tokenPoints);
             ticket.setExpirationDate(expirationDate);
-
             ticket = ticketRepository.save(ticket);
-            ticket.setHash(TokenAuthenticationService.generateVoteToken(ticket.getId()));
-            ticketRepository.save(ticket);
-            // generate token
-            // send mail
 
+            mailer.sendMail(email, ticket);
         }
 
-        return ticketRepository.findAll();
+        return ResponseEntity.ok();
     }
 
     @RequestMapping(value = "/ldapGroups", method = RequestMethod.GET)
     public Object getLdapGroups(Errors result) {
-        if(result.hasErrors()) {
+        if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors());
         }
-        return ldapHandler.getGroups();
+        return ldapFascade.getGroups();
     }
 }

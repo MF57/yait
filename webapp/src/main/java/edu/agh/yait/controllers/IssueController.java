@@ -1,6 +1,5 @@
 package edu.agh.yait.controllers;
 
-import edu.agh.yait.LdapHandler;
 import edu.agh.yait.dto.IssueDTO;
 import edu.agh.yait.persistence.model.Issue;
 import edu.agh.yait.persistence.model.IssueStatus;
@@ -8,7 +7,7 @@ import edu.agh.yait.persistence.model.User;
 import edu.agh.yait.persistence.repositories.IssueRepository;
 import edu.agh.yait.persistence.repositories.UserRepository;
 import edu.agh.yait.security.TokenAuthenticationService;
-import edu.agh.yait.userData.UserData;
+import edu.agh.yait.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Date;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/issues")
@@ -26,25 +24,23 @@ public class IssueController {
     @Autowired
     private IssueRepository issueRepository;
     @Autowired
-    private LdapHandler ldapHandler;
-    @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserUtils userUtils;
 
     @RequestMapping(method = RequestMethod.GET)
-    public Object getIssues(){
+    public Object getIssues() {
         Iterable<Issue> issues = issueRepository.findAll();
-        for (Issue issue : issues) {
-            setIssueAuthor(issue);
-        }
+        issues.forEach(this::fetchIssueUserData);
         return issues;
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public Object addIssue(@Valid @RequestBody IssueDTO issueDTO,
                            @RequestHeader HttpHeaders header,
-                           Errors result){
+                           Errors result) {
 
-        if(result.hasErrors()){
+        if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors());
         }
 
@@ -56,10 +52,11 @@ public class IssueController {
         issue.setCreated_at(new Date());
 
         String token = header.get("Authorization").get(0);
-        String userLdapId = TokenAuthenticationService.parseTokenLdapId(token);
+        String userLdapLogin = TokenAuthenticationService.parseTokenLdapLogin(token);
 
         User user = new User();
-        user.setLdapId(userLdapId);
+        user.setLogin(userLdapLogin);
+        userUtils.fetchInformation(user);
         userRepository.save(user);
         issue.setAuthor(user);
 
@@ -67,22 +64,16 @@ public class IssueController {
     }
 
     @RequestMapping(value = "/{issueId}", method = RequestMethod.GET)
-    public Object getIssueById(@PathVariable("issueId") String issueId){
+    public Object getIssueById(@PathVariable("issueId") String issueId) {
         Issue issue = issueRepository.findOne(Integer.parseInt(issueId));
-        setIssueAuthor(issue);
+        fetchIssueUserData(issue);
         return issue;
     }
 
-    private void setIssueAuthor(Issue issue) {
+    private void fetchIssueUserData(Issue issue) {
         if (issue.getAuthor() != null) {
-            Optional<UserData> creator = ldapHandler.getUserDataById(issue.getAuthor().getLdapId());
-            if (creator.isPresent()) {
-                User user = new User();
-                user.setLogin(creator.get().getLogin());
-                user.setFirstName(creator.get().getName().orElse(null));
-                user.setLastName(creator.get().getSurname().orElse(null));
-                issue.setAuthor(user);
-            }
+            userUtils.fetchInformation(issue.getAuthor());
         }
+        issue.getComments().forEach(comment -> userUtils.fetchInformation(comment.getAuthor()));
     }
 }
