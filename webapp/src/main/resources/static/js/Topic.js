@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 import {upvoteTopic} from "./actions/TopicActions";
+import {spendPoints} from "./actions/TokenActions";
 import * as axios from "axios";
 
 let createHandlers = function (dispatch, votingToken) {
@@ -14,6 +15,7 @@ let createHandlers = function (dispatch, votingToken) {
             .then(function (response) {
                 console.log(response);
                 dispatch(upvoteTopic(id, score));
+                dispatch(spendPoints(score));
             })
             .catch(function (error) {
                 console.log(error);
@@ -73,7 +75,7 @@ class Topic extends Component {
                                 <p> Score: {this.props.score} </p>
                                 <input type="number" onChange={this.handleScoreChange} onClick={this.handleInputClick}
                                        className="form-control" placeholder="1"
-                                       aria-describedby="basic-addon1" min={1}/>
+                                       aria-describedby="basic-addon1" min={1} max={this.props.votingToken.tokenPoints}/>
                                 <button onClick={this.handlers.onClickUpvote.bind(this, this.props.id)}
                                         className="btn btn-primary glyphicon glyphicon-arrow-up col-xs-12"><span>VOTE</span>
                                 </button>
