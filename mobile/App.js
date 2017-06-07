@@ -127,9 +127,6 @@ IssuesTab.router = {
 };
 
 
-
-
-
 class Ticket extends React.Component {
   static navigationOptions = {
     title: 'voting ticket',
@@ -166,6 +163,10 @@ class Ticket extends React.Component {
   }
 
   componentDidMount() {
+    this.refresh()
+  }
+
+  refresh = () => {
     const { params } = this.props.navigation.state;
     if(params && params.token) {
       store.save('votingToken', params.token);
@@ -183,6 +184,12 @@ class Ticket extends React.Component {
   }
 
   render () {
+    const { params } = this.props.navigation.state;
+
+    if(params && params.reload) {
+      this.refresh()
+    }
+
     if(!this.state.tokenPresent) {
       return <DefaultContainer>
         <Text>no token persisted</Text>
@@ -203,6 +210,25 @@ class Ticket extends React.Component {
     );
   }
 }
+
+// class TicketLoad extends React.Component {
+
+//   componentWillMount() {
+//     const { params } = this.props.navigation.state;
+//     if(params && params.token) {
+//       store.save('votingToken', params.token);
+//       this.props.navigation.navigate('Ticket', {reload: true})
+//     }
+//   }
+
+//   render () {
+//     return (
+//         <DefaultContainer>
+          
+//         </DefaultContainer>
+//     );
+//   }
+// }
 
 // class Tickets extends React.Component {
 //   static navigationOptions = {
@@ -265,11 +291,11 @@ class Ticket extends React.Component {
 // }
 
 // const TicketsTab = StackNavigator({
-//     TicketsList: {
-//       screen: Tickets,
-//     },
-//     TicketSingle: {
+//     Ticket: {
 //       screen: Ticket,
+//     },
+//     TicketLoad: {
+//       screen: TicketLoad,
 //       path: 'ticket/:token'
 //     }
 // }, {
@@ -283,8 +309,6 @@ class Ticket extends React.Component {
 //     }
 // });
 
-
-
 class Settings extends React.Component {
   static navigationOptions = {
     tabBarLabel: 'Settings',
@@ -293,27 +317,25 @@ class Settings extends React.Component {
     ),
   };
 
-  // componentDidMount() {
-  //   Linking.getInitialURL().then((urla) => {
-  //     const url = 'yait://yait/ticket/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ';
-  //     if (url) {
-  //       Alert.alert(
-  //         'external url',
-  //         url);
-  //       const matches = url.match(/yait\/ticket\/([A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+\/=]*)/);
-  //       if(matches) {
-  //         const token = matches[1];
-  //         this.props.navigation.navigate('Tickets', {}, NavigationActions.navigate({
-  //           routeName: 'TicketSingle',
-  //           params: {token}
-  //         }))
-  //         console.log(matches[1]);
-  //       }
-  //       // console.log('Initial url is: ' + url);
-  //     }
-  //   }).catch(err => console.error('An error occurred', err));
-  // }
-
+  componentDidMount() {
+    Linking.getInitialURL().then((url) => {
+      const urla = 'yait://yait/ticket/eyJhbGciOiJIUzI1NiJ9.eyJ0aWNrZXQiOjF9.y-H1mezDBB-ZrIek1_Z1Wq9Owfx08IjxoKShbaMk_pw';
+      if (url) {
+        Alert.alert(
+          'external url',
+          url);
+        const matches = url.match(/yait\/ticket\/([A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+\/=]*)/);
+        if(matches) {
+          const token = matches[1];
+          this.props.navigation.navigate('Tickets', {token})
+          console.log(matches[1]);
+        }
+        // console.log('Initial url is: ' + url);
+      }
+    }).catch(err => console.error('An error occurred', err));
+  }
+// <Button onPress={() => this.props.navigation.navigate('TicketLoad', {token: "eyJhbGciOiJIUzI1NiJ9.eyJ0aWNrZXQiOjF9.y-H1mezDBB-ZrIek1_Z1Wq9Owfx08IjxoKShbaMk_pw"})
+// } title="test token" />
   render() {
     return (
       <DefaultContainer>
@@ -390,7 +412,6 @@ const LoggedinNav = TabNavigator({
   },
   Tickets: {
     screen: Ticket,
-    path: 'ticket/:token'
   },
   Settings: {
     screen: Settings
