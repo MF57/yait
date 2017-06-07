@@ -63,11 +63,13 @@ public class AdminController {
         Date expirationDate = request.getExpires_at();
 
         //TODO: group validation
-        for (String ldapGroup: ldapGroups) {
-            if (!ldapFascade.getGroups().contains(ldapGroup)) {
-                return ResponseEntity.badRequest().body(new CustomErrorObject("Given group does not exist"));
-            }
-        }
+//        if (!ldapGroups.isEmpty()) {
+//            for (String ldapGroup : ldapGroups) {
+//                if (!ldapFascade.getGroups().contains(ldapGroup)) {
+//                    return ResponseEntity.badRequest().body(new CustomErrorObject("Given group does not exist"));
+//                }
+//            }
+//        }
 
 
         for (String email : emails) {
