@@ -28,6 +28,7 @@
     "browserify": "^14.3.0",
     "email-validator": "1.0.7",
     "jquery": "^3.2.1",
+    "jwt-decode": "^2.2.0",
     "moment": "^2.18.1",
     "moment-timezone": "^0.5.12",
     "react": "^15.5.4",

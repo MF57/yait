@@ -26,7 +26,8 @@ export const preloadState = {
         isUserLogged: false,
         isTokenBeingUsed: false,
         isAdmin: false,
-        authorizationToken: ""
+        authorizationToken: "",
+        username: ""
     },
     ldapGroups: []
 
