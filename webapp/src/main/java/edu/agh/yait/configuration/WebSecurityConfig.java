@@ -43,6 +43,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/static/**");
+        web.ignoring().antMatchers("/build/**");
+        web.ignoring().antMatchers("/node_modules/**");
+        web.ignoring().antMatchers("/js/**");
+        web.ignoring().antMatchers("/index.html");
     }
 
     @Override
