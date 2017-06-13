@@ -47,7 +47,7 @@ class List extends Component {
 
     topicList() {
         return this.props.topics.map((el,i)=>
-            <Topic title={el.title} status={el.status} id={el.id} score={el.score} author={el.author.firstName + ' ' + el.author.lastName}
+            <Topic title={el.title} status={el.status} id={el.id} score={el.score} author={el.author.first_name + ' ' + el.author.last_name}
                    description={el.description} date={el.created_at} key={i} onClickTopic={this.open.bind(this)}/>
         )
     }

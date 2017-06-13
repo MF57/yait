@@ -31,22 +31,25 @@ let createHandlers = function (dispatch) {
         let tokenData = {
             emails: parsedEmails,
             ldapGroups: this.inputs.ldapGroups,
-            tokenPoints: this.inputs.tokens,
-            expires_at: this.inputs.date
+            tokenPoints: this.inputs.tokens
         };
 
+        if(this.inputs.date){
+            tokenData.expires_at = this.inputs.date.split(".")[0]+'Z'
+        }
 
         console.log(tokenData);
-        // axios.post('/api/v1/admin/generate_tokens', tokenData)
-        //     .then(function (response) {
-        //         this.setState({success: true});
-        //         this.setState({error: false});
-        //     }.bind(this))
-        //     .catch(function (error) {
-        //         this.setState({error: true});
-        //         this.setState({success: false});
-        //     }.bind(this))
-
+        if(tokenData.expires_at !== undefined && tokenData.tokenPoints !== undefined){
+            axios.post('/api/v1/admin/generate_tokens', tokenData)
+                .then(function (response) {
+                    this.setState({success: true});
+                    this.setState({error: false});
+                }.bind(this))
+                .catch(function (error) {
+                    this.setState({error: true});
+                    this.setState({success: false});
+                }.bind(this))
+        }
     };
     return {
         generateTokens
@@ -58,8 +61,8 @@ class TokenGenerator extends Component {
     constructor(props) {
         super(props);
         this.handlers = createHandlers(this.props.dispatch);
-        this.inputs = {};
-        this.state = {mails: []};
+        this.inputs = {ldapGroups: []};
+        this.state = {mails: ''};
         this.handleMailsChange = this.handleMailsChange.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
         this.handleTokensChange = this.handleTokensChange.bind(this);
@@ -110,7 +113,7 @@ class TokenGenerator extends Component {
                                 Expiring:
                             </div>
                             <div className="col-md-8">
-                                <DatePicker className="form-control" onChange={this.handleDateChange} />
+                                <DatePicker className="form-control" onChange={this.handleDateChange}/>
                             </div>
                         </div>
                         <div className="row form-group">

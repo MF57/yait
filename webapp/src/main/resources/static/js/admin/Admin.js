@@ -36,7 +36,9 @@ class Admin
 
     componentWillMount() {
         let dispatch = this.props.dispatch;
-        axios.get('/api/v1/admin/ldapGroups')
+        axios.get('/api/v1/admin/ldapGroups', {
+            headers: {'Authorization': this.props.login.authorizationToken}
+        })
             .then(function (response) {
                 dispatch(replaceLdapGroups(response.data));
                 console.log(response);
