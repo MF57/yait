@@ -17,7 +17,6 @@ class TopicModal extends Component {
             <Comment author={el.author} text={el.text} date={el.created_at} key={i}/>
         )
     };
-    //TO DO
     hasUserCommented() {
         return (this.props.comments.map((el, i) => el.author.login).indexOf(this.props.login.username) != -1)
     }
@@ -30,6 +29,7 @@ class TopicModal extends Component {
                 <Modal.Body>
                     <h2>[{this.props.topic.score}] {this.props.topic.title}</h2>
                     <p style={{color: "grey"}}>created  {new Date(this.props.topic.date).toLocaleString()} by {this.props.topic.author}</p>
+
                     <p>{this.props.topic.description} </p>
                           <Infinite containerHeight={400} elementHeight={45}>
                           {commentList}
