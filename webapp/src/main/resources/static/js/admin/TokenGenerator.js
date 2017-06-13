@@ -31,9 +31,12 @@ let createHandlers = function (dispatch) {
         let tokenData = {
             emails: parsedEmails,
             ldapGroups: this.inputs.ldapGroups,
-            tokenPoints: this.inputs.tokens,
-            expires_at: this.inputs.date.split(".")[0]+'Z'
+            tokenPoints: this.inputs.tokens
         };
+
+        if(this.inputs.date){
+            tokenData.expires_at = this.inputs.date.split(".")[0]+'Z'
+        }
 
         console.log(tokenData);
         if(tokenData.expires_at !== undefined && tokenData.tokenPoints !== undefined){
@@ -47,9 +50,6 @@ let createHandlers = function (dispatch) {
                     this.setState({success: false});
                 }.bind(this))
         }
-
-
-
     };
     return {
         generateTokens
@@ -62,7 +62,7 @@ class TokenGenerator extends Component {
         super(props);
         this.handlers = createHandlers(this.props.dispatch);
         this.inputs = {ldapGroups: []};
-        this.state = {mails: []};
+        this.state = {mails: ''};
         this.handleMailsChange = this.handleMailsChange.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
         this.handleTokensChange = this.handleTokensChange.bind(this);

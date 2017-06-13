@@ -1,4 +1,4 @@
-import {LOGIN, VOTING_TOKEN_IN_USE} from "./types/LoginActionTypes";
+import {LOGIN, VOTING_TOKEN_IN_USE, LOGOUT} from "./types/LoginActionTypes";
 
 export function login(token) {
     return {
@@ -7,9 +7,15 @@ export function login(token) {
     };
 }
 
+export function logout() {
+    return {
+        type: LOGOUT
+    };
+}
+
+
 export function votingTokenInUse() {
     return {
         type: VOTING_TOKEN_IN_USE
     }
-
 }

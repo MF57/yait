@@ -68,11 +68,11 @@ class Topic extends Component {
                         <p> Author: {this.props.author}</p>
                         <p> Created: {new Date(this.props.date).toLocaleString()} </p>
                     </div>
-
+                    <div className="col-xs-1 text-center media-middle">
+                        <p> Score: {this.props.score} </p>
                     {
                         this.props.login.isTokenBeingUsed === true ?
-                            <div className="col-xs-1 text-center media-middle">
-                                <p> Score: {this.props.score} </p>
+                            <div>
                                 <input type="number" onChange={this.handleScoreChange} onClick={this.handleInputClick}
                                        className="form-control" placeholder="1"
                                        aria-describedby="basic-addon1" min={1} max={this.props.votingToken.tokenPoints}/>
@@ -82,6 +82,8 @@ class Topic extends Component {
                             </div>
                             : null
                     }
+
+                    </div>
                 </div>
                 <hr/>
             </div>
