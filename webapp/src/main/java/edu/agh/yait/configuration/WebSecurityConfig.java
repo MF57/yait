@@ -4,6 +4,7 @@ import edu.agh.yait.security.CustomAuthenticationProvider;
 import edu.agh.yait.security.JWTAuthenticationFilter;
 import edu.agh.yait.security.JWTLoginFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,6 +23,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final String API_URL = "/api/v1";
 
+    @Value("${admins}")
+    private String admins;
+
     @Autowired
     private CustomAuthenticationProvider customAuthenticationProvider;
 
@@ -34,7 +38,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
 
                 // filter the api/login requests
-                .addFilterBefore(new JWTLoginFilter(API_URL + "/login", authenticationManager()),
+                .addFilterBefore(new JWTLoginFilter(API_URL + "/login", admins, authenticationManager()),
                         UsernamePasswordAuthenticationFilter.class)
                 // filter other requests to check the presence of JWT in header
                 .addFilterBefore(new JWTAuthenticationFilter(),

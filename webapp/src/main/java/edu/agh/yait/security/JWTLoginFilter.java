@@ -23,12 +23,11 @@ import java.util.*;
 @Configuration
 public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 
-    @Value("${admins}")
     private String admins;
 
-
-    public JWTLoginFilter(String url, AuthenticationManager authManager) {
+    public JWTLoginFilter(String url, String admins, AuthenticationManager authManager) {
         super(new AntPathRequestMatcher(url));
+        this.admins = admins;
         setAuthenticationManager(authManager);
     }
 
@@ -40,7 +39,7 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
         LoginDTO creds = new ObjectMapper().readValue(req.getInputStream(), LoginDTO.class);
 
         List<GrantedAuthority> grantedAuths = new ArrayList<>();
-        if(Arrays.asList(admins.split(".")).toString().contains(creds.getLogin())) grantedAuths.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        if(Arrays.asList(this.admins.split(".")).toString().contains(creds.getLogin())) grantedAuths.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         else grantedAuths.add(new SimpleGrantedAuthority("ROLE_USER"));
 
         return getAuthenticationManager().authenticate(
