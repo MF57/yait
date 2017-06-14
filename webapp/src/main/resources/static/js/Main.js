@@ -34,25 +34,36 @@ class Main extends Component {
             <div className="container">
                 <div className="row">
                     <div className="col-md-6">
-                        <div className="panel panel-default">
-                            <div className="panel-heading">New topic
-                                <button className="btn btn-xs pull-right" data-toggle="collapse" data-target="#newTopic">+
-                                </button>
-                            </div>
-                            <div id="newTopic" className="panel-body collapse">
-                                <TopicCreator />
-                            </div>
-                        </div>
+                        {
+                            this.props.login.isUserLogged === true ?
+                                <div className="panel panel-default">
+                                    <div className="panel-heading">New topic
+                                        <button className="btn btn-xs pull-right" data-toggle="collapse"
+                                                data-target="#newTopic">+
+                                        </button>
+                                    </div>
+                                    <div id="newTopic" className="panel-body collapse">
+                                        <TopicCreator />
+                                    </div>
+                                </div>
+                                : null
+                        }
                     </div>
                     <div className="col-md-6">
-                        <div className="panel panel-default">
-                            <div className="panel-heading">Token
-                                <button className="btn btn-xs pull-right" data-toggle="collapse" data-target="#token">+</button>
-                            </div>
-                            <div className="panel-body collapse" id="token">
-                                <InfoPanel/>
-                            </div>
-                        </div>
+                        {
+                            this.props.login.isUserLogged === true ?
+                                <div className="panel panel-default">
+                                    <div className="panel-heading">Token
+                                        <button className="btn btn-xs pull-right" data-toggle="collapse"
+                                                data-target="#token">+
+                                        </button>
+                                    </div>
+                                    <div className="panel-body collapse" id="token">
+                                        <InfoPanel/>
+                                    </div>
+                                </div>
+                                : null
+                        }
                     </div>
                 </div>
                 <div className="row">
@@ -65,7 +76,8 @@ class Main extends Component {
 
 function mapStateToProps(state) {
     return {
-        topics: state.topics
+        topics: state.topics,
+        login: state.login
     }
 }
 
