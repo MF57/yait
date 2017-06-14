@@ -86,10 +86,7 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/ldapGroups", method = RequestMethod.GET)
-    public Object getLdapGroups(Errors result) {
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(result.getAllErrors());
-        }
+    public Object getLdapGroups() {
         return ldapFascade.getGroups();
     }
 }

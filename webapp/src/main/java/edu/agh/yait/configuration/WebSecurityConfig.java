@@ -47,6 +47,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring().antMatchers("/node_modules/**");
         web.ignoring().antMatchers("/js/**");
         web.ignoring().antMatchers("/index.html");
+        web.ignoring().antMatchers("/favicon.ico");
+        web.ignoring().antMatchers(HttpMethod.GET, "/api/v1/issues");
     }
 
     @Override
