@@ -40,7 +40,9 @@ let createHandlers = function (dispatch) {
 
         console.log(tokenData);
         if(tokenData.expires_at !== undefined && tokenData.tokenPoints !== undefined){
-            axios.post('/api/v1/admin/generate_tokens', tokenData)
+            axios.post('/api/v1/admin/generate_tokens', tokenData, {
+                headers: {'Authorization': this.props.authorizationToken}
+            })
                 .then(function (response) {
                     this.setState({success: true});
                     this.setState({error: false});
@@ -143,7 +145,7 @@ class TokenGenerator extends Component {
 
 
 function mapStateToProps(state) {
-    return { ldapGroups: state.ldapGroups}
+    return { ldapGroups: state.ldapGroups, authorizationToken: state.login.authorizationToken}
 }
 
 
